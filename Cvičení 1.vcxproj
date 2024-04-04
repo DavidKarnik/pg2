@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cvičení.cpp" />
     <ClCompile Include="DebugOutputManager.cpp" />
     <ClCompile Include="FrameCounter.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugOutputManager.h" />
     <ClInclude Include="FrameCounter.h" />
     <ClInclude Include="Loader.h" />

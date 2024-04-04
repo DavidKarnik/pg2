@@ -6,19 +6,21 @@
 #include "glm/glm.hpp"
 
 #include "App.h"
-#include "FrameCounter.h"
-#include "DebugOutputManager.h"
 #include "Window.h"
+#include "Camera.h"
 #include "OBJLoader.h"
 #include "Mesh.h"
 #include "Shader.h"
+
+#include "FrameCounter.h"
+#include "DebugOutputManager.h"
 
 App::App()
 {
     // default constructor
     // nothing to do here (so far...)
     std::cout << "New App constructed\n";
-    window = new Window(800, 600, "OpenGL Window");;
+    window = new Window(800, 600, "OpenGL Window");
 }
 
 bool App::init()
@@ -59,10 +61,18 @@ int App::run()
 
     OBJLoader test{ "./assets/obj/bunny_tri_vnt.obj" };
 
+    auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
+    auto mesh = test.getMesh();
+
     auto vertexShaderPath = std::filesystem::path("./assets/shaders/basic.vert");
     auto fragmentShaderPath = std::filesystem::path("./assets/shaders/basic.frag");
     auto shader = Shader(vertexShaderPath, fragmentShaderPath);
-    auto mesh = test.getMesh();
+
+    shader.setUniform("projection", camera.getProjectionMatrix());
+    //glfwSetCursorPosCallback(window->getWindow(), camera.onMouseEvent);
+
+    float deltaTime = 0.0f;	// Time between current frame and last frame
+    float lastFrame = 0.0f; // Time of last frame
 
     std::cout << shader.ID << std::endl;
 
@@ -79,19 +89,25 @@ int App::run()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc
 
         glm::mat4 trans = glm::mat4(1.0f);
         trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
         shader.setUniform("transform", trans);
 
-        glm::mat4 view = glm::mat4(1.0f);
-        // note that we're translating the scene in the reverse direction of where we want to move
-        view = glm::translate(view, glm::vec3(0.0f, -1.5f, -12.5f));
-        shader.setUniform("view", view);
+        // Tady si musim nastudovat, co to vlastnì kurva dìlá.
+        // Jako position chápu, front už taky, ale ten up vector je nìjakej zakletej
+        //camera.Pitch = 30.0f;
 
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
-        shader.setUniform("projection", projection);
+        shader.setUniform("view", camera.getViewMatrix());
+
+        //glm::mat4 projection = glm::mat4(1.0f);
+        //projection = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
+        shader.setUniform("projection", camera.getProjectionMatrix());
 
         mesh.draw(shader);
 

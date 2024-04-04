@@ -93,31 +93,31 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 void Window::handle_key_event(int key, int action) {
 
     switch (action) {
-        case GLFW_PRESS:
-            this->handle_key_press(key, action);
-        default:
-            break;
+    case GLFW_PRESS:
+        this->handle_key_press(key, action);
+    default:
+        break;
     }
 }
 
 void Window::handle_key_press(int key, int action) {
     switch (key) {
-        case GLFW_KEY_ESCAPE: {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-            break;
-        }
-        case GLFW_KEY_F: {
-            fullscreen = !fullscreen;
-            set_fullscreen(fullscreen);
-            std::cout << "Fullscreen " << (fullscreen ? "enabled" : "disabled") << std::endl;
-            break;
-        }
-        case GLFW_KEY_V: {
-            vsync = !vsync;
-            set_vsync(vsync);
-            std::cout << "VSync " << (vsync ? "enabled" : "disabled") << std::endl;
-            break;
-        }
+    case GLFW_KEY_ESCAPE: {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        break;
+    }
+    case GLFW_KEY_F: {
+        fullscreen = !fullscreen;
+        set_fullscreen(fullscreen);
+        std::cout << "Fullscreen " << (fullscreen ? "enabled" : "disabled") << std::endl;
+        break;
+    }
+    case GLFW_KEY_V: {
+        vsync = !vsync;
+        set_vsync(vsync);
+        std::cout << "VSync " << (vsync ? "enabled" : "disabled") << std::endl;
+        break;
+    }
     }
 }
 
