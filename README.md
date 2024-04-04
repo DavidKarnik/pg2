@@ -1,2 +1,2 @@
-# pg2
-Počítačová Grafika 2
+# Počítačová Grafika 2
+
