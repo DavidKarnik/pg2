@@ -77,7 +77,8 @@ int App::run()
     std::cout << shader.ID << std::endl;
     static int prevX = -1;
     static int prevY = -1;
-
+    bool isResettingCursor = false;
+    int width, height, centerX, centerY;
     while (!glfwWindowShouldClose(window->getWindow()))
     {
         // If a second has passed.
@@ -91,25 +92,39 @@ int App::run()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         POINT p;
         if (GetCursorPos(&p)) {
-            // Vypoèítat rozdíl mezi aktuální a pøedchozí pozicí
+            // Získat rozmìry okna
+            glfwGetWindowSize(window->getWindow(), &width, &height);
+            centerX = width / 2;
+            centerY = height / 2;
+            if (isResettingCursor) {
+                isResettingCursor = false;
+                prevX = centerX;
+                prevY = centerY;
+            }
             float deltaX = static_cast<float>(p.x - prevX);
             float deltaY = static_cast<float>(p.y - prevY);
+            bool isCursorOutOfCenter = p.x != 400 || p.y != 300;
 
             // Aktualizovat pøedchozí pozici pro další iteraci
             prevX = p.x;
             prevY = p.y;
 
             // Pokud došlo ke zmìnì pozice, volat onMouseEvent s relativní zmìnou
-            if (deltaX != 0 || deltaY != 0) {
+            if ((deltaX != 0 || deltaY != 0) && isCursorOutOfCenter) {
                 camera.onMouseEvent(deltaX, deltaY, true);
+                isResettingCursor = true;
+                glfwSetCursorPos(window->getWindow(), centerX, centerY);
             }
         }
+
+
 
 
         camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc

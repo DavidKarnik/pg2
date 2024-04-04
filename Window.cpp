@@ -27,6 +27,8 @@ Window::Window(int width, int height, const char* title, bool fullscreen, bool v
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowUserPointer(window, this);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 
     glfwSetKeyCallback(window, key_callback);
     glfwSetScrollCallback(window, scroll_callback);
@@ -141,3 +143,4 @@ void Window::handle_scroll_event(double xoffset, double yoffset) {
 void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
+
