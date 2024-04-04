@@ -8,7 +8,7 @@
 Camera::Camera(glm::vec3 position)
 	: Position(position)
 {
-	this->Position = glm::vec3(0.0f, 0.0f, 10.0f);
+	this->Position = glm::vec3(-15.0f, 2.0f, 10.0f);
 	this->Front = glm::vec3(0.0f, 0.0f, -1.0f);
 	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->Right = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -63,8 +63,12 @@ void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 
 void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch)
 {
-	xoffset *= this->MouseSensitivity;
-	yoffset *= this->MouseSensitivity;
+	// Redukce citlivosti pro pomalejší pohyb, mùžete upravit hodnoty 0.01f na jinou hodnotu pro úpravu citlivosti
+	xoffset *= this->MouseSensitivity * 0.4f; // Snížení citlivosti x osy
+	yoffset *= this->MouseSensitivity * 0.4f; // Snížení citlivosti y osy
+
+	std::cout << "xoffset " << xoffset << std::endl;
+	std::cout << "yoffset " << yoffset << std::endl;
 
 	this->Yaw += xoffset;
 	this->Pitch -= yoffset; // Odeèítáme yoffset, aby se kamera pohybovala správnì nahoru a dolù
@@ -79,6 +83,7 @@ void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraint
 
 	this->updateCameraVectors();
 }
+
 
 
 void Camera::updateCameraVectors()

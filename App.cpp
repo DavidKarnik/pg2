@@ -75,6 +75,8 @@ int App::run()
     float lastFrame = 0.0f; // Time of last frame
 
     std::cout << shader.ID << std::endl;
+    static int prevX = -1;
+    static int prevY = -1;
 
     while (!glfwWindowShouldClose(window->getWindow()))
     {
@@ -92,6 +94,23 @@ int App::run()
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        POINT p;
+        if (GetCursorPos(&p)) {
+            // Vypoèítat rozdíl mezi aktuální a pøedchozí pozicí
+            float deltaX = static_cast<float>(p.x - prevX);
+            float deltaY = static_cast<float>(p.y - prevY);
+
+            // Aktualizovat pøedchozí pozici pro další iteraci
+            prevX = p.x;
+            prevY = p.y;
+
+            // Pokud došlo ke zmìnì pozice, volat onMouseEvent s relativní zmìnou
+            if (deltaX != 0 || deltaY != 0) {
+                camera.onMouseEvent(deltaX, deltaY, true);
+            }
+        }
+
 
         camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc
 
