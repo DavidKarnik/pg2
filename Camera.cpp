@@ -84,7 +84,9 @@ void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraint
 	this->updateCameraVectors();
 }
 
-
+glm::vec3 Camera::getPosition() const {
+	return Position;
+}
 
 void Camera::updateCameraVectors()
 {

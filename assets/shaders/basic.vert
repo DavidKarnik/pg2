@@ -1,20 +1,26 @@
 #version 430 core
 
-// input vertex attributes
+// Input vertex attributes
+in vec3 aPos;    // Position: MUST exist
+in vec3 aColor;  // Color attribute
+in vec3 aNormal; // Normal vector, assuming this attribute is now available
 
-in vec3 aPos;   // position: MUST exist
-in vec3 aColor; // any additional attributes are optional, any data type, etc.
+// Outputs to fragment shader
+out vec3 FragColor; // Output color attribute
+out vec3 Normal;    // Normal vector passed to fragment shader
+out vec3 FragPos;   // Fragment position in world space
 
-out vec3 color; // optional output attribute
-
-uniform mat4 transform;
-uniform mat4 projection;
-uniform mat4 view;
+// Uniform matrices
+uniform mat4 transform;  // Transformation matrix for vertex position (previously called model)
+uniform mat4 view;       // View matrix
+uniform mat4 projection; // Projection matrix
 
 void main()
 {
-    // Outputs the positions/coordinates of all vertices, MUST WRITE
-    gl_Position = projection * view * transform * vec4(aPos, 1.0f);
-    
-    color = aColor; // copy color to output
+    FragPos = vec3(transform * vec4(aPos, 1.0)); // Transform vertex into world space
+    Normal = mat3(transpose(inverse(transform))) * aNormal; // Transform normals to world space using the transformation matrix
+
+    gl_Position = projection * view * transform * vec4(aPos, 1.0); // Compute final vertex position
+
+    FragColor = aColor; // Pass color to fragment shader
 }

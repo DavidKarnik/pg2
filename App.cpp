@@ -79,6 +79,9 @@ int App::run()
     static int prevY = -1;
     bool isResettingCursor = false;
     int width, height, centerX, centerY;
+    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+    glm::vec3 objectColor(1.0f, 0.5f, 0.31f);
     while (!glfwWindowShouldClose(window->getWindow()))
     {
         // If a second has passed.
@@ -96,6 +99,14 @@ int App::run()
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        lightPos.x = sin(glfwGetTime()) * 2.0f;
+        lightPos.y = cos(glfwGetTime()) * 2.0f;
+
+        shader.setUniform("lightPos", lightPos);
+        shader.setUniform("viewPos", camera.getPosition());
+        shader.setUniform("view", camera.getViewMatrix());
+        shader.setUniform("projection", camera.getProjectionMatrix());
 
         POINT p;
         if (GetCursorPos(&p)) {
@@ -142,7 +153,13 @@ int App::run()
         //glm::mat4 projection = glm::mat4(1.0f);
         //projection = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
         shader.setUniform("projection", camera.getProjectionMatrix());
-
+        shader.setUniform("lightPos", lightPos);
+        shader.setUniform("lightColor", lightColor);
+        shader.setUniform("objectColor", objectColor);
+        shader.setUniform("viewPos", camera.getPosition());
+        shader.setUniform("view", camera.getViewMatrix());
+        shader.setUniform("projection", camera.getProjectionMatrix());
+        shader.setUniform("transform", trans);
         mesh.draw(shader);
 
         // Swap front and back buffers
