@@ -8,13 +8,14 @@
 Camera::Camera(glm::vec3 position)
 	: Position(position)
 {
-	this->Position = glm::vec3(-15.0f, 5.0f, 10.0f);
-	this->Front = glm::vec3(0.0f, 0.0f, -1.0f);
+	this->Position = glm::vec3(0.0f, 5.0f, 10.0f);
+	this->Front = glm::normalize(glm::vec3(0.0f) - this->Position);
 	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
-	this->Right = glm::vec3(0.0f, 0.0f, 0.0f);
-	this->WorldUp = glm::vec3(10.0f, 1.0f, 0.0f);
+	this->Right = glm::normalize(glm::cross(this->Front, this->Up));
+	//this->WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	this->Yaw = 0.0f;
+	//this->Pitch = 0.0f;
 	this->Pitch = 90.0f;
 	this->Roll = 0.0f;
 	this->Zoom = 45.0f;
@@ -31,7 +32,7 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
-	return glm::perspective(glm::radians(FOV), 1920.0f / 1080.0f, 0.1f, 100.0f);
+	return glm::perspective(glm::radians(FOV), 800.0f / 600.0f, 0.1f, 100.0f);
 }
 
 void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)

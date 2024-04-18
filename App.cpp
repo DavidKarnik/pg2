@@ -15,12 +15,34 @@
 #include "FrameCounter.h"
 #include "DebugOutputManager.h"
 
+#include "Projectile.h"
+
+// Deklarace globální instance Projectile
+Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
+
+auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
+
+// Funkce pro obsluhu kliknutí myší
+void onMouseClick(GLFWwindow* window, int button, int action, int mods) {
+    // Získání pozice kurzoru myši
+    double xPos, yPos;
+    glfwGetCursorPos(window, &xPos, &yPos);
+    glm::vec3 cursorPosition(xPos, yPos, 0.0f);
+
+    glm::vec3 cameraPosition = camera.getPosition();
+    std::cout << "Pozice kamery: (" << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << ")" << std::endl;
+
+    // Volání metody onKeyboardEvent tøídy Projectile
+    projectile.onKeyboardEvent(window, cameraPosition, button, action, mods);
+}
+
+
 App::App()
 {
     // default constructor
     // nothing to do here (so far...)
     std::cout << "New App constructed\n";
-    window = new Window(800, 600, "OpenGL Window");
+    window = new Window(800, 600, "3D Game");
 }
 
 bool App::init()
@@ -61,11 +83,19 @@ int App::run()
 
     OBJLoader test{ "./assets/obj/bunny_tri_vnt.obj" };
 
-    auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
+    //auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
     auto mesh = test.getMesh();
 
+
+    // Globální promìnná pro projektil
+    //Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
+    //glfwSetMouseButtonCallback(window, onMouseClick);
+    //projectile.onKeyboardEvent(window->getWindow(), projectile, camera.getPosition(), );
+     // Registrace funkce pro obsluhu kliknutí myší
+    glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
+
     auto vertexShaderPath = std::filesystem::path("./assets/shaders/basic.vert");
-    auto fragmentShaderPath = std::filesystem::path("./assets/shaders/basic.frag");
+    auto fragmentShaderPath = std::filesystem::path("./assets/shaders/newLight.frag");
     auto shader = Shader(vertexShaderPath, fragmentShaderPath);
 
     shader.setUniform("projection", camera.getProjectionMatrix());
@@ -79,7 +109,9 @@ int App::run()
     static int prevY = -1;
     bool isResettingCursor = false;
     int width, height, centerX, centerY;
-    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+    //glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+    glm::vec3 objectCenter = glm::vec3(0.0f, 0.0f, 0.0f); // Pøedpokládáme, že støed objektu je na poèátku souøadnic
+    glm::vec3 lightPos = objectCenter + glm::vec3(0.0f, 3.0f, 0.0f); // Svìtlo bude umístìno 3 jednotky nad støedem objektu
     glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
     glm::vec3 objectColor(1.0f, 0.5f, 0.31f);
     while (!glfwWindowShouldClose(window->getWindow()))
@@ -95,16 +127,19 @@ int App::run()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
 
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        lightPos.x = sin(glfwGetTime()) * 2.0f;
-        lightPos.y = cos(glfwGetTime()) * 2.0f;
+        /*lightPos.x = 5.0f;
+        lightPos.y = 5.0f;*/
+        /*lightPos.x = sin(glfwGetTime()) * 2.0f;
+        lightPos.y = cos(glfwGetTime()) * 2.0f;*/
 
-        shader.setUniform("lightPos", lightPos);
-        shader.setUniform("viewPos", camera.getPosition());
+        //shader.setUniform("lightPos", lightPos);
+        //shader.setUniform("viewPos", camera.getPosition());
         shader.setUniform("view", camera.getViewMatrix());
         shader.setUniform("projection", camera.getProjectionMatrix());
 
@@ -139,34 +174,47 @@ int App::run()
 
 
         camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc
+        // Inicializace pozice svìtla
+        glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
+        // Nastavení uniformní promìnné pro pozici svìtla ve vertex shaderu
+        int lightPosLoc = glGetUniformLocation(shader.ID, "lightPos");
+        glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
 
+        //glm::mat4 trans = glm::mat4(1.0f);
+        ////trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        //shader.setUniform("transform", trans);
         glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        shader.setUniform("transform", trans);
+        trans = glm::translate(trans, glm::vec3(20.0f, 20.0f, 20.0f)); // Nastavení translace (pozice v prostoru)
+        shader.setUniform("transform", trans); // Nastavení uniformní promìnné pro transformaci ve vertex shaderu
 
-        // Tady si musim nastudovat, co to vlastnì kurva dìlá.
-        // Jako position chápu, front už taky, ale ten up vector je nìjakej zakletej
-        //camera.Pitch = 30.0f;
 
         shader.setUniform("view", camera.getViewMatrix());
 
         //glm::mat4 projection = glm::mat4(1.0f);
         //projection = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
         shader.setUniform("projection", camera.getProjectionMatrix());
-        shader.setUniform("lightPos", lightPos);
+        /*shader.setUniform("lightPos", lightPos);
         shader.setUniform("lightColor", lightColor);
-        shader.setUniform("objectColor", objectColor);
-        shader.setUniform("viewPos", camera.getPosition());
+        shader.setUniform("objectColor", objectColor);*/
+        //shader.setUniform("viewPos", camera.getPosition());
         shader.setUniform("view", camera.getViewMatrix());
         shader.setUniform("projection", camera.getProjectionMatrix());
         shader.setUniform("transform", trans);
         mesh.draw(shader);
+
+
+        // Vykreslit kostku
+        //drawCube(10.0f, 0.0f, 0.0f, 0.0f);
+        //projectile.drawCube3();
+        projectile.drawAllProjectiles(5.0f);
 
         // Swap front and back buffers
         glfwSwapBuffers(window->getWindow());
 
         // Poll for and process events
         glfwPollEvents();
+
+        
     }
 
     std::cout << std::endl;
