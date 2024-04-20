@@ -44,6 +44,21 @@ void onMouseClick(GLFWwindow* window, int button, int action, int mods) {
     projectile.onKeyboardEvent(window, cameraPosition, button, action, mods);
 }
 
+void drawProjetiles(Shader shader) {
+    // Projektily jsou uloženy v poli projectiles
+    std::queue<Projectile> temporaryQueue = projectile.getAllProjectiles();
+    while (!temporaryQueue.empty()) {
+        Projectile currentProjectile = temporaryQueue.front(); // Získat aktuální projektil z fronty
+        temporaryQueue.pop(); // Odstranit aktuální projektil z fronty
+
+        // Upravit pozici projektilu ve shaderu
+        shader.setUniform("model", glm::translate(glm::mat4(1.0f), currentProjectile.position));
+
+        // Vykreslit projektil na jeho pozici
+        currentProjectile.drawProjectile(currentProjectile.position);
+    }
+}
+
 
 App::App()
 {
@@ -97,9 +112,6 @@ int App::run()
 
     OBJLoader secondObj{ "./assets/obj/teapot_tri_vnt.obj" };
     auto secondMesh = secondObj.getMesh();
-    
-    OBJLoader cubeObj{ "./assets/obj/cube_triangles.obj" };
-    auto cubeMesh = cubeObj.getMesh();
 
      // Registrace funkce pro obsluhu kliknutí myší
     glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
@@ -233,32 +245,8 @@ int App::run()
 
         secondMesh.draw(shader);
 
-        // Vykreslit kostku
-        //drawCube(10.0f, 0.0f, 0.0f, 0.0f);
-        //projectile.drawCube3();
-        
-        //model = glm::mat4(1.0f);
-        ////model = glm::translate(model, glm::vec3(-10.0f, -10.0f, -10.0f));
-        //model = glm::translate(model, camPos);
-        //shader.setUniform("model", model);
 
-        //projectile.drawAllProjectiles(2.0f);
-
-        // Projektily jsou uloženy v poli projectiles
-        std::queue<Projectile> temporaryQueue = projectile.getAllProjectiles();
-        while (!temporaryQueue.empty()) {
-            Projectile currentProjectile = temporaryQueue.front(); // Získat aktuální projektil z fronty
-            temporaryQueue.pop(); // Odstranit aktuální projektil z fronty
-
-            // Upravit pozici projektilu ve shaderu
-            shader.setUniform("model", glm::translate(glm::mat4(1.0f), currentProjectile.position));
-
-            // Vykreslit projektil na jeho pozici
-            currentProjectile.drawProjectile(currentProjectile.position);
-        }
-
-
-        //cubeMesh.draw(shader);
+        drawProjetiles(shader);
 
         // Swap front and back buffers
         glfwSwapBuffers(window->getWindow());
