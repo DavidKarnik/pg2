@@ -2,9 +2,10 @@
 #include "Projectile.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <vector>
+//#include <vector>
+#include <queue>
 // Globální zásobník projektilù
-std::vector<Projectile> projectileStack;
+std::queue<Projectile> projectileQueue;
 
 
 Projectile::Projectile(glm::vec3 initialPosition)
@@ -17,67 +18,8 @@ Projectile::Projectile(glm::vec3 initialPosition)
 //}
 
 
-//void drawProjectile(Projectile& projectile) {
-//    // Implementace vykreslení projektilu
-//    // Zde mùžete vykreslit geometrii projektilu, napøíklad kostku nebo sféru
-//    glColor3f(1.0f, 0.0f, 0.0f); // Èervená barva
-//    glPushMatrix();
-//    glTranslatef(projectile.position.x, projectile.position.y, projectile.position.z);
-//    // Vykreslení kostky pro projektil
-//    glBegin(GL_QUADS);
-//    glVertex3f(-0.5f, -0.5f, -0.5f);
-//    glVertex3f(0.5f, -0.5f, -0.5f);
-//    glVertex3f(0.5f, 0.5f, -0.5f);
-//    glVertex3f(-0.5f, 0.5f, -0.5f);
-//    glEnd();
-//    glPopMatrix();
-//}
-
-void drawProjectile(Projectile& projectile, float size) {
-    // Implementace vykreslení projektilu
-    // Zde mùžete vykreslit geometrii projektilu, napøíklad kostku nebo sféru
-    glColor3f(1.0f, 0.0f, 0.0f); // Èervená barva
-    glPushMatrix();
-    //glTranslatef(projectile.position.x, projectile.position.y, projectile.position.z);
-    glTranslatef(0.0f, 0.0f, 0.0f);
-    // Vykreslení kostky pro projektil
-    glBegin(GL_QUADS);
-    // Pøední stìna
-    glVertex3f(-size / 2.0f, -size / 2.0f, size / 2.0f);
-    glVertex3f(size / 2.0f, -size / 2.0f, size / 2.0f);
-    glVertex3f(size / 2.0f, size / 2.0f, size / 2.0f);
-    glVertex3f(-size / 2.0f, size / 2.0f, size / 2.0f);
-    // Zadní stìna
-    glVertex3f(-size / 2.0f, -size / 2.0f, -size / 2.0f);
-    glVertex3f(-size / 2.0f, size / 2.0f, -size / 2.0f);
-    glVertex3f(size / 2.0f, size / 2.0f, -size / 2.0f);
-    glVertex3f(size / 2.0f, -size / 2.0f, -size / 2.0f);
-    // Horní stìna
-    glVertex3f(-size / 2.0f, size / 2.0f, -size / 2.0f);
-    glVertex3f(-size / 2.0f, size / 2.0f, size / 2.0f);
-    glVertex3f(size / 2.0f, size / 2.0f, size / 2.0f);
-    glVertex3f(size / 2.0f, size / 2.0f, -size / 2.0f);
-    // Dolní stìna
-    glVertex3f(-size / 2.0f, -size / 2.0f, -size / 2.0f);
-    glVertex3f(size / 2.0f, -size / 2.0f, -size / 2.0f);
-    glVertex3f(size / 2.0f, -size / 2.0f, size / 2.0f);
-    glVertex3f(-size / 2.0f, -size / 2.0f, size / 2.0f);
-    // Pravá stìna
-    glVertex3f(size / 2.0f, -size / 2.0f, -size / 2.0f);
-    glVertex3f(size / 2.0f, size / 2.0f, -size / 2.0f);
-    glVertex3f(size / 2.0f, size / 2.0f, size / 2.0f);
-    glVertex3f(size / 2.0f, -size / 2.0f, size / 2.0f);
-    // Levá stìna
-    glVertex3f(-size / 2.0f, -size / 2.0f, -size / 2.0f);
-    glVertex3f(-size / 2.0f, -size / 2.0f, size / 2.0f);
-    glVertex3f(-size / 2.0f, size / 2.0f, size / 2.0f);
-    glVertex3f(-size / 2.0f, size / 2.0f, -size / 2.0f);
-    glEnd();
-    glPopMatrix();
-    glFlush();
-}
-
 void drawCube2(float size, float x, float y, float z) {
+    std::cout << "Vykreslení: (" << x << ", " << y << ", " << z << ")" << std::endl;
     // Vypoèítání poloviny velikosti kostky pro pozici støedu
     float halfSize = size / 2.0f;
 
@@ -125,19 +67,57 @@ void drawCube2(float size, float x, float y, float z) {
     glVertex3f(-halfSize, halfSize, halfSize);
     glVertex3f(-halfSize, halfSize, -halfSize);
     glEnd();
+    //glPopMatrix();
     glFlush();
 }
 
-void Projectile::drawCube3() {
-    //drawCube2(10.0f, 0.0f, 0.0f, 0.0f);
+
+void addProjectile(const glm::vec3& position) {
+    Projectile newProjectile(position);
+    projectileQueue.push(newProjectile);
+}
+
+//void Projectile::drawAllProjectiles(float size) {
+//    while (!projectileQueue.empty()) {
+//        const Projectile& projectile = projectileQueue.front();
+//        drawCube2(size, projectile.position.x, projectile.position.y, projectile.position.z);
+//        projectileQueue.pop();
+//    }
+//}
+
+void Projectile::drawAllProjectiles(float size) {
+    //
+    // TODO REPAIR MOVEMENT -> NOT MOVING :(
+    // 
+    // Vytvoøíme kopii fronty
+    std::queue<Projectile> temporaryQueue = projectileQueue;
+    // Simulace pohybu projektilù
+    glm::vec3 movement(10.0f, 0.0f, 0.0f); // Pohyb o 0.1 na osu x
+    Projectile projectile; // Vytvoøení objektu Projectile
+    // Projdeme všechny projektilové objekty ve frontì
+    while (!temporaryQueue.empty()) {
+        // Získání projektilu z fronty
+        projectile = projectileQueue.front();
+        // Posun projektilu o vektor movement
+        projectile.position += movement;
+
+        projectile = temporaryQueue.front();
+        
+        drawCube2(size, projectile.position.x, projectile.position.y, projectile.position.z);
+
+        temporaryQueue.pop(); // Neprovádíme pop na pùvodní frontì
+    }
+}
+
+void Projectile::drawProjectile(glm::vec3 _position) {
+    float size = 2.0f;
+    drawCube2(size, _position.x, _position.y, _position.z);
 }
 
 
-// Funkce pro vykreslení projektilù jako kostek
-void Projectile::drawAllProjectiles(float size) {
-    for (const auto& projectile : projectileStack) {
-        drawCube2(size, projectile.position.x, projectile.position.y, projectile.position.z);
-        /*std::cout << "vykreslil" << std::endl;*/
+void removeFirstProjectile() {
+    if (!projectileQueue.empty()) {
+        projectileQueue.pop();
     }
 }
 
@@ -146,7 +126,13 @@ void Projectile::onKeyboardEvent(GLFWwindow* window, glm::vec3 _position, int bu
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         std::cout << "Leve tlacitko mysi bylo stisknuto." << std::endl;
         Projectile newProjectile(_position); // Vytvoø nový objekt Projectile
-        projectileStack.emplace_back(newProjectile); // Pøidej nový projektil do zásobníku
+        std::cout << "_position: (" << _position.x << ", " << _position.y << ", " << _position.z << ")" << std::endl;
+        //projectileStack.emplace_back(newProjectile); // Pøidej nový projektil do zásobníku
         //drawAllProjectiles(10.0f); // Vykresli všechny projektilky jako kostky
+        addProjectile(_position);
     }
+}
+
+std::queue<Projectile> Projectile::getAllProjectiles() {
+    return projectileQueue;
 }

@@ -51,6 +51,12 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Zdrojové soubory</Filter>
     </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>Zdrojové soubory</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Zdrojové soubory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -91,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>Hlavičkové soubory</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Zdrojové soubory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

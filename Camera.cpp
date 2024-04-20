@@ -8,15 +8,17 @@
 Camera::Camera(glm::vec3 position)
 	: Position(position)
 {
-	this->Position = glm::vec3(0.0f, 5.0f, 10.0f);
+	this->Position = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->Front = glm::normalize(glm::vec3(0.0f) - this->Position);
 	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->Right = glm::normalize(glm::cross(this->Front, this->Up));
 	//this->WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
+	// horizontální otáèení
 	this->Yaw = 0.0f;
-	//this->Pitch = 0.0f;
-	this->Pitch = 90.0f;
+	// vertikální otáèení
+	//this->Pitch = 90.0f;
+	this->Pitch = 0.0f;
 	this->Roll = 0.0f;
 	this->Zoom = 45.0f;
 
@@ -32,12 +34,12 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
-	return glm::perspective(glm::radians(FOV), 800.0f / 600.0f, 0.1f, 100.0f);
+	return glm::perspective(glm::radians(FOV), 1920.0f / 1080.0f, 0.1f, 1000.0f);
 }
 
 void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 {
-	glm::vec3 direction{ 0 };
+	//glm::vec3 direction{ 0 };
 
 	float cameraSpeed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? SprintFactor : 1) * MovementSpeed * deltaTime;
 
@@ -54,10 +56,10 @@ void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 		this->Position += cameraSpeed * this->Right;
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		this->Position += this->Up * cameraSpeed;
+		this->Position += cameraSpeed * this->Up;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		this->Position -= this->Up * cameraSpeed;
+		this->Position -= cameraSpeed * this->Up;
 	}
 
 }

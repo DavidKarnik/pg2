@@ -4,6 +4,7 @@
 #include <GL/wglew.h>
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
+#include <opencv2\opencv.hpp>
 
 #include "App.h"
 #include "Window.h"
@@ -16,18 +17,25 @@
 #include "DebugOutputManager.h"
 
 #include "Projectile.h"
+#include "texture.h"
+
 
 // Deklarace globální instance Projectile
 Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
 
 auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
 
+Texture texture;
+
+//const char* texturePath = "./assets/textures/box.png"; // cesta k obrázku textury
+std::string texturePath = "./assets/textures/box.png"; // cesta k obrázku textury
+//auto myPath = std::filesystem::path("./assets/textures/box.png");
+//GLuint textureID = textureInit(texturePath); // naèíst texturu a získat její ID
+//GLuint textureID = loadTexture(texturePath); // naèíst texturu a získat její ID
+auto textureID = 0;
+
 // Funkce pro obsluhu kliknutí myší
 void onMouseClick(GLFWwindow* window, int button, int action, int mods) {
-    // Získání pozice kurzoru myši
-    double xPos, yPos;
-    glfwGetCursorPos(window, &xPos, &yPos);
-    glm::vec3 cursorPosition(xPos, yPos, 0.0f);
 
     glm::vec3 cameraPosition = camera.getPosition();
     std::cout << "Pozice kamery: (" << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << ")" << std::endl;
@@ -81,25 +89,27 @@ int App::run()
 
     std::cout << "Debug Output: \t" << (debug.isAvailable ? "yes" : "no") << std::endl;
 
-    OBJLoader test{ "./assets/obj/bunny_tri_vnt.obj" };
-
     //auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
+
+    // Load OBJECTS !
+    OBJLoader test{ "./assets/obj/sphere_tri_vnt.obj" };
     auto mesh = test.getMesh();
 
+    OBJLoader secondObj{ "./assets/obj/teapot_tri_vnt.obj" };
+    auto secondMesh = secondObj.getMesh();
+    
+    OBJLoader cubeObj{ "./assets/obj/cube_triangles.obj" };
+    auto cubeMesh = cubeObj.getMesh();
 
-    // Globální promìnná pro projektil
-    //Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
-    //glfwSetMouseButtonCallback(window, onMouseClick);
-    //projectile.onKeyboardEvent(window->getWindow(), projectile, camera.getPosition(), );
      // Registrace funkce pro obsluhu kliknutí myší
     glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
 
-    auto vertexShaderPath = std::filesystem::path("./assets/shaders/basic.vert");
-    auto fragmentShaderPath = std::filesystem::path("./assets/shaders/newLight.frag");
+    //auto vertexShaderPath = std::filesystem::path("./assets/shaders/basic.vert");
+    auto vertexShaderPath = std::filesystem::path("./assets/shaders/directional.vert");
+    //auto fragmentShaderPath = std::filesystem::path("./assets/shaders/basic.frag");
+    //auto fragmentShaderPath = std::filesystem::path("./assets/shaders/newLight.frag");
+    auto fragmentShaderPath = std::filesystem::path("./assets/shaders/directional.frag");
     auto shader = Shader(vertexShaderPath, fragmentShaderPath);
-
-    shader.setUniform("projection", camera.getProjectionMatrix());
-    //glfwSetCursorPosCallback(window->getWindow(), camera.onMouseEvent);
 
     float deltaTime = 0.0f;	// Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
@@ -133,15 +143,6 @@ int App::run()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        /*lightPos.x = 5.0f;
-        lightPos.y = 5.0f;*/
-        /*lightPos.x = sin(glfwGetTime()) * 2.0f;
-        lightPos.y = cos(glfwGetTime()) * 2.0f;*/
-
-        //shader.setUniform("lightPos", lightPos);
-        //shader.setUniform("viewPos", camera.getPosition());
-        shader.setUniform("view", camera.getViewMatrix());
-        shader.setUniform("projection", camera.getProjectionMatrix());
 
         POINT p;
         if (GetCursorPos(&p)) {
@@ -174,39 +175,90 @@ int App::run()
 
 
         camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc
-        // Inicializace pozice svìtla
-        glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
-        // Nastavení uniformní promìnné pro pozici svìtla ve vertex shaderu
-        int lightPosLoc = glGetUniformLocation(shader.ID, "lightPos");
-        glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
 
+        // pro osvìtlení ->
+        //glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
+        //// Nastavení uniformní promìnné pro pozici svìtla ve vertex shaderu
+        //int lightPosLoc = glGetUniformLocation(shader.ID, "lightPos");
+        //glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
+
+        
+
+        // pro "basic.vert" ->
+        /*shader.setUniform("projection", camera.getProjectionMatrix());
+        shader.setUniform("view", camera.getViewMatrix());
+        shader.setUniform("projection", camera.getProjectionMatrix());*/
+        // transformace modelu ->
         //glm::mat4 trans = glm::mat4(1.0f);
         ////trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        //shader.setUniform("transform", trans);
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(20.0f, 20.0f, 20.0f)); // Nastavení translace (pozice v prostoru)
-        shader.setUniform("transform", trans); // Nastavení uniformní promìnné pro transformaci ve vertex shaderu
+        //trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, -5.0f)); // Nastavení translace (pozice v prostoru)
+        //shader.setUniform("transform", trans); // Nastavení uniformní promìnné pro transformaci ve vertex shaderu
+
+        //textureID = textureInit(texturePath); // naèíst texturu a získat její ID
+
+        // pro "directional.vert" ->
+         glm::mat4 model = glm::mat4(1.0f);
+        // Pøedání promìnné pvmMatrix do shaderu
+        glm::mat4 pvmMatrix = camera.getProjectionMatrix() * camera.getViewMatrix() * model; // modelMatrix je matice transformace modelu
+        shader.setUniform("pvmMatrix", pvmMatrix);
+        // Pøedání promìnné model do shaderu
+        shader.setUniform("model", model); // modelMatrix je matice transformace modelu
+
+        // pro "directional.frag" ->
+        // Pøedání uniformní promìnné tex0 (sampler2D) do shaderu
+        int textureUnit = 0; // Urèete vhodnou jednotku textury
+        glActiveTexture(GL_TEXTURE0 + textureUnit); // Aktivujte texturovací jednotku
+        glBindTexture(GL_TEXTURE_2D, textureID); // Bindujte texturu na texturovací jednotku
+        shader.setUniform("tex0", textureUnit); // Nastavte uniformní promìnnou pro sampler2D
+
+        // Pøedání uniformní promìnné lightColor (vec4) do shaderu
+        glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f); // Urèete barvu svìtla
+        shader.setUniform("lightColor", lightColor); // Nastavte uniformní promìnnou pro barvu svìtla
+
+        // Pøedání uniformní promìnné lightPos (vec3) do shaderu
+        glm::vec3 lightPos(1.0f, 1.0f, 1.0f); // Urèete pozici svìtla
+        shader.setUniform("lightPos", lightPos); // Nastavte uniformní promìnnou pro pozici svìtla
+
+        // Pøedání uniformní promìnné camPos (vec3) do shaderu
+        glm::vec3 camPos = camera.getPosition(); // Získejte pozici kamery
+        shader.setUniform("camPos", camPos); // Nastavte uniformní promìnnou pro pozici kamery
 
 
-        shader.setUniform("view", camera.getViewMatrix());
-
-        //glm::mat4 projection = glm::mat4(1.0f);
-        //projection = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
-        shader.setUniform("projection", camera.getProjectionMatrix());
-        /*shader.setUniform("lightPos", lightPos);
-        shader.setUniform("lightColor", lightColor);
-        shader.setUniform("objectColor", objectColor);*/
-        //shader.setUniform("viewPos", camera.getPosition());
-        shader.setUniform("view", camera.getViewMatrix());
-        shader.setUniform("projection", camera.getProjectionMatrix());
-        shader.setUniform("transform", trans);
         mesh.draw(shader);
 
+        // Vždy, když je posun -> pøedat informace shaderu
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(10.0f, 10.0f, 10.0f)); // Nastaví pozici objektu (x, y, z)
+        shader.setUniform("model", model);
+
+        secondMesh.draw(shader);
 
         // Vykreslit kostku
         //drawCube(10.0f, 0.0f, 0.0f, 0.0f);
         //projectile.drawCube3();
-        projectile.drawAllProjectiles(5.0f);
+        
+        //model = glm::mat4(1.0f);
+        ////model = glm::translate(model, glm::vec3(-10.0f, -10.0f, -10.0f));
+        //model = glm::translate(model, camPos);
+        //shader.setUniform("model", model);
+
+        //projectile.drawAllProjectiles(2.0f);
+
+        // Projektily jsou uloženy v poli projectiles
+        std::queue<Projectile> temporaryQueue = projectile.getAllProjectiles();
+        while (!temporaryQueue.empty()) {
+            Projectile currentProjectile = temporaryQueue.front(); // Získat aktuální projektil z fronty
+            temporaryQueue.pop(); // Odstranit aktuální projektil z fronty
+
+            // Upravit pozici projektilu ve shaderu
+            shader.setUniform("model", glm::translate(glm::mat4(1.0f), currentProjectile.position));
+
+            // Vykreslit projektil na jeho pozici
+            currentProjectile.drawProjectile(currentProjectile.position);
+        }
+
+
+        //cubeMesh.draw(shader);
 
         // Swap front and back buffers
         glfwSwapBuffers(window->getWindow());
