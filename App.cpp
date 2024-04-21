@@ -25,6 +25,8 @@ Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
 
 auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
 
+float speedOfProjectiles = 0.05f;
+
 Texture texture;
 
 //const char* texturePath = "./assets/textures/box.png"; // cesta k obrázku textury
@@ -47,6 +49,18 @@ void onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 void drawProjetiles(Shader shader) {
     // Projektily jsou uloženy v poli projectiles
     std::queue<Projectile> temporaryQueue = projectile.getAllProjectiles();
+    std::cout << "_position: (" << projectile.position.x << ", " << projectile.position.y << ", " << projectile.position.z << ")" << std::endl;
+
+    //glm::vec3 movement(0.5f, 0.0f, 0.0f);
+    // Získat smìr pohledu kamery
+    glm::vec3 cameraFront = camera.getFront();
+    // Normalizovat smìr pohledu kamery
+    cameraFront = glm::normalize(cameraFront);
+    // Vypoèítat vektor pohybu
+    glm::vec3 movement = speedOfProjectiles * cameraFront;
+
+    projectile.addMovementToAllProjectiles(movement);
+
     while (!temporaryQueue.empty()) {
         Projectile currentProjectile = temporaryQueue.front(); // Získat aktuální projektil z fronty
         temporaryQueue.pop(); // Odstranit aktuální projektil z fronty

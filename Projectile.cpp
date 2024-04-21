@@ -19,7 +19,7 @@ Projectile::Projectile(glm::vec3 initialPosition)
 
 
 void drawCube2(float size, float x, float y, float z) {
-    std::cout << "Vykreslení: (" << x << ", " << y << ", " << z << ")" << std::endl;
+    //std::cout << "Vykreslení: (" << x << ", " << y << ", " << z << ")" << std::endl;
     // Vypoèítání poloviny velikosti kostky pro pozici støedu
     float halfSize = size / 2.0f;
 
@@ -124,9 +124,9 @@ void removeFirstProjectile() {
 // Funkce pro obsluhu kliknutí myší
 void Projectile::onKeyboardEvent(GLFWwindow* window, glm::vec3 _position, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        std::cout << "Leve tlacitko mysi bylo stisknuto." << std::endl;
+        //std::cout << "Leve tlacitko mysi bylo stisknuto." << std::endl;
         Projectile newProjectile(_position); // Vytvoø nový objekt Projectile
-        std::cout << "_position: (" << _position.x << ", " << _position.y << ", " << _position.z << ")" << std::endl;
+        //std::cout << "_position: (" << _position.x << ", " << _position.y << ", " << _position.z << ")" << std::endl;
         //projectileStack.emplace_back(newProjectile); // Pøidej nový projektil do zásobníku
         //drawAllProjectiles(10.0f); // Vykresli všechny projektilky jako kostky
         addProjectile(_position);
@@ -136,3 +136,18 @@ void Projectile::onKeyboardEvent(GLFWwindow* window, glm::vec3 _position, int bu
 std::queue<Projectile> Projectile::getAllProjectiles() {
     return projectileQueue;
 }
+
+void Projectile::addMovementToAllProjectiles(glm::vec3 _movement) {
+    std::queue<Projectile> resultQueue;
+
+    while (!projectileQueue.empty()) {
+        Projectile currentProjectile = projectileQueue.front();
+        currentProjectile.position += _movement;
+        resultQueue.push(currentProjectile);
+        projectileQueue.pop();
+    }
+
+    // Aktualizovat frontu projektilù
+    projectileQueue = resultQueue;
+}
+

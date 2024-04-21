@@ -43,6 +43,8 @@ public:
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
 
+	glm::vec3 getFront();
+
 	void onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime);
 	void onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch);
 

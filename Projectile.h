@@ -20,4 +20,5 @@ public:
 
     void drawProjectile(glm::vec3 _position);
     std::queue<Projectile> getAllProjectiles();
+    void addMovementToAllProjectiles(glm::vec3 _movement);
 };
