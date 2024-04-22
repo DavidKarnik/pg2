@@ -23,8 +23,6 @@
 // Deklarace globální instance Projectile
 Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
 
-auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
-
 float speedOfProjectiles = 0.05f;
 
 Texture texture;
@@ -39,7 +37,7 @@ auto textureID = 0;
 // Funkce pro obsluhu kliknutí myší
 void onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 
-    glm::vec3 cameraPosition = camera.getPosition();
+    glm::vec3 cameraPosition = App::camera.getPosition();
     std::cout << "Pozice kamery: (" << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << ")" << std::endl;
 
     // Volání metody onKeyboardEvent tøídy Projectile
@@ -53,7 +51,7 @@ void drawProjetiles(Shader shader) {
 
     //glm::vec3 movement(0.5f, 0.0f, 0.0f);
     // Získat smìr pohledu kamery
-    glm::vec3 cameraFront = camera.getFront();
+    glm::vec3 cameraFront = App::camera.getFront();
     // Normalizovat smìr pohledu kamery
     cameraFront = glm::normalize(cameraFront);
     // Vypoèítat vektor pohybu

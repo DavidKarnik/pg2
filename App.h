@@ -1,6 +1,12 @@
 #pragma once
 #include "Window.h"
 
+#include <opencv2/opencv.hpp>
+
+#include "Model.h"
+#include "Shader.h"
+#include "Camera.h"
+
 class App {
 public:
     App();
@@ -9,7 +15,23 @@ public:
     void report(void);
     int run(void);
 
+    void InitAssets();
+    void CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
+    void UpdateModels();
+   
+    static Camera camera;
     ~App();
 private:
     Window* window;
+
+    std::map<std::string, Model> scene_opaque;
+    std::map<std::string, Model> scene_transparent;
+
+    static bool is_vsync_on;
+    static bool is_fullscreen_on;
+
+    
+protected:
+    Shader shader;
+    //Camera camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
 };

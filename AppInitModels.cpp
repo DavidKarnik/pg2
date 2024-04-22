@@ -21,28 +21,15 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 // Load models, load textures, load shaders, initialize level, etc.
 void App::InitAssets()
 {
-	// == SHADERS ==
-	// Load shaders and create ShaderProgram
-	///*
+
 	std::filesystem::path VS_path("./resources/bruh.vert");
 	std::filesystem::path FS_path("./resources/bruh.frag");
-	/**/
-	/*
-	std::filesystem::path VS_path("./resources/all.vert");
-	std::filesystem::path FS_path("./resources/all.frag");
-	/**/
-	my_shader = ShaderProgram(VS_path, FS_path);
+	shader = Shader(VS_path, FS_path);
 
-	// == MODELS ==
+	// MODELS
 	glm::vec3 position{};
 	glm::vec3 scale{};
 	glm::vec4 rotation{};
-
-	//CreateModel("cube_triangles.obj", "box_rgb888.png", true);
-	//CreateModel("cube_triangles_normals_tex.obj", "TextureDouble_A.png", true);
-	//CreateModel("sphere_tri_vnt.obj", "box_rgb888.png", true);
-	//CreateModel("bunny_tri_vn.obj", "box_rgb888.png", true); // big
-	///*
 
 	// BUNNY
 	position = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -55,15 +42,10 @@ void App::InitAssets()
 	scale = glm::vec3(0.2f, 0.2f, 0.2f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_teapot", "teapot_tri_vnt.obj", "Glass.png", false, position, scale, rotation);
-	/**/
 
-	// == MAZE ==
-	///*
-	cv::Mat maze = cv::Mat(10, 25, CV_8U);
-	MazeGenerate(maze);
-	/**/
 
-	// == HEIGHTMAP ==
+
+	// HEIGHTMAP ------------------------------------------------------------
 	std::filesystem::path heightspath("./resources/textures/heights.png");
 	std::filesystem::path texturepath("./resources/textures/tex_256.png");
 	auto model = Model(heightspath, texturepath, true);
