@@ -4,12 +4,6 @@
 
 #include <opencv2\opencv.hpp>
 #include <GL/glew.h>
-#include <GL/gl.h>
-
-class Texture {
-public:
-    Texture() {};
-};
 
 // generate GL texture from image file
 GLuint TextureInit(const char* filepath);

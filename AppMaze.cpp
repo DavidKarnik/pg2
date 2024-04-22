@@ -1,6 +1,8 @@
-#include "App.h"
-
 #include <random>
+
+#include <opencv2/opencv.hpp>
+
+#include "App.h"
 
 // maze map
 // characters in maze: 

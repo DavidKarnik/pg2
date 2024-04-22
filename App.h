@@ -1,8 +1,9 @@
 #pragma once
 #include "Window.h"
 
-#include <GL/glew.h>
-#include <GL/gl.h>
+#pragma once
+
+#include <unordered_map>
 
 #include <opencv2/opencv.hpp>
 
@@ -14,38 +15,51 @@ class App {
 public:
     App();
 
-    bool init(void);
-    void report(void);
-    int run(void);
-
+    bool Init();
     void InitAssets();
+    int Run();
     void CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
     void UpdateModels();
-   
-    static Camera camera;
-    glm::vec3 rgb_orange = { 1.0f, 0.5f, 0.0f };
-    glm::vec3 rgb_white = { 1.0f, 1.0f, 1.0f };
-    glm::vec4 rgba_white = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    // Set light position
-    glm::vec3 light_position = { -100000, 0, 100000 };
-    glm::mat4 mx_projection = glm::identity<glm::mat4>();
-
-    Shader shader;
 
     ~App();
 private:
-    Window* window;
-
     std::map<std::string, Model> scene_opaque;
     std::map<std::string, Model> scene_transparent;
 
     static bool is_vsync_on;
     static bool is_fullscreen_on;
 
-    
-protected:
-    //Camera camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
+    static GLFWmonitor* monitor;
+    static const GLFWvidmode* mode;
+    static int window_xcor;
+    static int window_ycor;
+    static int window_width;
+    static int window_height;
+    static int window_width_return_from_fullscreen;
+    static int window_height_return_from_fullscreen;
+
+    float FOV = 89.0f;
+    glm::mat4 mx_projection = glm::identity<glm::mat4>();
+    static Camera camera;
+    static double last_cursor_xpos;
+    static double last_cursor_ypos;
+
+    GLFWwindow* window = nullptr;
+    glm::vec4 clear_color = glm::vec4(0, 0, 0, 0);
+
+    void UpdateProjectionMatrix();
+
+    void GetInformation();
+
+    static void error_callback(int error, const char* description);
+    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, float deltaTime);
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+    static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+    Shader shader;
+
     // Maze
     ///*
     uchar MapGet(cv::Mat& map, int x, int y);

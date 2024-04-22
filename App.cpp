@@ -25,7 +25,16 @@ Projectile projectile(glm::vec3(0.0f)); // Poèáteèní pozice støely
 
 float speedOfProjectiles = 0.05f;
 
-Texture texture;
+bool App::is_vsync_on = false;
+bool App::is_fullscreen_on = false;
+GLFWmonitor* App::monitor;
+const GLFWvidmode* App::mode;
+int App::window_xcor{};
+int App::window_ycor{};
+int App::window_width = 800;
+int App::window_height = 600;
+int App::window_width_return_from_fullscreen{};
+int App::window_height_return_from_fullscreen{};
 
 //const char* texturePath = "./assets/textures/box.png"; // cesta k obrázku textury
 std::string texturePath = "./assets/textures/box.png"; // cesta k obrázku textury
@@ -236,4 +245,18 @@ App::~App()
 {
     // clean-up
     std::cout << "Bye...\n";
+}
+
+void App::UpdateProjectionMatrix(void)
+{
+    if (window_height < 1) window_height = 1; // avoid division by 0
+
+    float ratio = static_cast<float>(window_width) / window_height;
+
+    mx_projection = glm::perspective(
+        glm::radians(FOV),   // The vertical Field of View
+        ratio,               // Aspect Ratio. Depends on the size of your window.
+        0.1f,                // Near clipping plane. Keep as big as possible, or you'll get precision issues.
+        20000.0f             // Far clipping plane. Keep as little as possible.
+    );
 }
