@@ -1,9 +1,10 @@
 // Projectile.cpp
-#include "Projectile.h"
 //#include <GLFW/glfw3.h>
 #include <iostream>
 //#include <vector>
 //#include <queue>
+ #include "Projectile.h"
+
 // Globální zásobník projektilù
 std::queue<Projectile> projectileQueue;
 

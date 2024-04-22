@@ -1,4 +1,6 @@
 ﻿// Basic includes
+#include <GL/glew.h> 
+
 #include <iostream>
 #include <chrono>
 #include <stack>
@@ -9,7 +11,6 @@
 #include <opencv2/opencv.hpp>
 
 // OpenGL Extension Wrangler: allow all multiplatform GL functions
-#include <GL/glew.h> 
 // WGLEW = Windows GL Extension Wrangler (change for different platform) 
 // platform specific functions (in this case Windows)
 #include <GL/wglew.h> 
@@ -191,9 +192,9 @@ int App::Run(void)
             POINT p;
             if (GetCursorPos(&p)) {
                 // Získat rozmìry okna
-                glfwGetWindowSize(window, &window_width, &window_height);
-                centerX = window_width / 2;
-                centerY = window_height / 2;
+                glfwGetWindowSize(window, &width, &height);
+                centerX = width / 2;
+                centerY = height / 2;
                 if (isResettingCursor) {
                     isResettingCursor = false;
                     last_cursor_xpos = centerX;

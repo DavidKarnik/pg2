@@ -1,9 +1,9 @@
 #pragma once
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
+#include <GL/glew.h>
 
 #include <opencv2\opencv.hpp>
-#include <GL/glew.h>
 
 // generate GL texture from image file
 GLuint TextureInit(const char* filepath);

@@ -1,7 +1,4 @@
 #pragma once
-#include "Window.h"
-
-#pragma once
 
 #include <unordered_map>
 
@@ -10,6 +7,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Window.h"
 
 class App {
 public:

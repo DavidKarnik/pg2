@@ -1,8 +1,8 @@
 #pragma once
+#include <GL/glew.h> 
 
 #include <string>
 #include <filesystem>
-#include <GL/glew.h> 
 #include <glm/glm.hpp>
 #include <vector>
 

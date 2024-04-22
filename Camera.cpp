@@ -1,9 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include "Camera.h"
 #include "glm/common.hpp"
 #include "glm/ext.hpp"
+
+#include "Camera.h"
 
 Camera::Camera(glm::vec3 position)
 	: position(position)
