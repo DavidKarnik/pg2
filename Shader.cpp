@@ -1,10 +1,4 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
-#include <fstream>
-#include <sstream>
-#include <filesystem>
-
 #include "Shader.h"
 
 Shader::Shader(const std::filesystem::path& VS_file, const std::filesystem::path& FS_file)

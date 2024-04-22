@@ -224,11 +224,7 @@ int App::run()
         glfwSwapBuffers(window->getWindow());
 
         // Poll for and process events
-        glfwPollEvents();
-
-        
-
-        
+        glfwPollEvents();        
     }
 
     std::cout << std::endl;

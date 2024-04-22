@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AppInitModels.cpp" />
+    <ClCompile Include="AppMaze.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cvičení.cpp" />
     <ClCompile Include="DebugOutputManager.cpp" />

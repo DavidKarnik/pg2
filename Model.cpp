@@ -1,8 +1,8 @@
-#include "Model.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 
+#include "Model.h"
 #include "Texture.h"
 
 #define print(x) //std::cout << x << "\n"
@@ -30,8 +30,8 @@ void Model::Draw(Shader& shader)
     rotation_axes = glm::vec3(rotation.x, rotation.y, rotation.z);
     mx_model = glm::rotate(mx_model, glm::radians(rotation.w), rotation_axes);
 
-    //mesh.draw(shader, mx_model);
-    mesh.draw(shader);
+    mesh.draw(shader, mx_model);
+    //mesh.draw(shader);
 }
 
 void Model::FillFileLines(const std::filesystem::path& file_name)

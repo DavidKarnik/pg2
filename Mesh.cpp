@@ -1,7 +1,5 @@
 #include "Mesh.h"
 
-Mesh::Mesh() {}
-
 Mesh::Mesh(GLenum primitive_type, std::vector<Vertex>& vertices, std::vector<GLuint>& indices, GLuint texture_id) : 
 	primitive_type(primitive_type),
 	vertices(vertices),
