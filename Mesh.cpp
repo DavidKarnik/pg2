@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+Mesh::Mesh() {}
+
 Mesh::Mesh(GLenum primitive_type, std::vector<Vertex>& vertices, std::vector<GLuint>& indices, GLuint texture_id) : 
 	primitive_type(primitive_type),
 	vertices(vertices),
@@ -60,14 +62,22 @@ void Mesh::draw(Shader& shader)
 
 }
 
-void Mesh::clear()
+void Mesh::clear(void)
 {
-	vertices.clear();
-	indices.clear();
-	texture_id = 0;
-	primitive_type = GL_POINT;
+    vertices.clear();
+    indices.clear();
+    //texture_id = 0;
+    primitive_type = GL_POINTS;
 
-	// TODO: delete all allocations 
-	//glDeleteBuffers...
-	//    glDeleteVertexArrays...
-}
+    // delete all allocations 
+    //glDeleteBuffers... //VBO a EBO
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    //glDeleteVertexArrays... // VAO
+    //glDeleteVertexArrays(1, &VAO);
+
+    if (VAO) { glDeleteVertexArrays(1, &VAO); VAO = 0; }
+    if (texture_id) { glDeleteTextures(1, &texture_id); texture_id = 0; }
+
+    // Destruktor ne-e
+};

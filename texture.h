@@ -1,4 +1,6 @@
 #pragma once
+#ifndef TEXTURE_HPP
+#define TEXTURE_HPP
 
 #include <opencv2\opencv.hpp>
 #include <GL/glew.h>
@@ -7,11 +9,10 @@ public:
     Texture() {};
 };
 
-// moje
-GLuint loadTexture(const std::string& filePath);
-
 // generate GL texture from image file
-GLuint textureInit(const char* filepath);
+GLuint TextureInit(const char* filepath);
 
 // generate GL texture from OpenCV image
-GLuint tex_gen(cv::Mat& image);
+GLuint TextureGen(cv::Mat& image);
+
+#endif

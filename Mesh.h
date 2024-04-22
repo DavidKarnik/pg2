@@ -24,9 +24,10 @@ public:
 
     // Indirect (indexed) Draw 
     Mesh(GLenum primitive_type, std::vector<Vertex>& vertices, std::vector<GLuint>& indices, GLuint texture_id);
+    Mesh();
 
     void draw(Shader& shader);
-    void clear();
+    void clear(void);
 
 private:
     // OpenGL buffer IDs
