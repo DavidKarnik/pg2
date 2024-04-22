@@ -23,7 +23,7 @@ Camera::Camera(glm::vec3 position)
 	this->Roll = 0.0f;
 	this->Zoom = 45.0f;
 
-	this->MovementSpeed = 4.0f;
+	this->MovementSpeed = 0.05f;
 	this->SprintFactor = 3.0f;
 	this->MouseSensitivity = 0.25f;
 
@@ -77,8 +77,8 @@ void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch)
 {
 	// Redukce citlivosti pro pomalejší pohyb, mùžete upravit hodnoty 0.01f na jinou hodnotu pro úpravu citlivosti
-	xoffset *= this->MouseSensitivity * 0.6f; // Snížení citlivosti x osy
-	yoffset *= this->MouseSensitivity * 0.6f; // Snížení citlivosti y osy
+	xoffset *= this->MouseSensitivity * 0.3f; // Snížení citlivosti x osy
+	yoffset *= this->MouseSensitivity * 0.3f; // Snížení citlivosti y osy
 
 	//std::cout << "xoffset " << xoffset << std::endl;
 	//std::cout << "yoffset " << yoffset << std::endl;
