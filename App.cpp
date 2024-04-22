@@ -45,6 +45,9 @@ Camera App::camera = Camera(glm::vec3(0, 0, 1000));
 double App::last_cursor_xpos{};
 double App::last_cursor_ypos{};
 
+Projectile App::projectile; // Definice statického členského proměnného mimo třídu
+
+
 App::App()
 {
     // default constructor
@@ -249,6 +252,8 @@ int App::Run(void)
             glDisable(GL_BLEND);
             glEnable(GL_CULL_FACE);
             glDepthMask(GL_TRUE);
+
+            //projectile.drawAllProjectiles(2.0f);
 
             // === End of frame ===
             // Swap front and back buffers

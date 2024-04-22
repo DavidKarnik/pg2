@@ -69,4 +69,20 @@ void App::UpdateModels()
 
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 45 * glfwGetTime());
 	scene_transparent.find("obj_teapot")->second.rotation = rotation;
+
+	//RemoveModel("obj_teapot");
+}
+
+void App::RemoveModel(std::string name) {
+	// Odeber model z mapy scene_opaque
+	auto it_opaque = scene_opaque.find(name);
+	if (it_opaque != scene_opaque.end()) {
+		scene_opaque.erase(it_opaque);
+	}
+
+	// Odeber model z mapy scene_transparent
+	auto it_transparent = scene_transparent.find(name);
+	if (it_transparent != scene_transparent.end()) {
+		scene_transparent.erase(it_transparent);
+	}
 }

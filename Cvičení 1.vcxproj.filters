@@ -108,7 +108,7 @@
       <Filter>Hlavičkové soubory</Filter>
     </ClInclude>
     <ClInclude Include="gl_err_callback.h">
-      <Filter>Zdrojové soubory</Filter>
+      <Filter>Hlavičkové soubory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

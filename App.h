@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Window.h"
+#include "Projectile.h"
 
 class App {
 public:
@@ -18,11 +19,15 @@ public:
     int Run();
     void CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
     void UpdateModels();
+    void RemoveModel(std::string name);
 
     ~App();
 private:
+
     std::map<std::string, Model> scene_opaque;
     std::map<std::string, Model> scene_transparent;
+
+    static Projectile projectile;
 
     static bool is_vsync_on;
     static bool is_fullscreen_on;

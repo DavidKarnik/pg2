@@ -11,7 +11,7 @@ public:
     //std::vector<Projectile> projectileStack;
 
     Projectile(glm::vec3 initialPosition);
-    Projectile() {};
+    Projectile() { position = glm::vec3(0.0f, 0.0f, 0.0f); };
 
     //void fire(Projectile& projectile, glm::vec3 targetPosition);
     void drawCube3();
