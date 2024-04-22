@@ -20,6 +20,14 @@ public:
     void UpdateModels();
    
     static Camera camera;
+    glm::vec3 rgb_orange = { 1.0f, 0.5f, 0.0f };
+    glm::vec3 rgb_white = { 1.0f, 1.0f, 1.0f };
+    glm::vec4 rgba_white = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    // Set light position
+    glm::vec3 light_position = { -100000, 0, 100000 };
+    glm::mat4 mx_projection = glm::identity<glm::mat4>();
+
     ~App();
 private:
     Window* window;

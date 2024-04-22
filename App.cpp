@@ -87,6 +87,9 @@ bool App::init()
     glewInit();
     wglewInit();
 
+    // important -----
+    InitAssets();
+
     return true;
 }
 
@@ -116,24 +119,8 @@ int App::run()
 
     std::cout << "Debug Output: \t" << (debug.isAvailable ? "yes" : "no") << std::endl;
 
-    //auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
-
-    // Load OBJECTS !
-    OBJLoader test{ "./assets/obj/sphere_tri_vnt.obj" };
-    auto mesh = test.getMesh();
-
-    OBJLoader secondObj{ "./assets/obj/teapot_tri_vnt.obj" };
-    auto secondMesh = secondObj.getMesh();
-
      // Registrace funkce pro obsluhu kliknutí myší
     glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
-
-    //auto vertexShaderPath = std::filesystem::path("./assets/shaders/basic.vert");
-    auto vertexShaderPath = std::filesystem::path("./assets/shaders/directional.vert");
-    //auto fragmentShaderPath = std::filesystem::path("./assets/shaders/basic.frag");
-    //auto fragmentShaderPath = std::filesystem::path("./assets/shaders/newLight.frag");
-    auto fragmentShaderPath = std::filesystem::path("./assets/shaders/directional.frag");
-    auto shader = Shader(vertexShaderPath, fragmentShaderPath);
 
     float deltaTime = 0.0f;	// Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
@@ -143,11 +130,7 @@ int App::run()
     static int prevY = -1;
     bool isResettingCursor = false;
     int width, height, centerX, centerY;
-    //glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-    glm::vec3 objectCenter = glm::vec3(0.0f, 0.0f, 0.0f); // Pøedpokládáme, že støed objektu je na poèátku souøadnic
-    glm::vec3 lightPos = objectCenter + glm::vec3(0.0f, 3.0f, 0.0f); // Svìtlo bude umístìno 3 jednotky nad støedem objektu
-    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-    glm::vec3 objectColor(1.0f, 0.5f, 0.31f);
+
     while (!glfwWindowShouldClose(window->getWindow()))
     {
         // If a second has passed.
@@ -196,75 +179,54 @@ int App::run()
         }
 
 
-
-
         camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc
 
-        // pro osvìtlení ->
-        //glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
-        //// Nastavení uniformní promìnné pro pozici svìtla ve vertex shaderu
-        //int lightPosLoc = glGetUniformLocation(shader.ID, "lightPos");
-        //glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
+        glm::mat4 mx_view = camera.getViewMatrix();
 
-        
+        // Set Model Matrix
+        UpdateModels();
 
-        // pro "basic.vert" ->
-        /*shader.setUniform("projection", camera.getProjectionMatrix());
-        shader.setUniform("view", camera.getViewMatrix());
-        shader.setUniform("projection", camera.getProjectionMatrix());*/
-        // transformace modelu ->
-        //glm::mat4 trans = glm::mat4(1.0f);
-        ////trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        //trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, -5.0f)); // Nastavení translace (pozice v prostoru)
-        //shader.setUniform("transform", trans); // Nastavení uniformní promìnné pro transformaci ve vertex shaderu
+        // Activate shader, set uniform vars
+        shader.activate();
+        //my_shader.SetUniform("uMx_model", mx_model); // Object local coor space -> World space
+        shader.setUniform("uMx_view", mx_view); // World space -> Camera space
+        shader.setUniform("uMx_projection", mx_projection); // Camera space -> Screen
 
-        //textureID = textureInit(texturePath); // naèíst texturu a získat její ID
-
-        // pro "directional.vert" ->
-         glm::mat4 model = glm::mat4(1.0f);
-        // Pøedání promìnné pvmMatrix do shaderu
-        glm::mat4 pvmMatrix = camera.getProjectionMatrix() * camera.getViewMatrix() * model; // modelMatrix je matice transformace modelu
-        shader.setUniform("pvmMatrix", pvmMatrix);
-        // Pøedání promìnné model do shaderu
-        shader.setUniform("model", model); // modelMatrix je matice transformace modelu
-
-        // pro "directional.frag" ->
-        // Pøedání uniformní promìnné tex0 (sampler2D) do shaderu
-        int textureUnit = 0; // Urèete vhodnou jednotku textury
-        glActiveTexture(GL_TEXTURE0 + textureUnit); // Aktivujte texturovací jednotku
-        glBindTexture(GL_TEXTURE_2D, textureID); // Bindujte texturu na texturovací jednotku
-        shader.setUniform("tex0", textureUnit); // Nastavte uniformní promìnnou pro sampler2D
-
-        // Pøedání uniformní promìnné lightColor (vec4) do shaderu
-        glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f); // Urèete barvu svìtla
-        shader.setUniform("lightColor", lightColor); // Nastavte uniformní promìnnou pro barvu svìtla
-
-        // Pøedání uniformní promìnné lightPos (vec3) do shaderu
-        glm::vec3 lightPos(1.0f, 1.0f, 1.0f); // Urèete pozici svìtla
-        shader.setUniform("lightPos", lightPos); // Nastavte uniformní promìnnou pro pozici svìtla
-
-        // Pøedání uniformní promìnné camPos (vec3) do shaderu
-        glm::vec3 camPos = camera.getPosition(); // Získejte pozici kamery
-        shader.setUniform("camPos", camPos); // Nastavte uniformní promìnnou pro pozici kamery
+        ///*
+        shader.setUniform("ambient_material", rgb_white);
+        shader.setUniform("diffuse_material", rgb_white);
+        shader.setUniform("specular_material", rgb_white);
+        shader.setUniform("specular_shinines", 5.0f);
+        shader.setUniform("light_position", light_position);
 
 
-        mesh.draw(shader);
-
-        // Vždy, když je posun -> pøedat informace shaderu
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(10.0f, 10.0f, 10.0f)); // Nastaví pozici objektu (x, y, z)
-        shader.setUniform("model", model);
-
-        secondMesh.draw(shader);
-
+        // Draw the scene
+            // - Draw opaque objects
+        for (auto& [key, value] : scene_opaque) {
+            value.Draw(shader);
+        }
+        // - Draw transparent objects
+        glEnable(GL_BLEND);         // enable blending
+        glDisable(GL_CULL_FACE);    // no polygon removal
+        glDepthMask(GL_FALSE);      // set Z to read-only
+        // TODO: sort by distance from camera, from far to near
+        for (auto& [key, value] : scene_transparent) {
+            value.Draw(shader);
+        }
+        glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
+        glDepthMask(GL_TRUE);
 
         drawProjetiles(shader);
 
+        // === End of frame ===
         // Swap front and back buffers
         glfwSwapBuffers(window->getWindow());
 
         // Poll for and process events
         glfwPollEvents();
+
+        
 
         
     }

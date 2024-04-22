@@ -62,6 +62,19 @@ void Mesh::draw(Shader& shader)
 
 }
 
+void Mesh::draw(Shader& shader, glm::mat4 mx_model)
+{
+	if (texture_id > 0) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+		shader.setUniform("uTexture", 0);
+	}
+	shader.setUniform("uMx_model", mx_model);
+	glBindVertexArray(VAO);
+	glDrawElements(primitive_type, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
 void Mesh::clear(void)
 {
     vertices.clear();

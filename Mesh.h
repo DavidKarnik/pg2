@@ -27,6 +27,8 @@ public:
     Mesh();
 
     void draw(Shader& shader);
+    void draw(Shader& shader, glm::mat4 mx_model);
+
     void clear(void);
 
 private:

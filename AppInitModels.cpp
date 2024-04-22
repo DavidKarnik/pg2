@@ -2,8 +2,8 @@
 
 void App::CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation)
 {
-	std::filesystem::path modelpath("./resources/objects/" + obj);
-	std::filesystem::path texturepath("./resources/textures/" + tex);
+	std::filesystem::path modelpath("./assets/obj/" + obj);
+	std::filesystem::path texturepath("./assets/textures/" + tex);
 	auto model = Model(modelpath, texturepath);
 
 	model.position = position;
@@ -22,14 +22,17 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 void App::InitAssets()
 {
 
-	std::filesystem::path VS_path("./resources/bruh.vert");
-	std::filesystem::path FS_path("./resources/bruh.frag");
+	std::filesystem::path VS_path("./assets/final.vert");
+	std::filesystem::path FS_path("./assets/final.frag");
 	shader = Shader(VS_path, FS_path);
 
 	// MODELS
 	glm::vec3 position{};
 	glm::vec3 scale{};
 	glm::vec4 rotation{};
+
+
+	camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
 
 	// BUNNY
 	position = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -44,8 +47,7 @@ void App::InitAssets()
 	CreateModel("obj_teapot", "teapot_tri_vnt.obj", "Glass.png", false, position, scale, rotation);
 
 
-
-	// HEIGHTMAP ------------------------------------------------------------
+	// HEIGHTMAP
 	std::filesystem::path heightspath("./resources/textures/heights.png");
 	std::filesystem::path texturepath("./resources/textures/tex_256.png");
 	auto model = Model(heightspath, texturepath, true);
@@ -53,6 +55,7 @@ void App::InitAssets()
 	model.scale = glm::vec3(0.1f, 0.1f, 0.1f);
 	model.rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	scene_opaque.insert({ "hightmap", model });
+
 }
 
 void App::UpdateModels()
