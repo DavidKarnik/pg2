@@ -147,12 +147,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="AppCallback.cpp" />
     <ClCompile Include="AppInitModels.cpp" />
     <ClCompile Include="AppMaze.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cvičení.cpp" />
     <ClCompile Include="DebugOutputManager.cpp" />
     <ClCompile Include="FrameCounter.cpp" />
+    <ClCompile Include="gl_err_callback.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
@@ -168,6 +170,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugOutputManager.h" />
     <ClInclude Include="FrameCounter.h" />
+    <ClInclude Include="gl_err_callback.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />

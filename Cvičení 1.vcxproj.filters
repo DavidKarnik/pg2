@@ -63,6 +63,12 @@
     <ClCompile Include="AppMaze.cpp">
       <Filter>Zdrojové soubory</Filter>
     </ClCompile>
+    <ClCompile Include="AppCallback.cpp">
+      <Filter>Zdrojové soubory</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_err_callback.cpp">
+      <Filter>Zdrojové soubory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -106,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>Hlavičkové soubory</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_err_callback.h">
+      <Filter>Zdrojové soubory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

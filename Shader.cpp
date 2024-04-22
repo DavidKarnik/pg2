@@ -22,24 +22,6 @@ Shader::Shader(const std::filesystem::path& VS_file, const std::filesystem::path
 	//std::cout << "Instantiated shader ID=" << ID << "\n";
 }
 
-void Shader::activate(void)
-{
-	//std::cout << "Activating shader ID=" << ID << "\n";
-	glUseProgram(ID);
-}
-
-void Shader::deactivate(void)
-{
-	glUseProgram(0);
-}
-
-void Shader::clear(void)
-{
-	deactivate();
-	glDeleteProgram(ID);
-	ID = 0;
-}
-
 void Shader::setUniform(const std::string& name, const float val)
 {
 	auto loc = glGetUniformLocation(ID, name.c_str());

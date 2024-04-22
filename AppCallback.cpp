@@ -71,14 +71,3 @@ void App::mouse_button_callback(GLFWwindow* window, int button, int action, int 
         //std::cout << "Right click!\n";
     }
 }
-
-void App::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    ///*
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        camera.ProcessMouseMovement(static_cast<GLfloat>(xpos - last_cursor_xpos), static_cast<GLfloat>(ypos - last_cursor_ypos));
-    }
-    last_cursor_xpos = xpos;
-    last_cursor_ypos = ypos;
-    /**/
-}

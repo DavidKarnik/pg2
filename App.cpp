@@ -1,4 +1,4 @@
-// Basic includes
+﻿// Basic includes
 #include <iostream>
 #include <chrono>
 #include <stack>
@@ -86,8 +86,7 @@ bool App::Init()
         glfwSetKeyCallback(window, key_callback);
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetMouseButtonCallback(window, mouse_button_callback);
-        glfwSetCursorPosCallback(window, cursor_position_callback);
-        glfwSetScrollCallback(window, scroll_callback);                     // Mousewheel
+        glfwSetScrollCallback(window, scroll_callback);
 
         // Set V-Sync OFF.
         //glfwSwapInterval(0);
@@ -164,6 +163,10 @@ int App::Run(void)
         // Set camera position
         camera.position.y = 2.0f;
         camera.position.z = 5.0f;
+
+        bool isResettingCursor = false;
+        int width, height, centerX, centerY;
+
         // Set light position
         glm::vec3 light_position(-100000, 0, 100000);
 
@@ -184,6 +187,33 @@ int App::Run(void)
             camera.onKeyboardEvent(window, static_cast<float>(delta_time)); // process keys etc
             camera.position += camera_movement;
             glm::mat4 mx_view = camera.getViewMatrix();
+
+            POINT p;
+            if (GetCursorPos(&p)) {
+                // Získat rozmìry okna
+                glfwGetWindowSize(window, &window_width, &window_height);
+                centerX = window_width / 2;
+                centerY = window_height / 2;
+                if (isResettingCursor) {
+                    isResettingCursor = false;
+                    last_cursor_xpos = centerX;
+                    last_cursor_ypos = centerY;
+                }
+                float deltaX = static_cast<float>(p.x - last_cursor_xpos);
+                float deltaY = static_cast<float>(p.y - last_cursor_ypos);
+                bool isCursorOutOfCenter = p.x != 400 || p.y != 300;
+
+                // Aktualizovat pøedchozí pozici pro další iteraci
+                last_cursor_xpos = p.x;
+                last_cursor_ypos = p.y;
+
+                // Pokud došlo ke zmìnì pozice, volat onMouseEvent s relativní zmìnou
+                if ((deltaX != 0 || deltaY != 0) && isCursorOutOfCenter) {
+                    camera.onMouseEvent(deltaX, deltaY, true);
+                    isResettingCursor = true;
+                    glfwSetCursorPos(window, centerX, centerY);
+                }
+            }
 
             // Set Model Matrix
             UpdateModels();
