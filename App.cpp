@@ -1,283 +1,339 @@
+Ôªø// Basic includes
+#include <GL/glew.h> 
+
 #include <iostream>
+#include <chrono>
+#include <stack>
+#include <random>
+#include <sstream>
 
-#include <GL/glew.h>
-#include <GL/wglew.h>
+// OpenCV ? GL independent
+#include <opencv2/opencv.hpp>
+
+// OpenGL Extension Wrangler: allow all multiplatform GL functions
+// WGLEW = Windows GL Extension Wrangler (change for different platform) 
+// platform specific functions (in this case Windows)
+#include <GL/wglew.h> 
+
+// GLFW toolkit
+// Uses GL calls to open GL context, i.e. GLEW must be first.
 #include <GLFW/glfw3.h>
-#include "glm/glm.hpp"
-#include <opencv2\opencv.hpp>
 
+// OpenGL math
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+// Our app
 #include "App.h"
-#include "Window.h"
-#include "Camera.h"
-#include "OBJLoader.h"
-#include "Mesh.h"
+#include "gl_err_callback.h"
 #include "Shader.h"
 
-#include "FrameCounter.h"
-#include "DebugOutputManager.h"
+#define print(x) std::cout << x << "\n"
 
-#include "Projectile.h"
-#include "texture.h"
+bool App::is_vsync_on = false;
+bool App::is_fullscreen_on = false;
+GLFWmonitor* App::monitor;
+const GLFWvidmode* App::mode;
+int App::window_xcor{};
+int App::window_ycor{};
+int App::window_width = 800;
+int App::window_height = 600;
+int App::window_width_return_from_fullscreen{};
+int App::window_height_return_from_fullscreen{};
 
+Camera App::camera = Camera(glm::vec3(0, 0, 1000));
+double App::last_cursor_xpos{};
+double App::last_cursor_ypos{};
 
-// Deklarace glob·lnÌ instance Projectile
-Projectile projectile(glm::vec3(0.0f)); // PoË·teËnÌ pozice st¯ely
-
-auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
-
-float speedOfProjectiles = 0.05f;
-
-Texture texture;
-
-//const char* texturePath = "./assets/textures/box.png"; // cesta k obr·zku textury
-std::string texturePath = "./assets/textures/box.png"; // cesta k obr·zku textury
-//auto myPath = std::filesystem::path("./assets/textures/box.png");
-//GLuint textureID = textureInit(texturePath); // naËÌst texturu a zÌskat jejÌ ID
-//GLuint textureID = loadTexture(texturePath); // naËÌst texturu a zÌskat jejÌ ID
-auto textureID = 0;
-
-// Funkce pro obsluhu kliknutÌ myöÌ
-void onMouseClick(GLFWwindow* window, int button, int action, int mods) {
-
-    glm::vec3 cameraPosition = camera.getPosition();
-    std::cout << "Pozice kamery: (" << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << ")" << std::endl;
-
-    // Vol·nÌ metody onKeyboardEvent t¯Ìdy Projectile
-    projectile.onKeyboardEvent(window, cameraPosition, button, action, mods);
-}
-
-void drawProjetiles(Shader shader) {
-    // Projektily jsou uloûeny v poli projectiles
-    std::queue<Projectile> temporaryQueue = projectile.getAllProjectiles();
-    std::cout << "_position: (" << projectile.position.x << ", " << projectile.position.y << ", " << projectile.position.z << ")" << std::endl;
-
-    //glm::vec3 movement(0.5f, 0.0f, 0.0f);
-    // ZÌskat smÏr pohledu kamery
-    glm::vec3 cameraFront = camera.getFront();
-    // Normalizovat smÏr pohledu kamery
-    cameraFront = glm::normalize(cameraFront);
-    // VypoËÌtat vektor pohybu
-    glm::vec3 movement = speedOfProjectiles * cameraFront;
-
-    projectile.addMovementToAllProjectiles(movement);
-
-    while (!temporaryQueue.empty()) {
-        Projectile currentProjectile = temporaryQueue.front(); // ZÌskat aktu·lnÌ projektil z fronty
-        temporaryQueue.pop(); // Odstranit aktu·lnÌ projektil z fronty
-
-        // Upravit pozici projektilu ve shaderu
-        shader.setUniform("model", glm::translate(glm::mat4(1.0f), currentProjectile.position));
-
-        // Vykreslit projektil na jeho pozici
-        currentProjectile.drawProjectile(currentProjectile.position);
-    }
-}
+Projectile App::projectile; // Definice statick√©ho ƒçlensk√©ho promƒõnn√©ho mimo t≈ô√≠du
 
 
 App::App()
 {
     // default constructor
-    // nothing to do here (so far...)
-    std::cout << "New App constructed\n";
-    window = new Window(800, 600, "3D Game");
+    // nothing to do here (for now...)
+    std::cout << "Constructed...\n--------------\n";
 }
 
-bool App::init()
+// App initialization, if returns true then run run()
+bool App::Init()
 {
-    // init glew
-    // http://glew.sourceforge.net/basic.html
-    glewInit();
-    wglewInit();
+    try {
+        // Set GLFW error callback
+        glfwSetErrorCallback(error_callback);
 
+        // Init GLFW :: https://www.glfw.org/documentation.html
+        if (!glfwInit()) {
+            return false;
+        }
+
+        // Set OpenGL version
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        // Set OpenGL profile
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Core, comment this line for Compatible
+
+        // Open window (GL canvas) with no special properties :: https://www.glfw.org/docs/latest/quick.html#quick_create_window
+        window = glfwCreateWindow(window_width, window_height, "Moje krasne okno", NULL, NULL);
+        if (!window) {
+            glfwTerminate();
+            return false;
+        }
+        glfwSetWindowUserPointer(window, this);
+
+        // Fullscreen On/Off
+        monitor = glfwGetPrimaryMonitor(); // Get primary monitor
+        mode = glfwGetVideoMode(monitor); // Get resolution of the monitor
+
+        // Setup callbacks
+        glfwMakeContextCurrent(window);
+        glfwSetKeyCallback(window, key_callback);
+        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+        glfwSetMouseButtonCallback(window, mouse_button_callback);
+        glfwSetScrollCallback(window, scroll_callback);
+
+        // Set V-Sync OFF.
+        //glfwSwapInterval(0);
+
+        // Set V-Sync ON.
+        ///*
+        glfwSwapInterval(1);
+        is_vsync_on = true;
+        /**/
+
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        // Init GLEW :: http://glew.sourceforge.net/basic.html
+        GLenum err = glewInit();
+        if (GLEW_OK != err) {
+            fprintf(stderr, "Error: %s\n", glewGetErrorString(err)); /* Problem: glewInit failed, something is seriously wrong. */
+        }
+        wglewInit();
+
+        //...after ALL GLFW & GLEW init ...
+        if (GLEW_ARB_debug_output)
+        {
+            glDebugMessageCallback(MessageCallback, 0);
+            glEnable(GL_DEBUG_OUTPUT);
+
+            //default is asynchronous debug output, use this to simulate glGetError() functionality
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+            std::cout << "GL_DEBUG enabled.\n";
+        }
+        else
+            std::cout << "GL_DEBUG NOT SUPPORTED!\n";
+
+        // set GL params
+        glEnable(GL_DEPTH_TEST);
+
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_POLYGON_SMOOTH);
+
+        glEnable(GL_CULL_FACE); // assuming ALL objects are non-transparent 
+
+        // Transparency blending function
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // first init OpenGL, THAN init assets: valid context MUST exist
+        InitAssets();
+    }
+    catch (std::exception const& e) {
+        std::cerr << "Init failed : " << e.what() << "\n";
+        //throw;
+        exit(-1);
+    }
+    std::cout << "--------------\nInitialized...\n";
     return true;
 }
 
-void App::report(void)
+int App::Run(void)
 {
-    GLint extensionCount;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &extensionCount);
+    try {
+        double fps_counter_seconds = 0;
+        int fps_counter_frames = 0;
 
-    std::cout << "OpenGL Information:" << std::endl;
-    std::cout << "Vendor: " << "\t" << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "Renderer: " << "\t" << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "Version: " << "\t" << glGetString(GL_VERSION) << std::endl;
-    std::cout << "Extensions: " << "\t" << extensionCount << std::endl;
+        UpdateProjectionMatrix();
+        glViewport(0, 0, window_width, window_height);
+        camera.position = glm::vec3(0, 0, 0);
+        double last_frame_time = glfwGetTime();
+        glm::vec3 camera_movement{};
 
+        glm::vec3 rgb_orange = { 1.0f, 0.5f, 0.0f };
+        glm::vec3 rgb_white = { 1.0f, 1.0f, 1.0f };
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+        glm::vec4 rgba_white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    glEnable(GL_DEPTH_TEST);
-}
+        // Set camera position
+        camera.position.y = 2.0f;
+        camera.position.z = 5.0f;
 
-int App::run()
-{
-    FrameCounter fps;
-    DebugOutputManager debug;
+        bool isResettingCursor = false;
+        int width, height, centerX, centerY;
 
-    std::cout << "Debug Output: \t" << (debug.isAvailable ? "yes" : "no") << std::endl;
+        // Set light position
+        glm::vec3 light_position(-100000, 0, 100000);
 
-    //auto camera = Camera{ glm::vec3(0.0f, 0.0f, 0.0f) };
+        while (!glfwWindowShouldClose(window)) {
+            // Time/FPS measure start
+            auto fps_frame_start_timestamp = std::chrono::steady_clock::now();
 
-    // Load OBJECTS !
-    OBJLoader test{ "./assets/obj/sphere_tri_vnt.obj" };
-    auto mesh = test.getMesh();
+            // Clear OpenGL canvas, both color buffer and Z-buffer
+            glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    OBJLoader secondObj{ "./assets/obj/teapot_tri_vnt.obj" };
-    auto secondMesh = secondObj.getMesh();
+            // === After clearing the canvas ===
 
-     // Registrace funkce pro obsluhu kliknutÌ myöÌ
-    glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
+            // React to user :: Create View Matrix according to camera settings
+            double delta_time = glfwGetTime() - last_frame_time;
+            last_frame_time = glfwGetTime();
+            //camera_movement = camera.ProcessInput(window, static_cast<float>(delta_time));
+            camera.onKeyboardEvent(window, static_cast<float>(delta_time)); // process keys etc
+            camera.position += camera_movement;
+            glm::mat4 mx_view = camera.getViewMatrix();
 
-    //auto vertexShaderPath = std::filesystem::path("./assets/shaders/basic.vert");
-    auto vertexShaderPath = std::filesystem::path("./assets/shaders/directional.vert");
-    //auto fragmentShaderPath = std::filesystem::path("./assets/shaders/basic.frag");
-    //auto fragmentShaderPath = std::filesystem::path("./assets/shaders/newLight.frag");
-    auto fragmentShaderPath = std::filesystem::path("./assets/shaders/directional.frag");
-    auto shader = Shader(vertexShaderPath, fragmentShaderPath);
+            POINT p;
+            if (GetCursorPos(&p)) {
+                // Z√≠skat rozm√¨ry okna
+                glfwGetWindowSize(window, &width, &height);
+                centerX = width / 2;
+                centerY = height / 2;
+                if (isResettingCursor) {
+                    isResettingCursor = false;
+                    last_cursor_xpos = centerX;
+                    last_cursor_ypos = centerY;
+                }
+                float deltaX = static_cast<float>(p.x - last_cursor_xpos);
+                float deltaY = static_cast<float>(p.y - last_cursor_ypos);
+                bool isCursorOutOfCenter = p.x != 400 || p.y != 300;
 
-    float deltaTime = 0.0f;	// Time between current frame and last frame
-    float lastFrame = 0.0f; // Time of last frame
+                // Aktualizovat p√∏edchoz√≠ pozici pro dal≈°√≠ iteraci
+                last_cursor_xpos = p.x;
+                last_cursor_ypos = p.y;
 
-    std::cout << shader.ID << std::endl;
-    static int prevX = -1;
-    static int prevY = -1;
-    bool isResettingCursor = false;
-    int width, height, centerX, centerY;
-    //glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-    glm::vec3 objectCenter = glm::vec3(0.0f, 0.0f, 0.0f); // P¯edpokl·d·me, ûe st¯ed objektu je na poË·tku sou¯adnic
-    glm::vec3 lightPos = objectCenter + glm::vec3(0.0f, 3.0f, 0.0f); // SvÏtlo bude umÌstÏno 3 jednotky nad st¯edem objektu
-    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-    glm::vec3 objectColor(1.0f, 0.5f, 0.31f);
-    while (!glfwWindowShouldClose(window->getWindow()))
-    {
-        // If a second has passed.
-        if (fps.hasSecondPassed())
-        {
-            // Display the frame count here any way you want.
-            std::cout << "FPS: \t" << fps.getNumberOfFrames() << std::endl;
-            fps.setNumberOfFrames(0);
-        }
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glfwSetMouseButtonCallback(window->getWindow(), onMouseClick);
-
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-
-        POINT p;
-        if (GetCursorPos(&p)) {
-            // ZÌskat rozmÏry okna
-            glfwGetWindowSize(window->getWindow(), &width, &height);
-            centerX = width / 2;
-            centerY = height / 2;
-            if (isResettingCursor) {
-                isResettingCursor = false;
-                prevX = centerX;
-                prevY = centerY;
+                // Pokud do≈°lo ke zm√¨n√¨ pozice, volat onMouseEvent s relativn√≠ zm√¨nou
+                if ((deltaX != 0 || deltaY != 0) && isCursorOutOfCenter) {
+                    camera.onMouseEvent(deltaX, deltaY, true);
+                    isResettingCursor = true;
+                    glfwSetCursorPos(window, centerX, centerY);
+                }
             }
-            float deltaX = static_cast<float>(p.x - prevX);
-            float deltaY = static_cast<float>(p.y - prevY);
-            bool isCursorOutOfCenter = p.x != 400 || p.y != 300;
 
-            // Aktualizovat p¯edchozÌ pozici pro dalöÌ iteraci
-            prevX = p.x;
-            prevY = p.y;
+            // Set Model Matrix
+            UpdateModels();
 
-            // Pokud doölo ke zmÏnÏ pozice, volat onMouseEvent s relativnÌ zmÏnou
-            if ((deltaX != 0 || deltaY != 0) && isCursorOutOfCenter) {
-                camera.onMouseEvent(deltaX, deltaY, true);
-                isResettingCursor = true;
-                glfwSetCursorPos(window->getWindow(), centerX, centerY);
+            // Activate shader, set uniform vars
+            shader.activate();
+            //my_shader.SetUniform("uMx_model", mx_model); // Object local coor space -> World space
+            shader.setUniform("uMx_view", mx_view); // World space -> Camera space
+            shader.setUniform("uMx_projection", mx_projection); // Camera space -> Screen
+
+            ///*
+            shader.setUniform("ambient_material", rgb_white);
+            shader.setUniform("diffuse_material", rgb_white);
+            shader.setUniform("specular_material", rgb_white);
+            shader.setUniform("specular_shinines", 5.0f);
+            shader.setUniform("light_position", light_position);
+            /**/
+
+            // Draw the scene
+            // - Draw opaque objects
+            for (auto& [key, value] : scene_opaque) {
+                value.Draw(shader);
+            }
+            // - Draw transparent objects
+            glEnable(GL_BLEND);         // enable blending
+            glDisable(GL_CULL_FACE);    // no polygon removal
+            glDepthMask(GL_FALSE);      // set Z to read-only
+            // TODO: sort by distance from camera, from far to near
+            for (auto& [key, value] : scene_transparent) {
+                value.Draw(shader);
+            }
+            glDisable(GL_BLEND);
+            glEnable(GL_CULL_FACE);
+            glDepthMask(GL_TRUE);
+
+            //projectile.drawAllProjectiles(2.0f);
+
+            // === End of frame ===
+            // Swap front and back buffers
+            glfwSwapBuffers(window);
+
+            // Poll for and process events
+            glfwPollEvents();
+
+            // Time/FPS measure end
+            auto fps_frame_end_timestamp = std::chrono::steady_clock::now();
+            std::chrono::duration<double> fps_elapsed_seconds = fps_frame_end_timestamp - fps_frame_start_timestamp;
+            fps_counter_seconds += fps_elapsed_seconds.count();
+            fps_counter_frames++;
+            if (fps_counter_seconds >= 1) {
+                //std::cout << fps_counter_frames << " FPS\n";
+                std::stringstream ss;
+                ss << fps_counter_frames << " FPS";
+                glfwSetWindowTitle(window, ss.str().c_str());
+                fps_counter_seconds = 0;
+                fps_counter_frames = 0;
             }
         }
-
-
-
-
-        camera.onKeyboardEvent(window->getWindow(), deltaTime); // process keys etc
-
-        // pro osvÏtlenÌ ->
-        //glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
-        //// NastavenÌ uniformnÌ promÏnnÈ pro pozici svÏtla ve vertex shaderu
-        //int lightPosLoc = glGetUniformLocation(shader.ID, "lightPos");
-        //glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
-
-        
-
-        // pro "basic.vert" ->
-        /*shader.setUniform("projection", camera.getProjectionMatrix());
-        shader.setUniform("view", camera.getViewMatrix());
-        shader.setUniform("projection", camera.getProjectionMatrix());*/
-        // transformace modelu ->
-        //glm::mat4 trans = glm::mat4(1.0f);
-        ////trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        //trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, -5.0f)); // NastavenÌ translace (pozice v prostoru)
-        //shader.setUniform("transform", trans); // NastavenÌ uniformnÌ promÏnnÈ pro transformaci ve vertex shaderu
-
-        //textureID = textureInit(texturePath); // naËÌst texturu a zÌskat jejÌ ID
-
-        // pro "directional.vert" ->
-         glm::mat4 model = glm::mat4(1.0f);
-        // P¯ed·nÌ promÏnnÈ pvmMatrix do shaderu
-        glm::mat4 pvmMatrix = camera.getProjectionMatrix() * camera.getViewMatrix() * model; // modelMatrix je matice transformace modelu
-        shader.setUniform("pvmMatrix", pvmMatrix);
-        // P¯ed·nÌ promÏnnÈ model do shaderu
-        shader.setUniform("model", model); // modelMatrix je matice transformace modelu
-
-        // pro "directional.frag" ->
-        // P¯ed·nÌ uniformnÌ promÏnnÈ tex0 (sampler2D) do shaderu
-        int textureUnit = 0; // UrËete vhodnou jednotku textury
-        glActiveTexture(GL_TEXTURE0 + textureUnit); // Aktivujte texturovacÌ jednotku
-        glBindTexture(GL_TEXTURE_2D, textureID); // Bindujte texturu na texturovacÌ jednotku
-        shader.setUniform("tex0", textureUnit); // Nastavte uniformnÌ promÏnnou pro sampler2D
-
-        // P¯ed·nÌ uniformnÌ promÏnnÈ lightColor (vec4) do shaderu
-        glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f); // UrËete barvu svÏtla
-        shader.setUniform("lightColor", lightColor); // Nastavte uniformnÌ promÏnnou pro barvu svÏtla
-
-        // P¯ed·nÌ uniformnÌ promÏnnÈ lightPos (vec3) do shaderu
-        glm::vec3 lightPos(1.0f, 1.0f, 1.0f); // UrËete pozici svÏtla
-        shader.setUniform("lightPos", lightPos); // Nastavte uniformnÌ promÏnnou pro pozici svÏtla
-
-        // P¯ed·nÌ uniformnÌ promÏnnÈ camPos (vec3) do shaderu
-        glm::vec3 camPos = camera.getPosition(); // ZÌskejte pozici kamery
-        shader.setUniform("camPos", camPos); // Nastavte uniformnÌ promÏnnou pro pozici kamery
-
-
-        mesh.draw(shader);
-
-        // Vûdy, kdyû je posun -> p¯edat informace shaderu
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(10.0f, 10.0f, 10.0f)); // NastavÌ pozici objektu (x, y, z)
-        shader.setUniform("model", model);
-
-        secondMesh.draw(shader);
-
-
-        drawProjetiles(shader);
-
-        // Swap front and back buffers
-        glfwSwapBuffers(window->getWindow());
-
-        // Poll for and process events
-        glfwPollEvents();
-
-        
+    }
+    catch (std::exception const& e) {
+        std::cerr << "App failed : " << e.what() << "\n";
+        return EXIT_FAILURE;
     }
 
-    std::cout << std::endl;
-
-    return 0;
+    GetInformation();
+    std::cout << "Finished OK...\n";
+    return EXIT_SUCCESS;
 }
 
 App::~App()
 {
     // clean-up
+    shader.clear();
+
+    if (window) {
+        glfwDestroyWindow(window);
+    }
+    glfwTerminate();
+
+    exit(EXIT_SUCCESS);
     std::cout << "Bye...\n";
+}
+
+void App::UpdateProjectionMatrix(void)
+{
+    if (window_height < 1) window_height = 1; // avoid division by 0
+
+    float ratio = static_cast<float>(window_width) / window_height;
+
+    mx_projection = glm::perspective(
+        glm::radians(FOV),   // The vertical Field of View
+        ratio,               // Aspect Ratio. Depends on the size of your window.
+        0.1f,                // Near clipping plane. Keep as big as possible, or you'll get precision issues.
+        20000.0f             // Far clipping plane. Keep as little as possible.
+    );
+}
+
+void App::GetInformation()
+{
+    std::cout << "\n=================== :: GL Info :: ===================\n";
+    std::cout << "GL Vendor:\t" << glGetString(GL_VENDOR) << "\n";
+    std::cout << "GL Renderer:\t" << glGetString(GL_RENDERER) << "\n";
+    std::cout << "GL Version:\t" << glGetString(GL_VERSION) << "\n";
+    std::cout << "GL Shading ver:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n\n";
+
+    GLint profile;
+    glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
+    if (const auto errorCode = glGetError()) {
+        std::cout << "[!] Pending GL error while obtaining profile: " << errorCode << "\n";
+        //return;
+    }
+    if (profile & GL_CONTEXT_CORE_PROFILE_BIT) {
+        std::cout << "Core profile" << "\n";
+    }
+    else {
+        std::cout << "Compatibility profile" << "\n";
+    }
+    std::cout << "=====================================================\n\n";
 }

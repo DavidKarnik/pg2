@@ -1,9 +1,6 @@
-// Projectile.cpp
-#include "Projectile.h"
-#include <GLFW/glfw3.h>
 #include <iostream>
-//#include <vector>
-#include <queue>
+ #include "Projectile.h"
+
 // Globální zásobník projektilù
 std::queue<Projectile> projectileQueue;
 
@@ -76,14 +73,6 @@ void addProjectile(const glm::vec3& position) {
     Projectile newProjectile(position);
     projectileQueue.push(newProjectile);
 }
-
-//void Projectile::drawAllProjectiles(float size) {
-//    while (!projectileQueue.empty()) {
-//        const Projectile& projectile = projectileQueue.front();
-//        drawCube2(size, projectile.position.x, projectile.position.y, projectile.position.z);
-//        projectileQueue.pop();
-//    }
-//}
 
 void Projectile::drawAllProjectiles(float size) {
     //

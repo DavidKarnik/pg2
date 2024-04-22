@@ -24,13 +24,15 @@ public:
 
     // Indirect (indexed) Draw 
     Mesh(GLenum primitive_type, std::vector<Vertex>& vertices, std::vector<GLuint>& indices, GLuint texture_id);
-    Mesh();
+    Mesh() = default;
 
     void draw(Shader& shader);
+    void draw(Shader& shader, glm::mat4 mx_model);
+
     void clear(void);
 
 private:
     // OpenGL buffer IDs
     // ID = 0 is reserved (i.e. uninitalized)
-    unsigned int VAO, VBO, EBO;
+    unsigned int VAO{ 0 }, VBO{ 0 }, EBO{ 0 };
 };

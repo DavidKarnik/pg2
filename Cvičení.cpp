@@ -1,22 +1,29 @@
-﻿#include <iostream>
-#include <GL/glew.h>
-#include <GL/wglew.h>
+﻿
+#include <iostream>
+#include <chrono>
+
+// OpenCV 
+//#include <opencv2\opencv.hpp>
+#include <GL/glew.h> 
+
+// OpenGL Extension Wrangler
+#include <GL/wglew.h> //WGLEW = Windows GL Extension Wrangler (change for different platform) 
+
+// GLFW toolkit
 #include <GLFW/glfw3.h>
 
+// OpenGL math
+#include <glm/glm.hpp>
+
 #include "App.h"
+
+// Define instance of our app
 
 App app;
 
 int main()
 {
-    bool isInitialized = app.init();
-
-    if (!isInitialized) {
-        return 1;
+    if (app.Init()) {
+        return app.Run();
     }
-
-    // Print OpenGL diagnostic information
-    app.report();
-
-    return app.run();
 }

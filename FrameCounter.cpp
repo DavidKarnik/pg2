@@ -1,5 +1,6 @@
-#include "FrameCounter.h"
 #include <GLFW/glfw3.h>
+
+#include "FrameCounter.h"
 
 FrameCounter::FrameCounter()
 {

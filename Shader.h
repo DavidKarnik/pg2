@@ -1,12 +1,14 @@
 #pragma once
-
+#include <GL/glew.h> 
 #include <string>
 #include <filesystem>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <glm/glm.hpp> 
 #include <glm/ext.hpp>
-#include <GL/glew.h> 
+
 
 class Shader {
 public:
