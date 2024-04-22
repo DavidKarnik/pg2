@@ -16,7 +16,7 @@ class Camera
 public:
 
 	// Camera Attributes
-	glm::vec3 Position;
+	glm::vec3 position;
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
@@ -48,6 +48,10 @@ public:
 	void onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime);
 	void onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch);
 
+	void toggleSprint();
+
 private:
 	void updateCameraVectors();
+
+	bool is_sprint;
 };

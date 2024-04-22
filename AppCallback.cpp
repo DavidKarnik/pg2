@@ -7,7 +7,7 @@ void App::error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void App::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, float deltaTime)
+void App::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if ((action == GLFW_PRESS) || (action == GLFW_REPEAT)) {
         switch (key) {
@@ -34,11 +34,9 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
         }
     }
 
-    // Minecraft sprint
+    // Sprint
     if (action == GLFW_PRESS && key == GLFW_KEY_LEFT_SHIFT) {
-        //camera.ToggleSprint();
-        camera.onKeyboardEvent(window, deltaTime); // process keys etc
-
+        camera.toggleSprint();
     }
 }
 

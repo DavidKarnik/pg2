@@ -6,10 +6,10 @@
 #include "glm/ext.hpp"
 
 Camera::Camera(glm::vec3 position)
-	: Position(position)
+	: position(position)
 {
-	this->Position = glm::vec3(0.0f, 0.0f, 0.0f);
-	this->Front = glm::normalize(glm::vec3(0.0f) - this->Position);
+	this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+	this->Front = glm::normalize(glm::vec3(0.0f) - this->position);
 	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->Right = glm::normalize(glm::cross(this->Front, this->Up));
 	//this->WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -27,39 +27,48 @@ Camera::Camera(glm::vec3 position)
 	this->MouseSensitivity = 0.25f;
 
 	this->updateCameraVectors();
+
+	is_sprint = false;
 }
 
 glm::mat4 Camera::getViewMatrix() {
-	return glm::lookAt(Position, Position + Front, Up);
+	return glm::lookAt(position, position + Front, Up);
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
 	return glm::perspective(glm::radians(FOV), 1920.0f / 1080.0f, 0.1f, 1000.0f);
 }
 
+void Camera::toggleSprint()
+{
+	is_sprint = !is_sprint;
+}
+
 void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 {
 	//glm::vec3 direction{ 0 };
 
-	float cameraSpeed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? SprintFactor : 1) * MovementSpeed * deltaTime;
+	//float cameraSpeed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? SprintFactor : 1) * MovementSpeed * deltaTime;
+	float cameraSpeed = (is_sprint) ? SprintFactor * MovementSpeed : MovementSpeed;
+
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		this->Position += cameraSpeed * this->Front;
+		this->position += cameraSpeed * this->Front;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		this->Position -= cameraSpeed * this->Front;
+		this->position -= cameraSpeed * this->Front;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		this->Position -= cameraSpeed * this->Right;
+		this->position -= cameraSpeed * this->Right;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		this->Position += cameraSpeed * this->Right;
+		this->position += cameraSpeed * this->Right;
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		this->Position += cameraSpeed * this->Up;
+		this->position += cameraSpeed * this->Up;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		this->Position -= cameraSpeed * this->Up;
+		this->position -= cameraSpeed * this->Up;
 	}
 
 }
@@ -88,7 +97,7 @@ void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraint
 }
 
 glm::vec3 Camera::getPosition() const {
-	return Position;
+	return position;
 }
 
 void Camera::updateCameraVectors()
