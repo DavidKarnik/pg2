@@ -116,3 +116,9 @@ void Camera::updateCameraVectors()
 glm::vec3 Camera::getFront() {
 	return Front;
 }
+glm::vec3 Camera::getRight() {
+	return Right;
+}
+glm::vec3 Camera::getUp() {
+	return Up;
+}

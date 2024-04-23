@@ -46,9 +46,15 @@ void App::InitAssets()
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_teapot", "teapot_tri_vnt.obj", "Glass.png", false, position, scale, rotation);
 
+	position = glm::vec3(-1.0f, 1.0f, 1.0f);
+	scale = glm::vec3(0.005f, 0.005f, 0.005f);
+	rotation = glm::vec4(1.0f, 0.0f, 10.0f, 0.0f);
+	//CreateModel("obj_gun", "Beretta_M9.obj", "Beretta_M9.mtl", false, position, scale, rotation);
+	CreateModel("obj_gun", "Beretta_M9.obj", "Glass.png", false, position, scale, rotation);
+
 	// Generate MAZE from boxes 
-	cv::Mat maze = cv::Mat(10, 25, CV_8U);
-	MazeGenerate(maze);
+	/*cv::Mat maze = cv::Mat(10, 25, CV_8U);
+	MazeGenerate(maze);*/
 
 	// HEIGHTMAP
 	std::filesystem::path heightspath("./assets/textures/heights.png");
@@ -69,6 +75,28 @@ void App::UpdateModels()
 
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 45 * glfwGetTime());
 	scene_transparent.find("obj_teapot")->second.rotation = rotation;
+
+	//scene_transparent.find("obj_gun")->second.position = camera.getPosition() + glm::vec3(0.5f, 0.0f, 0.0f);
+
+	// Získání aktuální rotace kamery
+	glm::vec3 cameraFront = camera.getFront();
+
+	// Výpoèet pozice zbranì relativnì k pozici kamery
+	glm::vec3 relativeWeaponPosition = glm::vec3(0.5f, 0.0f, 1.0f); // Pøíklad relativní pozice zbranì
+	glm::vec3 weaponPosition = camera.getPosition() + relativeWeaponPosition;
+
+	// Nastavení pozice zbranì
+	//scene_transparent.find("obj_gun")->second.position = weaponPosition;
+
+	// Nastavení rotace zbranì
+	// Výpoèet rotace pro postavení zbranì
+	float pitch = atan2(cameraFront.y, sqrt(cameraFront.x * cameraFront.x + cameraFront.z * cameraFront.z));
+	float yaw = atan2(-cameraFront.x, -cameraFront.z);
+
+	// Nastavení rotace zbranì
+	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(pitch, yaw, 0.0f, 1.0f);
+	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
+
 
 	//RemoveModel("obj_teapot");
 }
