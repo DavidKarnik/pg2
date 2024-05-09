@@ -1,15 +1,2 @@
-﻿  App.cpp
-C:\Users\tomch\source\repos\pg2\App.cpp(99,28): warning C4244: inicializování: double se převádí na float; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2\App.cpp(103,41): warning C4244: =: double se převádí na T; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2\App.cpp(103,41): warning C4244:         with
-C:\Users\tomch\source\repos\pg2\App.cpp(103,41): warning C4244:         [
-C:\Users\tomch\source\repos\pg2\App.cpp(103,41): warning C4244:             T=float
-C:\Users\tomch\source\repos\pg2\App.cpp(103,41): warning C4244:         ]
-C:\Users\tomch\source\repos\pg2\App.cpp(104,41): warning C4244: =: double se převádí na T; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2\App.cpp(104,41): warning C4244:         with
-C:\Users\tomch\source\repos\pg2\App.cpp(104,41): warning C4244:         [
-C:\Users\tomch\source\repos\pg2\App.cpp(104,41): warning C4244:             T=float
-C:\Users\tomch\source\repos\pg2\App.cpp(104,41): warning C4244:         ]
-  Camera.cpp
-  Generování kódu...
+﻿  AppCallback.cpp
   Cvičení 1.vcxproj -> C:\Users\tomch\source\repos\pg2\x64\Debug\Cvičení.exe

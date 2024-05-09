@@ -20,7 +20,6 @@ public:
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
 	std::vector< GLuint > indices;
-
 	virtual Mesh getMesh() = 0;
 };
 

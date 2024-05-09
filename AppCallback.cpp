@@ -1,4 +1,7 @@
 #include <iostream>
+#include <windows.h>
+#include <mmsystem.h>
+//#include <SFML/Audio.hpp>
 
 #include "App.h"
 
@@ -69,8 +72,11 @@ void App::mouse_button_callback(GLFWwindow* window, int button, int action, int 
 {
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
         //std::cout << "Right click!\n";
-    } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    }
+    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         std::cout << "Left click!\n";
         projectile.onKeyboardEvent(window, camera.getPosition(), button, action, mods);
+        PlaySound(TEXT("./assets/sounds/gun-gunshot-01.wav"), NULL, SND_ASYNC);
     }
 }
+

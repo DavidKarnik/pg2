@@ -1,5 +1,8 @@
 #pragma once
+#pragma comment(lib, "winmm.lib")
 #include "Window.h"
+#include <Windows.h>
+#include <mmsystem.h>
 
 Window::Window(int width, int height, const char* title, bool fullscreen, bool vsync)
     : fullscreen(fullscreen), vsync(vsync) {
