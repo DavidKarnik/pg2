@@ -28,6 +28,13 @@
 #include "gl_err_callback.h"
 #include "Shader.h"
 
+//´------------------------------------------------------------------------------------------
+// Freetype library - needs different shaders -> finalPlusText.xxx
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include "text_fonts_glyphs.h"
+//´------------------------------------------------------------------------------------------
+
 #define print(x) std::cout << x << "\n"
 
 bool App::is_vsync_on = false;
@@ -74,7 +81,7 @@ bool App::Init()
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Core, comment this line for Compatible
 
         // Open window (GL canvas) with no special properties :: https://www.glfw.org/docs/latest/quick.html#quick_create_window
-        window = glfwCreateWindow(window_width, window_height, "Moje krasne okno", NULL, NULL);
+        window = glfwCreateWindow(window_width, window_height, "OpenGL 3D Game", NULL, NULL);
         if (!window) {
             glfwTerminate();
             return false;
@@ -150,6 +157,42 @@ bool App::Init()
 int App::Run(void)
 {
     try {
+
+        //´------------------------------------------------------------------------------------------
+        // Freetype Text
+        //
+        FT_Library free_type;
+        FT_Error error_code = FT_Init_FreeType(&free_type);
+        if (error_code)
+        {
+            std::cout << "\n   Error code: " << error_code << " --- " << "An error occurred during initialising the FT_Library";
+            int keep_console_open;
+            std::cin >> keep_console_open;
+        }
+
+        //Text text_object2(free_type, window_width, window_height, "01234567890Get Rady.Timr:owns&ClBgfb"); // Declare a new text object, passing in your chosen alphabet.	
+        //text_object2.create_text_message("Get Ready... Timer: 000", 150, 100, "./assets/Text Fonts/arialbi.ttf", 130, true); // True indicates that the message will be modified.
+
+        //int num_replace = 3;
+        //size_t vec_size = text_object2.messages[0].characters_quads.size();
+        //float start_pos = text_object2.messages[0].start_x_current[vec_size - num_replace];
+
+        //int display_counting = 0;
+        //int get_ready = 0;
+        //bool running = false;
+
+        //glUniform1i(glGetUniformLocation(text_shader.ID, "alphabet_texture"), 31);
+        //shader.setUniform("alphabet_texture", 31);
+
+        //glm::vec3 RGB(10.0f, 120.0f, 105.0f);
+        //unsigned int font_colour_loc = glGetUniformLocation(text_shader.ID, "font_colour");
+        //glUniform3fv(font_colour_loc, 1, glm::value_ptr(RGB));
+        //shader.setUniform("font_colour", glm::vec3(10.0f, 120.0f, 105.0f));
+        //shader.setUniform("font_colour", glm::vec3(1.0f, 1.0f, 1.0f));
+        //
+        //
+        //´------------------------------------------------------------------------------------------
+
         double fps_counter_seconds = 0;
         int fps_counter_frames = 0;
 
@@ -161,7 +204,6 @@ int App::Run(void)
 
         glm::vec3 rgb_orange = { 1.0f, 0.5f, 0.0f };
         glm::vec3 rgb_white = { 1.0f, 1.0f, 1.0f };
-
         glm::vec4 rgba_white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
         // Set camera position
@@ -235,6 +277,49 @@ int App::Run(void)
             shader.setUniform("specular_shinines", 5.0f);
             shader.setUniform("light_position", light_position);
             /**/
+
+            //´------------------------------------------------------------------------------------------
+            // Freetype Text
+            //
+            //shader.setUniform("alphabet_texture", 31);
+            //shader.setUniform("font_colour", glm::vec3(10.0f, 120.0f, 105.0f));
+
+            //if (!running)
+            //    ++get_ready;
+            //if (get_ready > 125)
+            //    running = true;
+
+            //if (running)
+            //{
+            //    //std::cout << "Running...\n";
+            //    ++display_counting;
+            //    if (display_counting == 300)
+            //        display_counting = 0;
+
+            //    // std::cout << "\n   display_counting: " << display_counting << " ---  display_counting % 10: " << display_counting % 10 << " ---  display_counting / 10 % 10: "
+            //        // << display_counting / 10 % 10 << " --- display_counting / 100 % 10: " << display_counting / 100 % 10;
+
+            //    unsigned num1 = display_counting / 100 % 10; // Left digit.
+            //    unsigned num2 = display_counting / 10 % 10;
+            //    unsigned num3 = display_counting % 10;
+
+            //    float advance1 = text_object2.messages[0].alphabet_vec[num1].glyph_advance_x;
+            //    float advance2 = advance1 + (text_object2.messages[0].alphabet_vec[num2].glyph_advance_x);
+
+            //    text_object2.messages[0].characters_quads.resize(vec_size - num_replace);
+            //    text_object2.messages[0].text_start_x = start_pos;
+
+            //    text_object2.process_text_index(text_object2.messages[0], num1, 0); // Important: the number of calls to: process_text_index(...) must = "num_replace_characters"
+            //    text_object2.process_text_index(text_object2.messages[0], num2, advance1);
+            //    text_object2.process_text_index(text_object2.messages[0], num3, advance2);
+
+            //    text_object2.update_buffer_data_message(text_object2.messages[0], (int)(vec_size - num_replace));
+            //}
+            //text_object2.draw_messages(0);
+            //text_object2.draw_alphabets();
+            //
+            //´------------------------------------------------------------------------------------------
+
 
             // Draw the scene
             // - Draw opaque objects
