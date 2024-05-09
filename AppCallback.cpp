@@ -1,6 +1,8 @@
 #include <iostream>
 #include <windows.h>
 #include <mmsystem.h>
+#include <random> 
+#include <vector>
 //#include <SFML/Audio.hpp>
 
 #include "App.h"
@@ -71,12 +73,29 @@ void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void App::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-        //std::cout << "Right click!\n";
+        // Right click action
     }
     else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         std::cout << "Left click!\n";
         projectile.onKeyboardEvent(window, camera.getPosition(), button, action, mods);
-        PlaySound(TEXT("./assets/sounds/gun-gunshot-01.wav"), NULL, SND_ASYNC);
+
+        std::vector<std::string> sounds = {
+            "9mm-pistol-shot-6349.wav",
+            "gun-gunshot-01.wav",
+            "gun-shot-1-176892.wav",
+            "sniper-rifle-5989.wav"
+        };
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distr(0, sounds.size() - 1);
+        int soundIndex = distr(gen);
+
+        std::string soundPath = "./assets/sounds/" + sounds[soundIndex];
+
+        std::wstring stemp = std::wstring(soundPath.begin(), soundPath.end());
+        LPCWSTR sw = stemp.c_str();
+
+        PlaySound(sw, NULL, SND_ASYNC);
     }
 }
-

@@ -1,2 +1,7 @@
 ﻿  AppCallback.cpp
+C:\Users\tomch\source\repos\pg2\AppCallback.cpp(93,64): warning C4267: argument: Převod z: size_t na: _Ty, může dojít ke ztrátě dat.
+C:\Users\tomch\source\repos\pg2\AppCallback.cpp(93,64): warning C4267:         with
+C:\Users\tomch\source\repos\pg2\AppCallback.cpp(93,64): warning C4267:         [
+C:\Users\tomch\source\repos\pg2\AppCallback.cpp(93,64): warning C4267:             _Ty=int
+C:\Users\tomch\source\repos\pg2\AppCallback.cpp(93,64): warning C4267:         ]
   Cvičení 1.vcxproj -> C:\Users\tomch\source\repos\pg2\x64\Debug\Cvičení.exe
