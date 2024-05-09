@@ -147,7 +147,8 @@ void App::UpdateModels()
 	// Pøevod úhlu na stupnì
 	angle = glm::degrees(angle);
 	// Nastavení rotace zbranì na základì smìru pohledu kamery s pevným úhlem -90 stupòù
-	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, angle - 90.0f);
+	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, angle - 90.0f);
+	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(camera.getYaw(), camera.getPitch(), 0.0f,  -90.0f);
 
 
 

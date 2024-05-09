@@ -46,6 +46,8 @@ public:
 	glm::vec3 getFront();
 	glm::vec3 getRight();
 	glm::vec3 getUp();
+	GLfloat getYaw();
+	GLfloat getPitch();
 
 	void onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime);
 	void onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch);

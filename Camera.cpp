@@ -122,3 +122,10 @@ glm::vec3 Camera::getRight() {
 glm::vec3 Camera::getUp() {
 	return Up;
 }
+
+GLfloat Camera::getYaw() {
+	return Yaw;
+}
+GLfloat Camera::getPitch() {
+	return Pitch;
+}
