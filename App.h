@@ -49,6 +49,7 @@ private:
 
     GLFWwindow* window = nullptr;
     glm::vec4 clear_color = glm::vec4(0, 0, 0, 0);
+    //glm::vec4 clear_color = glm::vec4(10.0f/255, 30.0f/255, 50.0f/255, 0.0f);
 
     void UpdateProjectionMatrix();
 

@@ -22,11 +22,11 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 void App::InitAssets()
 {
 
-	//std::filesystem::path VS_path("./assets/shaders/final.vert");
-	//std::filesystem::path FS_path("./assets/shaders/final.frag");
+	std::filesystem::path VS_path("./assets/shaders/final.vert");
+	std::filesystem::path FS_path("./assets/shaders/final.frag");
 
-	std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
-	std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
+	//std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
+	//std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
 	shader = Shader(VS_path, FS_path);
 
 	// MODELS

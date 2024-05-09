@@ -5,6 +5,9 @@ layout (location = 0) in vec4 aPosition;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 
+// Freetype Text
+in vec4 vertexText;
+
 // Matrices
 uniform mat4 uMx_projection = mat4(1.0); // Camera space -> Screen
 uniform mat4 uMx_model      = mat4(1.0); // Object local coor space -> World space
@@ -23,7 +26,6 @@ out VS_OUT
 } vs_out;
 
 // Freetype Text
-layout (location = 3) in vec4 vertex;
  
 out vec2 texture_coordinates;
 // out vec3 texcoords_anim;
@@ -48,14 +50,14 @@ void main(void)
     vs_out.texCoord = aTexCoord;
 
     // Text setup
-    texture_coordinates = vec2(vertex[2], vertex[3]); // Same as using z and w... i.e. vertex.zw
+    texture_coordinates = vec2(vertexText[2], vertexText[3]); // Same as using z and w... i.e. vertex.zw
  
 	// Enable this line for 2D window-positioned text
 	// -------------------------------------------------------------
-    gl_Position = vec4(vertex.xy, 0.0, 1.0);
+    gl_Position = vec4(vertexText.xy, 0.0, 1.0);
  
 	// Enable these two lines instead for 3D animated text
 	// --------------------------------------------------------------------
-	// texcoords_anim = vec3(animate * vec4(vertex.xy, 0.0, 1)); // Used simply to animate the colours.
-	// gl_Position = projection * view * animate * vec4(vertex.xy, 0.0, 1.0);
+	// texcoords_anim = vec3(animate * vec4(vertexText.xy, 0.0, 1)); // Used simply to animate the colours.
+	// gl_Position = projection * view * animate * vec4(vertexText.xy, 0.0, 1.0);
 }
