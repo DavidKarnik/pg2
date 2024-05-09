@@ -30,6 +30,9 @@
 
 // Freetype library
 #include <ft2build.h>
+#include FT_FREETYPE_H
+
+#include "text_fonts_glyphs.h"
 
 #define print(x) std::cout << x << "\n"
 
@@ -153,6 +156,16 @@ bool App::Init()
 int App::Run(void)
 {
     try {
+
+        FT_Library free_type;
+        FT_Error error_code = FT_Init_FreeType(&free_type);
+        if (error_code)
+        {
+            std::cout << "\n   Error code: " << error_code << " --- " << "An error occurred during initialising the FT_Library";
+            int keep_console_open;
+            std::cin >> keep_console_open;
+        }
+
         double fps_counter_seconds = 0;
         int fps_counter_frames = 0;
 
