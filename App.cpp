@@ -28,6 +28,9 @@
 #include "gl_err_callback.h"
 #include "Shader.h"
 
+// Freetype library
+#include <ft2build.h>
+
 #define print(x) std::cout << x << "\n"
 
 bool App::is_vsync_on = false;
@@ -74,7 +77,7 @@ bool App::Init()
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Core, comment this line for Compatible
 
         // Open window (GL canvas) with no special properties :: https://www.glfw.org/docs/latest/quick.html#quick_create_window
-        window = glfwCreateWindow(window_width, window_height, "Moje krasne okno", NULL, NULL);
+        window = glfwCreateWindow(window_width, window_height, "OpenGL 3D Game", NULL, NULL);
         if (!window) {
             glfwTerminate();
             return false;

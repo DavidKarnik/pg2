@@ -86,7 +86,7 @@ glm::vec3 updateGunPosition(Camera& camera)
 glm::vec3 updateGunPositionToMiddleOfScreen(Camera& camera)
 {
 	// Fixní vzdálenost zbranì od hráèe
-	float gunDistance = 2.0f;
+	float gunDistance = 1.0f;
 
 	// Vypoèítání pozice zbranì ve støedu obrazovky ve fixní vzdálenosti od hráèe
 	glm::vec3 gunPosition = camera.getPosition() + camera.getFront() * gunDistance;
@@ -133,23 +133,28 @@ void App::UpdateModels()
 	scene_transparent.find("obj_gun")->second.position = updateGunPositionToMiddleOfScreen(camera);
 	//scene_transparent.find("obj_gun")->second.position = updateGunPosition2(camera);
 
-
-	// Nastavit rotaci zbranì na tento úhel (s použitím osy, která smìøuje nahoru)
-	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(camera.getFront(), -angle);
-	// 
 	//scene_transparent.find("obj_gun")->second.rotation = updateGunRotation2(camera);
 
-
-	// Získání smìru pohledu kamery
 	glm::vec3 cameraFront = camera.getFront();
-	// Výpoèet úhlu rotace z pohledu kamery
-	float angle = atan2(cameraFront.y, cameraFront.x); // Úhel rotace v radiánech
-	// Pøevod úhlu na stupnì
-	angle = glm::degrees(angle);
-	// Nastavení rotace zbranì na základì smìru pohledu kamery s pevným úhlem -90 stupòù
+	//float angle = atan2(cameraFront.y, cameraFront.x); // Úhel rotace v radiánech
+	//// Pøevod úhlu na stupnì
+	//angle = glm::degrees(angle);
 	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, angle - 90.0f);
-	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(camera.getYaw(), camera.getPitch(), 0.0f,  -90.0f);
+	//
+	// TODO -> OPRAVA:
+	// když otoèím kamerou doleva - zbraò se naklápí nahodu,
+	// když kamera (myš) doprava  - zbraò se naklápí dolù,
+	// když kamera nahoru		  - zbraò se otáèí doprava,
+	// když kamera dolù			  - zbraò se naklápí doleva
+	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, -90.0f);
+	// Upravení smìrového vektoru kamery
+	glm::vec3 adjustedCameraFront = cameraFront;
+	adjustedCameraFront.y *= -1.0f; // Otoèení osy Y (zmìna znaménka) pro správnou rotaci zbranì
+	// Nastavení rotace zbranì pomocí upraveného smìrového vektoru kamery
+	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(adjustedCameraFront, -90.0f);
 
+	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, -90.0f + camera.getYaw());
+	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(camera.getYaw(), camera.getPitch(), 1.0f, -90.0f);
 
 
 	/*glm::vec3 viewDirection = camera.getFront();

@@ -47,8 +47,6 @@ void Camera::toggleSprint()
 
 void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 {
-	//glm::vec3 direction{ 0 };
-
 	//float cameraSpeed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? SprintFactor : 1) * MovementSpeed * deltaTime;
 	float cameraSpeed = (is_sprint) ? SprintFactor * MovementSpeed : MovementSpeed;
 
