@@ -22,11 +22,11 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 void App::InitAssets()
 {
 
-	std::filesystem::path VS_path("./assets/shaders/final.vert");
-	std::filesystem::path FS_path("./assets/shaders/final.frag");
+	//std::filesystem::path VS_path("./assets/shaders/final.vert");
+	//std::filesystem::path FS_path("./assets/shaders/final.frag");
 
-	//std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
-	//std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
+	std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
+	std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
 	shader = Shader(VS_path, FS_path);
 
 	// MODELS
@@ -132,18 +132,11 @@ void App::UpdateModels()
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 45 * glfwGetTime());
 	scene_transparent.find("obj_teapot")->second.rotation = rotation;
 
-	// Nastavení nové pozice pro zbraò (pøiètení posunu kamery k aktuální pozici zbranì)
+	// Nastavení nové pozice pro zbraò
 	scene_transparent.find("obj_gun")->second.position = updateGunPositionToMiddleOfScreen(camera);
 	//scene_transparent.find("obj_gun")->second.position = updateGunPosition2(camera);
-
 	//scene_transparent.find("obj_gun")->second.rotation = updateGunRotation2(camera);
 
-	glm::vec3 cameraFront = camera.getFront();
-	//float angle = atan2(cameraFront.y, cameraFront.x); // Úhel rotace v radiánech
-	//// Pøevod úhlu na stupnì
-	//angle = glm::degrees(angle);
-	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, angle - 90.0f);
-	//
 	// TODO -> OPRAVA:
 	// když otoèím kamerou doleva - zbraò se naklápí nahodu,
 	// když kamera (myš) doprava  - zbraò se naklápí dolù,
@@ -151,21 +144,16 @@ void App::UpdateModels()
 	// když kamera dolù			  - zbraò se naklápí doleva
 	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, -90.0f);
 	// Upravení smìrového vektoru kamery
-	glm::vec3 adjustedCameraFront = cameraFront;
-	adjustedCameraFront.y *= -1.0f; // Otoèení osy Y (zmìna znaménka) pro správnou rotaci zbranì
-	// Nastavení rotace zbranì pomocí upraveného smìrového vektoru kamery
+	glm::vec3 adjustedCameraFront = camera.getFront();
+	adjustedCameraFront.y *= -1.0f; // Otoèení osy Y (zmìna znaménka) pro obrácenou rotaci zbranì
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(adjustedCameraFront, -90.0f);
 
 	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, -90.0f + camera.getYaw());
 	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(camera.getYaw(), camera.getPitch(), 1.0f, -90.0f);
 
-
 	/*glm::vec3 viewDirection = camera.getFront();
 	float angle = glm::degrees(atan2(viewDirection.y, viewDirection.x));
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, angle);*/
-
-
-	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
 
 	//RemoveModel("obj_teapot");
 }
@@ -175,12 +163,14 @@ void App::RemoveModel(std::string name) {
 	auto it_opaque = scene_opaque.find(name);
 	if (it_opaque != scene_opaque.end()) {
 		scene_opaque.erase(it_opaque);
+		std::cout << "\n Nepruhledny model smazan! \n";
 	}
 
 	// Odeber model z mapy scene_transparent
 	auto it_transparent = scene_transparent.find(name);
 	if (it_transparent != scene_transparent.end()) {
 		scene_transparent.erase(it_transparent);
+		std::cout << "\n Pruhledny model smazan! \n";
 	}
 }
 
