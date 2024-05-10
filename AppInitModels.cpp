@@ -1,5 +1,7 @@
 #include "App.h"
 
+bool lastStateOfholdItem;
+
 void App::CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation)
 {
 	std::filesystem::path modelpath("./assets/obj/" + obj);
@@ -65,6 +67,8 @@ void App::InitAssets()
 	// right init rotation
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
 	scene_transparent.find("obj_gun")->second.isItemHeld = true;
+	holdItem = true;
+	lastStateOfholdItem = holdItem;
 
 	// Generate MAZE from boxes 
 	/*cv::Mat maze = cv::Mat(10, 25, CV_8U);
@@ -168,8 +172,27 @@ void App::UpdateModels()
 
 	//RemoveModel("obj_teapot");
 
+	// button "e" pressed ... later needs repair this pick up item logic :(
+			// changed
+	if (lastStateOfholdItem != holdItem) {
+		if (holdItem == false) {
+			std::cout << "Drop item!\n";
+			findHeldItem()->isItemHeld = false;
+		}
+		else {
+			std::cout << "Pick up item!\n";
+			holdNewItem();
+		}
+		// current state
+		lastStateOfholdItem = holdItem;
+	}
 	Model* heldItem = findHeldItem();
-	heldItem->position = updateGunPositionToMiddleOfScreen(camera);
+	if (heldItem != nullptr) {
+
+		heldItem->position = updateGunPositionToMiddleOfScreen(camera);
+	}
+
+
 }
 
 void App::RemoveModel(std::string name) {
@@ -188,8 +211,17 @@ void App::RemoveModel(std::string name) {
 	}
 }
 
+//void printModels(const std::map<std::string, Model>& models) {
+//	for (const auto& pair : models) {
+//		const Model& model = pair.second;
+//		std::cout << "Position: (" << model.position.x << ", " << model.position.y << ", " << model.position.z << ")\n";
+//	}
+//}
 
 Model* App::findClosestModel(glm::vec3& cameraPosition) {
+
+	//std::cout << "findClosestModel() called!\n";
+
 	float shortestDistance = std::numeric_limits<float>::max();
 	Model* closestModel = nullptr;
 
@@ -199,6 +231,7 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 		if (distance < shortestDistance) {
 			shortestDistance = distance;
 			closestModel = &(pair.second);
+			//std::cout << "Item founded!\n";
 		}
 	}
 
@@ -208,11 +241,14 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 		if (distance < shortestDistance) {
 			shortestDistance = distance;
 			closestModel = &(pair.second);
+			//std::cout << "Item founded!\n";
 		}
 	}
 
 	return closestModel;
 }
+
+
 
 
 Model* App::findHeldItem() {
@@ -234,16 +270,15 @@ void App::holdNewItem() {
 	Model* closestModel = findClosestModel(camera.position);
 	// Pokud byl nalezen nejbližší model
 	if (closestModel != nullptr) {
-	    std::cout << "item found!\n";
-	    // last held obj -> "drop"
-	    // TODO : Gravity drop item
-		Model* lastHeldItem = findHeldItem();
+		std::cout << "item found!\n";
+		// last held obj -> "drop"
+		// TODO : Gravity drop item
+		/*Model* lastHeldItem = findHeldItem();
 		if (lastHeldItem != nullptr) {
 			std::cout << "item droped!\n";
 			lastHeldItem->isItemHeld = false;
-		}
-	    // Nastavte jeho pozici
-	    closestModel->isItemHeld = true;
+		}*/
+		// Nastavte jeho pozici
+		closestModel->isItemHeld = true;
 	}
-
 }

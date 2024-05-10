@@ -2,7 +2,6 @@
 
 #include "App.h"
 
-
 void App::error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -34,6 +33,9 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
             break;
         case GLFW_KEY_E:
             std::cout << "E clicked!\n";
+            std::cout << "holdItem: " << holdItem << "\n";
+            // static x no static dumb piece of crap ... later repair logic for pick up
+            holdItem = !holdItem;
             break;
         }
     }

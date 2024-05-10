@@ -10,6 +10,8 @@
 #include "Window.h"
 #include "Projectile.h"
 
+//bool App::holdItem = false; // Inicializace statické promìnné
+
 class App {
 public:
     App();
@@ -38,6 +40,8 @@ private:
 
     static bool is_vsync_on;
     static bool is_fullscreen_on;
+
+    static bool holdItem;
 
     static GLFWmonitor* monitor;
     static const GLFWvidmode* mode;

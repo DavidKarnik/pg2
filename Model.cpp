@@ -270,3 +270,4 @@ glm::vec2 Model::HeightMap_GetSubtexByHeight(float height)
     else if (height > 0.3) return HeightMap_GetSubtexST(2, 0); //soil
     else return HeightMap_GetSubtexST(0, 0); //grass
 }
+

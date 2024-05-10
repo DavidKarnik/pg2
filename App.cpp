@@ -54,19 +54,14 @@ double App::last_cursor_ypos{};
 
 Projectile App::projectile; // Definice statického členského proměnného mimo třídu
 
+bool App::holdItem = true; // Inicializace statické proměnné
+
 
 App::App()
 {
 	// default constructor
 	// nothing to do here (for now...)
 	std::cout << "App Constructed...\n--------------\n";
-}
-
-void key_e_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-		// Provádějte akce pro klávesu "E" zde
-		std::cout << "Klávesa 'E' byla stisknuta!\n";
-	}
 }
 
 // App initialization, if returns true then run run()
