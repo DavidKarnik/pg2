@@ -36,7 +36,7 @@
 //´------------------------------------------------------------------------------------------
 
 #define print(x) std::cout << x << "\n"
-
+ // Inicializace statických proměnných --
 bool App::is_vsync_on = false;
 bool App::is_fullscreen_on = false;
 GLFWmonitor* App::monitor;
@@ -54,7 +54,8 @@ double App::last_cursor_ypos{};
 
 Projectile App::projectile; // Definice statického členského proměnného mimo třídu
 
-bool App::holdItem = true; // Inicializace statické proměnné
+float App::itemPickUpRange = 2.0f;
+bool App::holdItem = true;
 
 
 App::App()

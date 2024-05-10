@@ -248,6 +248,29 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 	return closestModel;
 }
 
+Model* App::findClosestModelInItemPickUpRange(glm::vec3& cameraPosition) {
+	float shortestDistance = std::numeric_limits<float>::max();
+	Model* closestModel = nullptr;
+
+	for (auto& pair : scene_opaque) {
+		float distance = glm::length(pair.second.position - cameraPosition);
+		if (distance < shortestDistance && distance < itemPickUpRange) {
+			shortestDistance = distance;
+			closestModel = &(pair.second);
+		}
+	}
+
+	for (auto& pair : scene_transparent) {
+		float distance = glm::length(pair.second.position - cameraPosition);
+		if (distance < shortestDistance && distance < itemPickUpRange) {
+			shortestDistance = distance;
+			closestModel = &(pair.second);
+		}
+	}
+
+	return closestModel;
+}
+
 
 
 
@@ -266,8 +289,8 @@ Model* App::findHeldItem() {
 }
 
 void App::holdNewItem() {
-	// Volání nestatické metody na instanci tøídy App
-	Model* closestModel = findClosestModel(camera.position);
+	//Model* closestModel = findClosestModel(camera.position);
+	Model* closestModel = findClosestModelInItemPickUpRange(camera.position);
 	// Pokud byl nalezen nejbližší model
 	if (closestModel != nullptr) {
 		std::cout << "item found!\n";
@@ -278,7 +301,7 @@ void App::holdNewItem() {
 			std::cout << "item droped!\n";
 			lastHeldItem->isItemHeld = false;
 		}*/
-		// Nastavte jeho pozici
+		// je držen
 		closestModel->isItemHeld = true;
 	}
 }

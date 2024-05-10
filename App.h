@@ -25,6 +25,7 @@ public:
 
     void holdNewItem();
     Model* findClosestModel(glm::vec3& cameraPosition);
+    Model* findClosestModelInItemPickUpRange(glm::vec3& cameraPosition);
     Model* findHeldItem();
 
 
@@ -41,6 +42,7 @@ private:
     static bool is_vsync_on;
     static bool is_fullscreen_on;
 
+    static float itemPickUpRange;
     static bool holdItem;
 
     static GLFWmonitor* monitor;
