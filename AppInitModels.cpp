@@ -22,11 +22,11 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 void App::InitAssets()
 {
 
-	//std::filesystem::path VS_path("./assets/shaders/final.vert");
-	//std::filesystem::path FS_path("./assets/shaders/final.frag");
+	std::filesystem::path VS_path("./assets/shaders/final.vert");
+	std::filesystem::path FS_path("./assets/shaders/final.frag");
 
-	std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
-	std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
+	//std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
+	//std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
 	shader = Shader(VS_path, FS_path);
 
 	// MODELS
@@ -51,14 +51,12 @@ void App::InitAssets()
 
 	position = glm::vec3(-1.0f, 1.0f, 1.0f);
 	scale = glm::vec3(0.005f, 0.005f, 0.005f);
-	//scale = glm::vec3(1.5f, 1.5f, 1.5f);
 	rotation = glm::vec4(1.0f, 0.0f, 10.0f, 0.0f);
 	//CreateModel("obj_gun", "Beretta_M9.obj", "Beretta_M9.mtl", false, position, scale, rotation);
 	//CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	// right init rotation
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
-	//CreateModel("obj_gun", "Beretta_M9.obj", "heights.png", false, position, scale, rotation);
 
 	// Generate MAZE from boxes 
 	/*cv::Mat maze = cv::Mat(10, 25, CV_8U);
@@ -74,6 +72,11 @@ void App::InitAssets()
 	model.scale = glm::vec3(0.1f, 0.1f, 0.1f);
 	model.rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	scene_opaque.insert({ "hightmap", model });
+
+	// == for TRANSPARENT OBJECTS sorting ==	
+	for (auto i = scene_transparent.begin(); i != scene_transparent.end(); i++) {
+		scene_transparent_pairs.push_back(&*i);
+	}
 
 }
 

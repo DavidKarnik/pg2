@@ -26,6 +26,8 @@ private:
 
     std::map<std::string, Model> scene_opaque;
     std::map<std::string, Model> scene_transparent;
+    // for sorting - from nearest to most far .. transparent obj
+    std::vector<std::pair<const std::string, Model>*> scene_transparent_pairs; 
 
     static Projectile projectile;
 

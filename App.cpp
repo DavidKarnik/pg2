@@ -170,21 +170,17 @@ int App::Run(void)
 			std::cin >> keep_console_open;
 		}
 
-		Text text_object2(free_type, window_width, window_height, "01234567890Get Rady.Timr:owns&ClBgfb"); // Declare a new text object, passing in your chosen alphabet.	
-		text_object2.create_text_message("Get Ready... Timer: 000", 100, 50, "./assets/Text Fonts/arialbi.ttf", 130, false); // True indicates that the message will be modified.
+		//Text text_object2(free_type, window_width, window_height, "01234567890Get Rady.Timr:owns&ClBgfb"); // Declare a new text object, passing in your chosen alphabet.	
+		//text_object2.create_text_message("Get Ready... Timer: 000", 100, 50, "./assets/Text Fonts/arialbi.ttf", 130, false); // True indicates that the message will be modified.
 
-		int num_replace = 3;
-		size_t vec_size = text_object2.messages[0].characters_quads.size();
-		float start_pos = text_object2.messages[0].start_x_current[vec_size - num_replace];
+		//int num_replace = 3;
+		//size_t vec_size = text_object2.messages[0].characters_quads.size();
+		//float start_pos = text_object2.messages[0].start_x_current[vec_size - num_replace];
 
-		//glUniform1i(glGetUniformLocation(text_shader.ID, "alphabet_texture"), 31);
-		shader.setUniform("alphabet_texture", 31);
-
-		//glm::vec3 RGB(10.0f, 120.0f, 105.0f);
-		//unsigned int font_colour_loc = glGetUniformLocation(text_shader.ID, "font_colour");
-		//glUniform3fv(font_colour_loc, 1, glm::value_ptr(RGB));
-		shader.setUniform("font_colour", glm::vec3(10.0f, 120.0f, 105.0f));
-		//shader.setUniform("font_colour", glm::vec3(1.0f, 1.0f, 1.0f));
+		////glUniform1i(glGetUniformLocation(text_shader.ID, "alphabet_texture"), 31);
+		//shader.setUniform("alphabet_texture", 31);
+		//shader.setUniform("font_colour", glm::vec3(10.0f, 120.0f, 105.0f));
+		////shader.setUniform("font_colour", glm::vec3(1.0f, 1.0f, 1.0f));
 		//
 		//
 		//´------------------------------------------------------------------------------------------
@@ -277,30 +273,30 @@ int App::Run(void)
 			//´------------------------------------------------------------------------------------------
 			// Freetype Text
 			//
-			shader.setUniform("alphabet_texture", 31);
-			shader.setUniform("font_colour", glm::vec3(10.0f, 120.0f, 105.0f));
+			//shader.setUniform("alphabet_texture", 31);
+			//shader.setUniform("font_colour", glm::vec3(10.0f, 120.0f, 105.0f));
 
-			// std::cout << "\n   display_counting: " << display_counting << " ---  display_counting % 10: " << display_counting % 10 << " ---  display_counting / 10 % 10: "
-				// << display_counting / 10 % 10 << " --- display_counting / 100 % 10: " << display_counting / 100 % 10;
+			//// std::cout << "\n   display_counting: " << display_counting << " ---  display_counting % 10: " << display_counting % 10 << " ---  display_counting / 10 % 10: "
+			//	// << display_counting / 10 % 10 << " --- display_counting / 100 % 10: " << display_counting / 100 % 10;
 
-			unsigned num1 = 333 / 100 % 10; // Left digit.
-			unsigned num2 = 333 / 10 % 10;
-			unsigned num3 = 333 % 10;
+			//unsigned num1 = 333 / 100 % 10; // Left digit.
+			//unsigned num2 = 333 / 10 % 10;
+			//unsigned num3 = 333 % 10;
 
-			float advance1 = text_object2.messages[0].alphabet_vec[num1].glyph_advance_x;
-			float advance2 = advance1 + (text_object2.messages[0].alphabet_vec[num2].glyph_advance_x);
+			//float advance1 = text_object2.messages[0].alphabet_vec[num1].glyph_advance_x;
+			//float advance2 = advance1 + (text_object2.messages[0].alphabet_vec[num2].glyph_advance_x);
 
-			text_object2.messages[0].characters_quads.resize(vec_size - num_replace);
-			text_object2.messages[0].text_start_x = start_pos;
+			//text_object2.messages[0].characters_quads.resize(vec_size - num_replace);
+			//text_object2.messages[0].text_start_x = start_pos;
 
-			text_object2.process_text_index(text_object2.messages[0], num1, 0); // Important: the number of calls to: process_text_index(...) must = "num_replace_characters"
-			text_object2.process_text_index(text_object2.messages[0], num2, advance1);
-			text_object2.process_text_index(text_object2.messages[0], num3, advance2);
+			//text_object2.process_text_index(text_object2.messages[0], num1, 0); // Important: the number of calls to: process_text_index(...) must = "num_replace_characters"
+			//text_object2.process_text_index(text_object2.messages[0], num2, advance1);
+			//text_object2.process_text_index(text_object2.messages[0], num3, advance2);
 
-			text_object2.update_buffer_data_message(text_object2.messages[0], (int)(vec_size - num_replace));
+			//text_object2.update_buffer_data_message(text_object2.messages[0], (int)(vec_size - num_replace));
 
-			text_object2.draw_messages(0);
-			text_object2.draw_alphabets();
+			//text_object2.draw_messages(0);
+			//text_object2.draw_alphabets();
 			//
 			//´------------------------------------------------------------------------------------------
 
@@ -314,9 +310,22 @@ int App::Run(void)
 			glEnable(GL_BLEND);         // enable blending
 			glDisable(GL_CULL_FACE);    // no polygon removal
 			glDepthMask(GL_FALSE);      // set Z to read-only
-			// TODO: sort by distance from camera, from far to near
-			for (auto& [key, value] : scene_transparent) {
-				value.Draw(shader);
+			//// TODO: sort by distance from camera, from far to near
+			//for (auto& [key, value] : scene_transparent) {
+			//	value.Draw(shader);
+			//}
+			// Calculate distace from camera for all transparent objects
+			for (auto& transparent_pair : scene_transparent_pairs) {
+				transparent_pair->second._distance_from_camera = glm::length(camera.position - transparent_pair->second.position);
+			}
+			// Sort all transparent objects in vector by their distance from camera
+			// near to far ... first draw nearest obj ofcourse <<
+			std::sort(scene_transparent_pairs.begin(), scene_transparent_pairs.end(), [](std::pair<const std::string, Model>*& a, std::pair<const std::string, Model>*& b) {
+				return a->second._distance_from_camera < b->second._distance_from_camera;
+				});
+			// Draw all transparent objects in sorted order
+			for (auto& transparent_pair : scene_transparent_pairs) {
+				transparent_pair->second.Draw(shader);
 			}
 			glDisable(GL_BLEND);
 			glEnable(GL_CULL_FACE);
