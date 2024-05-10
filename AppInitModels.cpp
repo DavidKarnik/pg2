@@ -64,6 +64,7 @@ void App::InitAssets()
 	CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	// right init rotation
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
+	scene_transparent.find("obj_gun")->second.isItemHeld = true;
 
 	// Generate MAZE from boxes 
 	/*cv::Mat maze = cv::Mat(10, 25, CV_8U);
@@ -143,7 +144,7 @@ void App::UpdateModels()
 	scene_transparent.find("obj_teapot")->second.rotation = rotation;
 
 	// Nastavení nové pozice pro zbraò
-	scene_transparent.find("obj_gun")->second.position = updateGunPositionToMiddleOfScreen(camera);
+	//scene_transparent.find("obj_gun")->second.position = updateGunPositionToMiddleOfScreen(camera);
 	//scene_transparent.find("obj_gun")->second.position = updateGunPosition2(camera);
 	//scene_transparent.find("obj_gun")->second.rotation = updateGunRotation2(camera);
 
@@ -166,6 +167,9 @@ void App::UpdateModels()
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, angle);*/
 
 	//RemoveModel("obj_teapot");
+
+	Model* heldItem = findHeldItem();
+	heldItem->position = updateGunPositionToMiddleOfScreen(camera);
 }
 
 void App::RemoveModel(std::string name) {
@@ -185,4 +189,61 @@ void App::RemoveModel(std::string name) {
 }
 
 
+Model* App::findClosestModel(glm::vec3& cameraPosition) {
+	float shortestDistance = std::numeric_limits<float>::max();
+	Model* closestModel = nullptr;
 
+	// Projít všechny modely v mapì scene_opaque
+	for (auto& pair : scene_opaque) {
+		float distance = glm::length(pair.second.position - cameraPosition);
+		if (distance < shortestDistance) {
+			shortestDistance = distance;
+			closestModel = &(pair.second);
+		}
+	}
+
+	// Projít všechny modely v mapì scene_transparent
+	for (auto& pair : scene_transparent) {
+		float distance = glm::length(pair.second.position - cameraPosition);
+		if (distance < shortestDistance) {
+			shortestDistance = distance;
+			closestModel = &(pair.second);
+		}
+	}
+
+	return closestModel;
+}
+
+
+Model* App::findHeldItem() {
+	for (auto& pair : scene_opaque) {
+		if (pair.second.isItemHeld) {
+			return &pair.second;
+		}
+	}
+	for (auto& pair : scene_transparent) {
+		if (pair.second.isItemHeld) {
+			return &pair.second;
+		}
+	}
+	return nullptr;
+}
+
+void App::holdNewItem() {
+	// Volání nestatické metody na instanci tøídy App
+	Model* closestModel = findClosestModel(camera.position);
+	// Pokud byl nalezen nejbližší model
+	if (closestModel != nullptr) {
+	    std::cout << "item found!\n";
+	    // last held obj -> "drop"
+	    // TODO : Gravity drop item
+		Model* lastHeldItem = findHeldItem();
+		if (lastHeldItem != nullptr) {
+			std::cout << "item droped!\n";
+			lastHeldItem->isItemHeld = false;
+		}
+	    // Nastavte jeho pozici
+	    closestModel->isItemHeld = true;
+	}
+
+}

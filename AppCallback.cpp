@@ -2,6 +2,7 @@
 
 #include "App.h"
 
+
 void App::error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -32,7 +33,7 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
             std::cout << "VSync: " << is_vsync_on << "\n";
             break;
         case GLFW_KEY_E:
-            std::cout << "E clicked!:\n";
+            std::cout << "E clicked!\n";
             break;
         }
     }
