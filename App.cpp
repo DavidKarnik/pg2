@@ -54,7 +54,7 @@ double App::last_cursor_ypos{};
 
 Projectile App::projectile; // Definice statického členského proměnného mimo třídu
 
-float App::itemPickUpRange = 2.0f;
+float App::itemPickUpRange = 4.0f;
 bool App::holdItem = true;
 
 

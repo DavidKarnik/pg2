@@ -45,28 +45,33 @@ void App::InitAssets()
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_bunny", "bunny_tri_vnt.obj", "TextureDouble_A.png", true, position, scale, rotation);*/
 
-	// TEAPOT
+	// Megaphone
 	position = glm::vec3(4.0f, 4.0f, 2.0f);
-	scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_megaphone", "MegaPhone.obj", "MegaPhone_basecolor.png", true, position, scale, rotation);
 	//CreateModel("obj_megaphone", "MegaPhone.obj", "Glass.png", true, position, scale, rotation);
+	scene_opaque.find("obj_megaphone")->second.canBeHold = true;
 
-	// Megaphone
+	// TEAPOT
 	position = glm::vec3(2.0f, 2.0f, 2.0f);
-	scale = glm::vec3(0.2f, 0.2f, 0.2f);
+	scale = glm::vec3(0.1f, 0.1f, 0.1f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_teapot", "teapot_tri_vnt.obj", "Glass.png", false, position, scale, rotation);
+	scene_transparent.find("obj_teapot")->second.canBeHold = true;
 
 	position = glm::vec3(-1.0f, 1.0f, 1.0f);
-	scale = glm::vec3(0.005f, 0.005f, 0.005f);
+	//scale = glm::vec3(0.005f, 0.005f, 0.005f);
+	scale = glm::vec3(0.01f, 0.01f, 0.01f);
 	rotation = glm::vec4(1.0f, 0.0f, 10.0f, 0.0f);
 	//CreateModel("obj_gun", "Beretta_M9.obj", "Beretta_M9.mtl", false, position, scale, rotation);
 	//CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	// right init rotation
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
+	scene_transparent.find("obj_gun")->second.canBeHold = true;
 	scene_transparent.find("obj_gun")->second.isItemHeld = true;
+
 	holdItem = true;
 	lastStateOfholdItem = holdItem;
 
@@ -97,7 +102,6 @@ glm::vec3 updateGunPosition(Camera& camera)
 	// Offset pozice zbranì od pozice kamery podél smìru pohledu kamery
 	glm::vec3 gunPosition = camera.getPosition() + camera.getFront() * 0.5f + glm::vec3(0.4f, 0.0f, 0.0f);
 
-	// Aktualizace pozice zbranì
 	return gunPosition;
 }
 
@@ -105,11 +109,9 @@ glm::vec3 updateGunPositionToMiddleOfScreen(Camera& camera)
 {
 	// Fixní vzdálenost zbranì od hráèe
 	float gunDistance = 1.0f;
-
 	// Vypoèítání pozice zbranì ve støedu obrazovky ve fixní vzdálenosti od hráèe
 	glm::vec3 gunPosition = camera.getPosition() + camera.getFront() * gunDistance;
 
-	// Aktualizace pozice zbranì
 	return gunPosition;
 }
 
@@ -174,10 +176,15 @@ void App::UpdateModels()
 
 	// button "e" pressed ... later needs repair this pick up item logic :(
 			// changed
+	Model* heldItem = findHeldItem();
 	if (lastStateOfholdItem != holdItem) {
 		if (holdItem == false) {
 			std::cout << "Drop item!\n";
-			findHeldItem()->isItemHeld = false;
+			// check if you are/were holding item
+			// if not check -> error -1073741819 -> unauhorized memory write
+			if (heldItem != nullptr) {
+				heldItem->isItemHeld = false;
+			}
 		}
 		else {
 			std::cout << "Pick up item!\n";
@@ -186,9 +193,8 @@ void App::UpdateModels()
 		// current state
 		lastStateOfholdItem = holdItem;
 	}
-	Model* heldItem = findHeldItem();
-	if (heldItem != nullptr) {
 
+	if (heldItem != nullptr) {
 		heldItem->position = updateGunPositionToMiddleOfScreen(camera);
 	}
 
@@ -227,21 +233,25 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 
 	// Projít všechny modely v mapì scene_opaque
 	for (auto& pair : scene_opaque) {
-		float distance = glm::length(pair.second.position - cameraPosition);
-		if (distance < shortestDistance) {
-			shortestDistance = distance;
-			closestModel = &(pair.second);
-			//std::cout << "Item founded!\n";
+		if (pair.second.canBeHold) {
+			float distance = glm::length(pair.second.position - cameraPosition);
+			if (distance < shortestDistance) {
+				shortestDistance = distance;
+				closestModel = &(pair.second);
+				//std::cout << "Item founded!\n";
+			}
 		}
 	}
 
 	// Projít všechny modely v mapì scene_transparent
 	for (auto& pair : scene_transparent) {
-		float distance = glm::length(pair.second.position - cameraPosition);
-		if (distance < shortestDistance) {
-			shortestDistance = distance;
-			closestModel = &(pair.second);
-			//std::cout << "Item founded!\n";
+		if (pair.second.canBeHold) {
+			float distance = glm::length(pair.second.position - cameraPosition);
+			if (distance < shortestDistance) {
+				shortestDistance = distance;
+				closestModel = &(pair.second);
+				//std::cout << "Item founded!\n";
+			}
 		}
 	}
 
@@ -249,27 +259,38 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 }
 
 Model* App::findClosestModelInItemPickUpRange(glm::vec3& cameraPosition) {
+
 	float shortestDistance = std::numeric_limits<float>::max();
 	Model* closestModel = nullptr;
+	float distance = 0;
+
+	// std::numeric_limits<float>::epsilon()
+	float myEpsilon = 0.001f; // Nastavte vlastní epsilon podle potøeby
+
 
 	for (auto& pair : scene_opaque) {
-		float distance = glm::length(pair.second.position - cameraPosition);
-		if (distance < shortestDistance && distance < itemPickUpRange) {
-			shortestDistance = distance;
-			closestModel = &(pair.second);
+		if (pair.second.canBeHold) {
+			distance = glm::length(pair.second.position - cameraPosition);
+			if (distance < shortestDistance && (distance - itemPickUpRange) < myEpsilon) {
+				shortestDistance = distance;
+				closestModel = &(pair.second);
+			}
 		}
 	}
 
 	for (auto& pair : scene_transparent) {
-		float distance = glm::length(pair.second.position - cameraPosition);
-		if (distance < shortestDistance && distance < itemPickUpRange) {
-			shortestDistance = distance;
-			closestModel = &(pair.second);
+		if (pair.second.canBeHold) {
+			distance = glm::length(pair.second.position - cameraPosition);
+			if (distance < shortestDistance && (distance - itemPickUpRange) < myEpsilon) {
+				shortestDistance = distance;
+				closestModel = &(pair.second);
+			}
 		}
 	}
 
 	return closestModel;
 }
+
 
 
 
