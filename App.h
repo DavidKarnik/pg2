@@ -10,6 +10,8 @@
 #include "Window.h"
 #include "Projectile.h"
 
+//bool App::holdItem = false; // Inicializace statické promìnné
+
 class App {
 public:
     App();
@@ -21,16 +23,27 @@ public:
     void UpdateModels();
     void RemoveModel(std::string name);
 
+    void holdNewItem();
+    Model* findClosestModel(glm::vec3& cameraPosition);
+    Model* findClosestModelInItemPickUpRange(glm::vec3& cameraPosition);
+    Model* findHeldItem();
+
+
     ~App();
 private:
 
     std::map<std::string, Model> scene_opaque;
     std::map<std::string, Model> scene_transparent;
+    // for sorting - from nearest to most far .. transparent obj
+    std::vector<std::pair<const std::string, Model>*> scene_transparent_pairs; 
 
     static Projectile projectile;
 
     static bool is_vsync_on;
     static bool is_fullscreen_on;
+
+    static float itemPickUpRange;
+    static bool holdItem;
 
     static GLFWmonitor* monitor;
     static const GLFWvidmode* mode;
@@ -57,11 +70,13 @@ private:
 
     static void error_callback(int error, const char* description);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    //static void key_callback_items(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
     Shader shader;
+
 
     // Maze
     ///*

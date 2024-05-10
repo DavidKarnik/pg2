@@ -15,6 +15,10 @@ public:
     glm::vec3 position{};
     glm::vec3 scale{};
     glm::vec4 rotation{}; // axes xyz + angle
+    float _distance_from_camera;
+    bool isItemHeld = false;
+    bool canBeHold = false;
+
 private:
     Mesh mesh;
     std::string name;
