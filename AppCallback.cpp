@@ -31,6 +31,9 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
             glfwSwapInterval(is_vsync_on);
             std::cout << "VSync: " << is_vsync_on << "\n";
             break;
+        case GLFW_KEY_E:
+            std::cout << "E clicked!:\n";
+            break;
         }
     }
 

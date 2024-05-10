@@ -44,6 +44,13 @@ void App::InitAssets()
 	CreateModel("obj_bunny", "bunny_tri_vnt.obj", "TextureDouble_A.png", true, position, scale, rotation);*/
 
 	// TEAPOT
+	position = glm::vec3(4.0f, 4.0f, 2.0f);
+	scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	CreateModel("obj_megaphone", "MegaPhone.obj", "MegaPhone_basecolor.png", true, position, scale, rotation);
+	//CreateModel("obj_megaphone", "MegaPhone.obj", "Glass.png", true, position, scale, rotation);
+
+	// Megaphone
 	position = glm::vec3(2.0f, 2.0f, 2.0f);
 	scale = glm::vec3(0.2f, 0.2f, 0.2f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
