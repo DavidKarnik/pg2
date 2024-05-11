@@ -38,6 +38,7 @@ private:
 
     // HeightMap
     void HeightMap_Load(const std::filesystem::path& file_name);
+    void HeightMap_Load2(const std::filesystem::path& file_name);
     glm::vec2 HeightMap_GetSubtexST(const int x, const int y);
     glm::vec2 HeightMap_GetSubtexByHeight(float height);
 };

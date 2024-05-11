@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 
@@ -256,6 +256,7 @@ void Model::HeightMap_Load(const std::filesystem::path& file_name)
 
     print("HeightMap: height map vertices: " << mesh_vertices.size());
 }
+
 
 glm::vec2 Model::HeightMap_GetSubtexST(const int x, const int y)
 {

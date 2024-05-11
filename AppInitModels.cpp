@@ -24,8 +24,13 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 void App::InitAssets()
 {
 
-	std::filesystem::path VS_path("./assets/shaders/final.vert");
-	std::filesystem::path FS_path("./assets/shaders/final.frag");
+	//std::filesystem::path VS_path("./assets/shaders/final.vert");
+	//std::filesystem::path FS_path("./assets/shaders/final.frag");
+	
+	//std::filesystem::path FS_path("./assets/shaders/finalFlash.frag");
+
+	std::filesystem::path VS_path("./assets/shaders/redo.vert");
+	std::filesystem::path FS_path("./assets/shaders/redo.frag");
 
 	//std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
 	//std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
@@ -83,7 +88,7 @@ void App::InitAssets()
 	//std::filesystem::path heightspath("./assets/textures/heights.png");
 	//std::filesystem::path heightspath("./assets/textures/heightmap2.jpeg");
 	std::filesystem::path heightspath("./assets/textures/heightmap3.png");
-	std::filesystem::path texturepath("./assets/textures/tex_256.png");
+	std::filesystem::path texturepath("./assets/textures/tex_256_2.png");
 	auto model = Model(heightspath, texturepath, true);
 	model.position = glm::vec3(1.0f, 1.0f, 1.0f);
 	model.scale = glm::vec3(0.1f, 0.1f, 0.1f);
