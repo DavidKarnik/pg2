@@ -53,7 +53,7 @@ struct Spotlight
 	float cos_outer_cone;
 	vec3 diffuse;
 	vec3 specular;
-	int on;
+	bool on;
 
 	float constant;
 	float linear;
@@ -91,7 +91,7 @@ void main()
 	out_color += calcDirectionalLightColor(u_directional_light, normal, frag2camera);
  
 	// Spotlight
-	if (u_spotlight.on == 1) out_color += calcSpotLightColor(u_spotlight, normal, o_fragment_position, frag2camera);
+	if (u_spotlight.on) out_color += calcSpotLightColor(u_spotlight, normal, o_fragment_position, frag2camera);
 
 	// Output
 	frag_color = ambient + out_color;

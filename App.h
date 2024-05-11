@@ -45,6 +45,8 @@ private:
     static float itemPickUpRange;
     static bool holdItem;
 
+    static bool isFlashlightOn;
+
     static GLFWmonitor* monitor;
     static const GLFWvidmode* mode;
     static int window_xcor;

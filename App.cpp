@@ -57,6 +57,7 @@ Projectile App::projectile; // Definice statického členského proměnného mim
 float App::itemPickUpRange = 4.0f;
 bool App::holdItem = true;
 
+bool App::isFlashlightOn = false;
 
 App::App()
 {
@@ -302,7 +303,7 @@ int App::Run(void)
 			shader.setUniform("u_spotlight.constant", 1.0f);
 			shader.setUniform("u_spotlight.linear", 0.07f);
 			shader.setUniform("u_spotlight.exponent", 0.017f);
-			shader.setUniform("u_spotlight.on", 1);
+			shader.setUniform("u_spotlight.on", isFlashlightOn);
 
 			// Flashlight
 			// Předání stavu baterky do shaderu

@@ -88,7 +88,7 @@ void App::InitAssets()
 	//std::filesystem::path heightspath("./assets/textures/heights.png");
 	//std::filesystem::path heightspath("./assets/textures/heightmap2.jpeg");
 	std::filesystem::path heightspath("./assets/textures/heightmap3.png");
-	std::filesystem::path texturepath("./assets/textures/tex_256_2.png");
+	std::filesystem::path texturepath("./assets/textures/tex_256.png");
 	auto model = Model(heightspath, texturepath, true);
 	model.position = glm::vec3(1.0f, 1.0f, 1.0f);
 	model.scale = glm::vec3(0.1f, 0.1f, 0.1f);
@@ -184,7 +184,7 @@ void App::UpdateModels()
 	Model* heldItem = findHeldItem();
 	if (lastStateOfholdItem != holdItem) {
 		if (holdItem == false) {
-			std::cout << "Drop item!\n";
+			//std::cout << "Drop item!\n";
 			// check if you are/were holding item
 			// if not check -> error -1073741819 -> unauhorized memory write
 			if (heldItem != nullptr) {
@@ -192,7 +192,7 @@ void App::UpdateModels()
 			}
 		}
 		else {
-			std::cout << "Pick up item!\n";
+			//std::cout << "Pick up item!\n";
 			holdNewItem();
 		}
 		// current state
