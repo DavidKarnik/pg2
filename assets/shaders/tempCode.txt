@@ -1,0 +1,46 @@
+
+			// Set shader uniform variables
+			shader.setUniform("u_mx_view", mx_view); // World space -> Camera space
+			shader.setUniform("u_mx_projection", mx_projection); // Camera space -> Screen
+
+			// UBER
+			shader.setUniform("u_ambient_alpha", 0.0f);
+			shader.setUniform("u_diffuse_alpha", 0.7f);
+			shader.setUniform("u_camera_position", camera.getPosition());
+
+			// - AMBIENT
+			shader.setUniform("u_material.ambient", glm::vec3(0.1f));
+
+			// - MATERIAL SPECULAR
+			shader.setUniform("u_material.specular", glm::vec3(1.0f));
+			shader.setUniform("u_material.shininess", 96.0f);
+
+			// - DIRECTION :: SUN O)))
+			shader.setUniform("u_directional_light.direction", glm::vec3(0.0f, -0.9f, -0.17f));
+			shader.setUniform("u_directional_light.diffuse", glm::vec3(0.8f));
+			shader.setUniform("u_directional_light.specular", glm::vec3(0.14f));
+
+			// - POINT LIGHT :: JUKEBOX
+			shader.setUniform("u_point_lights[0].diffuse", glm::vec3(0.0f, 1.0f, 1.0f));
+			shader.setUniform("u_point_lights[0].specular", glm::vec3(0.07f));
+			shader.setUniform("u_point_lights[0].on", 1);
+			glm::vec3 point_light_pos = glm::vec3(0,0,0); // Light position infront of the jukebox
+			point_light_pos.y += 1.0f;
+			point_light_pos.x += 0.7f;
+			point_light_pos.z += 0.7f;
+			shader.setUniform("u_point_lights[0].position", point_light_pos);
+			shader.setUniform("u_point_lights[0].constant", 1.0f);
+			shader.setUniform("u_point_lights[0].linear", 1.0f);
+			shader.setUniform("u_point_lights[0].exponent", 0.5f);
+
+			// - SPOTLIGHT
+			shader.setUniform("u_spotlight.diffuse", glm::vec3(0.7f));
+			shader.setUniform("u_spotlight.specular", glm::vec3(0.56f));
+			shader.setUniform("u_spotlight.position", camera.getPosition());
+			shader.setUniform("u_spotlight.direction", camera.getFront());
+			shader.setUniform("u_spotlight.cos_inner_cone", glm::cos(glm::radians(20.0f)));
+			shader.setUniform("u_spotlight.cos_outer_cone", glm::cos(glm::radians(27.0f)));
+			shader.setUniform("u_spotlight.constant", 1.0f);
+			shader.setUniform("u_spotlight.linear", 0.07f);
+			shader.setUniform("u_spotlight.exponent", 0.017f);
+			shader.setUniform("u_spotlight.on", 0);

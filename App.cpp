@@ -57,6 +57,7 @@ Projectile App::projectile; // Definice statického členského proměnného mim
 float App::itemPickUpRange = 4.0f;
 bool App::holdItem = true;
 
+bool App::isFlashlightOn = false;
 
 App::App()
 {
@@ -209,7 +210,8 @@ int App::Run(void)
 		int width, height, centerX, centerY;
 
 		// Set light position
-		glm::vec3 light_position(-100000, 0, 100000);
+		//glm::vec3 light_position(-100000, 0, 100000);
+		glm::vec3 light_position(500, 0, 100);
 
 		while (!glfwWindowShouldClose(window)) {
 			// Time/FPS measure start
@@ -261,17 +263,61 @@ int App::Run(void)
 
 			// Activate shader, set uniform vars
 			shader.activate();
+
 			//my_shader.SetUniform("uMx_model", mx_model); // Object local coor space -> World space
 			shader.setUniform("uMx_view", mx_view); // World space -> Camera space
 			shader.setUniform("uMx_projection", mx_projection); // Camera space -> Screen
 
+			// UBER
+			shader.setUniform("u_ambient_alpha", 0.0f);
+			shader.setUniform("u_diffuse_alpha", 0.7f);
+			shader.setUniform("u_camera_position", camera.getPosition());
+
 			///*
-			shader.setUniform("ambient_material", rgb_white);
-			shader.setUniform("diffuse_material", rgb_white);
-			shader.setUniform("specular_material", rgb_white);
-			shader.setUniform("specular_shinines", 5.0f);
-			shader.setUniform("light_position", light_position);
+			//shader.setUniform("ambient_material", rgb_white);
+			//shader.setUniform("diffuse_material", rgb_white);
+			//shader.setUniform("specular_material", rgb_white);
+			//shader.setUniform("specular_shinines", 5.0f);
+			//shader.setUniform("light_position", light_position);
 			/**/
+
+			// - AMBIENT
+			shader.setUniform("u_material.ambient", glm::vec3(0.1f));
+
+			// - MATERIAL SPECULAR
+			shader.setUniform("u_material.specular", glm::vec3(1.0f));
+			shader.setUniform("u_material.shininess", 90.0f);
+
+			// - DIRECTION :: SUN O)))
+			shader.setUniform("u_directional_light.direction", glm::vec3(0.0f, -1.0f, -0.20f));
+			shader.setUniform("u_directional_light.diffuse", glm::vec3(1.0f));
+			shader.setUniform("u_directional_light.specular", glm::vec3(0.14f));
+			
+			// - SPOTLIGHT - Flashlight
+			shader.setUniform("u_spotlight.diffuse", glm::vec3(0.7f));
+			shader.setUniform("u_spotlight.specular", glm::vec3(0.56f));
+			shader.setUniform("u_spotlight.position", camera.getPosition());
+			shader.setUniform("u_spotlight.direction", camera.getFront());
+			shader.setUniform("u_spotlight.cos_inner_cone", glm::cos(glm::radians(20.0f)));
+			shader.setUniform("u_spotlight.cos_outer_cone", glm::cos(glm::radians(27.0f)));
+			shader.setUniform("u_spotlight.constant", 1.0f);
+			shader.setUniform("u_spotlight.linear", 0.07f);
+			shader.setUniform("u_spotlight.exponent", 0.017f);
+			shader.setUniform("u_spotlight.on", isFlashlightOn);
+
+			// Flashlight
+			// Předání stavu baterky do shaderu
+			//bool flashlightOn = true; // Například true, pokud je baterka zapnutá
+			//glm::vec3 flashlightColor = glm::vec3(1.0f, 1.0f, 1.0f); // Barva baterky (například bílá)
+			//glm::vec3 flashlightPosition = camera.getPosition(); // Barva baterky (například bílá)
+			//float flashlightIntensity = 1.0f; // Intenzita baterky (například plná intenzita)
+
+			// Nastavení uniformních proměnných v shaderu
+			/*shader.setUniform("flashlightOn", flashlightOn);
+			shader.setUniform("flashlightColor", flashlightColor);
+			shader.setUniform("flashlightIntensity", flashlightIntensity);
+			shader.setUniform("flashlightPosition", flashlightPosition);*/
+
 
 			//´------------------------------------------------------------------------------------------
 			// Freetype Text

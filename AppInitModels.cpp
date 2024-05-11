@@ -24,8 +24,13 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 void App::InitAssets()
 {
 
-	std::filesystem::path VS_path("./assets/shaders/final.vert");
-	std::filesystem::path FS_path("./assets/shaders/final.frag");
+	//std::filesystem::path VS_path("./assets/shaders/final.vert");
+	//std::filesystem::path FS_path("./assets/shaders/final.frag");
+	
+	//std::filesystem::path FS_path("./assets/shaders/finalFlash.frag");
+
+	std::filesystem::path VS_path("./assets/shaders/redo.vert");
+	std::filesystem::path FS_path("./assets/shaders/redo.frag");
 
 	//std::filesystem::path VS_path("./assets/shaders/finalPlusText.vert");
 	//std::filesystem::path FS_path("./assets/shaders/finalPlusText.frag");
@@ -179,7 +184,7 @@ void App::UpdateModels()
 	Model* heldItem = findHeldItem();
 	if (lastStateOfholdItem != holdItem) {
 		if (holdItem == false) {
-			std::cout << "Drop item!\n";
+			//std::cout << "Drop item!\n";
 			// check if you are/were holding item
 			// if not check -> error -1073741819 -> unauhorized memory write
 			if (heldItem != nullptr) {
@@ -187,7 +192,7 @@ void App::UpdateModels()
 			}
 		}
 		else {
-			std::cout << "Pick up item!\n";
+			//std::cout << "Pick up item!\n";
 			holdNewItem();
 		}
 		// current state

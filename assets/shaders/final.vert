@@ -26,14 +26,19 @@ void main(void)
 {
     // Create Model-View matrix
     mat4 mx_modelView = uMx_view * uMx_model;
+
     // Calculate view-space coordinate - in P point we are computing the color
     vec4 P = mx_modelView * aPosition;
+
     // Calculate normal in view space
     vs_out.N = mat3(mx_modelView) * aNormal;
+
     // Calculate view-space light vector
     vs_out.L = light_position - P.xyz;
+
     // Calculate view vector (negative of the view-space position)
     vs_out.V = -P.xyz;
+
     // Calculate the clip-space position of each vertex
     gl_Position = uMx_projection * P;
 

@@ -65,7 +65,8 @@ void Mesh::draw(Shader& shader, glm::mat4 mx_model)
 	if (texture_id > 0) {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
-		shader.setUniform("uTexture", 0);
+		//shader.setUniform("uTexture", 0);
+		shader.setUniform("u_material.textura", 0); // We're only using texturing unit no. 0
 	}
 	shader.setUniform("uMx_model", mx_model);
 	glBindVertexArray(VAO);

@@ -33,9 +33,13 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
             break;
         case GLFW_KEY_E:
             std::cout << "E clicked!\n";
-            std::cout << "holdItem: " << holdItem << "\n";
+            //std::cout << "holdItem: " << holdItem << "\n";
             // static x no static dumb piece of crap ... later repair logic for pick up
             holdItem = !holdItem;
+            break;
+        case GLFW_KEY_G:
+            std::cout << "G clicked!\n";
+            isFlashlightOn = !isFlashlightOn;
             break;
         }
     }
