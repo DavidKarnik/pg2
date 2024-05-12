@@ -151,6 +151,7 @@
     <ClCompile Include="AppInitModels.cpp" />
     <ClCompile Include="AppMaze.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="Cvičení.cpp" />
     <ClCompile Include="FrameCounter.cpp" />
     <ClCompile Include="gl_err_callback.cpp" />

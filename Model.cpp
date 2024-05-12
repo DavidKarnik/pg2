@@ -22,6 +22,24 @@ Model::Model(const std::filesystem::path& path_main, const std::filesystem::path
     }
 }
 
+Model::Model(std::string _name, const std::filesystem::path& path_main, const std::filesystem::path& path_tex, glm::vec3 _position, glm::vec3 _scale, glm::vec4 _rotation, bool is_height_map, bool use_aabb) :
+    name(_name),
+    position(_position),
+    scale(_scale),
+    rotation(_rotation)
+    //use_aabb(use_aabb)
+{
+    if (!is_height_map) {
+        LoadOBJFile(path_main);
+    }
+    else {
+        HeightMap_Load2(path_main);
+    }
+
+    GLuint texture_id = TextureInit(path_tex.string().c_str());
+    mesh = Mesh(GL_TRIANGLES, mesh_vertices, mesh_vertex_indices, texture_id);
+}
+
 void Model::Draw(Shader& shader)
 {
     mx_model = glm::identity<glm::mat4>();
@@ -353,7 +371,7 @@ void Model::HeightMap_Load2(const std::filesystem::path& file_name)
         pair = { static_cast<unsigned int>(vertex.Position.x), static_cast<unsigned int>(vertex.Position.z) };
         vertex.Normal = glm::normalize(normal_sums[pair]); // no need to divide by four, we can just normalize
 
-        //_heights[{vertex.position.x* HEGHTMAP_SCALE, vertex.position.z* HEGHTMAP_SCALE}] = vertex.position.y; // for heightmap collision
+        _heights[{vertex.Position.x* HEGHTMAP_SCALE, vertex.Position.z* HEGHTMAP_SCALE}] = vertex.Position.y; // for heightmap collision
     }
 
     print("HeightMap: height map vertices: " << mesh_vertices.size());
