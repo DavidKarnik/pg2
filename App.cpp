@@ -267,31 +267,31 @@ int App::Run(void)
 			auto heightmap_y = GetHeightmapY(camera.position.x, camera.position.z);
 
 
-			// //Jetpack
-			//float min_hei = heightmap_y + PLAYER_HEIGHT;// Camera's smallest Y coordinate possible
-			//if (camera_movement.y > 0.0f) {             // If holding space
-			//	camera.position.y += delta_time * 2.0f; // Go up
-			//	falling_speed = 0;
-			//	if (camera.position.y < min_hei) {      // For going up steep hills, so we cannot go into the hill
-			//		camera.position.y = min_hei;
-			//	}
-			//	//is_grounded = false;
-			//}
-			//else {                                              // If not holding space
-			//	falling_speed += delta_time * 9.81f;            // Gravity
-			//	camera.position.y -= delta_time * falling_speed;// Fall
-			//	if (camera.position.y < min_hei) {              // Do not fall through ground
-			//		camera.position.y = min_hei;
-			//		falling_speed = 0;
-			//		//if (!is_grounded) {                         // Landing sound
-			//		//	audio.PlayWalk();
-			//		//}
-			//		//is_grounded = true;
-			//	}
-			//	//else if (is_grounded && camera.position.y - min_hei > 1.0f) {
-			//	//	is_grounded = false;                        // Do not make step sounds if transitioned from walking to falling w/o jetpack
-			//	//}
-			//}
+			 // Jumping Gravity
+			float min_hei = heightmap_y + PLAYER_HEIGHT;// Camera's smallest Y coordinate possible
+			if (camera_movement.y > 0.0f) {             // If holding space
+				camera.position.y += delta_time * 2.0f; // Go up
+				falling_speed = 0;
+				if (camera.position.y < min_hei) {      // For going up steep hills, so we cannot go into the hill
+					camera.position.y = min_hei;
+				}
+				//is_grounded = false;
+			}
+			else {                                              // If not holding space
+				falling_speed += delta_time * 9.81f;            // Gravity
+				camera.position.y -= delta_time * falling_speed;// Fall
+				if (camera.position.y < min_hei) {              // Do not fall through ground
+					camera.position.y = min_hei;
+					falling_speed = 0;
+					//if (!is_grounded) {                         // Landing sound
+					//	audio.PlayWalk();
+					//}
+					//is_grounded = true;
+				}
+				//else if (is_grounded && camera.position.y - min_hei > 1.0f) {
+				//	is_grounded = false;                        // Do not make step sounds if transitioned from walking to falling w/o jetpack
+				//}
+			}
 
 			// Set Model Matrix
 			UpdateModels();
