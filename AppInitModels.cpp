@@ -2,15 +2,18 @@
 
 bool lastStateOfholdItem;
 
-void App::CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation)
+Model* App::CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation)
 {
 	std::filesystem::path modelpath("./assets/obj/" + obj);
 	std::filesystem::path texturepath("./assets/textures/" + tex);
-	auto model = Model(modelpath, texturepath);
+	//float _scale = HEGHTMAP_SCALE;
+	bool use_aabb = false;
+	auto model = new Model(name, modelpath, texturepath, position, scale, rotation, false, use_aabb);
+	/*auto model = Model(modelpath, texturepath);
 
 	model.position = position;
 	model.scale = scale;
-	model.rotation = rotation;
+	model.rotation = rotation;*/
 
 	if (is_opaque) {
 		scene_opaque.insert({ name, model });
@@ -18,6 +21,8 @@ void App::CreateModel(std::string name, std::string obj, std::string tex, bool i
 	else {
 		scene_transparent.insert({ name, model });
 	}
+
+	return model;
 }
 
 // Load models, load textures, load shaders, initialize level, etc.
@@ -51,19 +56,21 @@ void App::InitAssets()
 	CreateModel("obj_bunny", "bunny_tri_vnt.obj", "TextureDouble_A.png", true, position, scale, rotation);*/
 
 	// Megaphone
-	position = glm::vec3(4.0f, 4.0f, 2.0f);
+	position = glm::vec3(4.0f, 25.0f, 2.0f);
 	scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_megaphone", "MegaPhone.obj", "MegaPhone_basecolor.png", true, position, scale, rotation);
 	//CreateModel("obj_megaphone", "MegaPhone.obj", "Glass.png", true, position, scale, rotation);
-	scene_opaque.find("obj_megaphone")->second.canBeHold = true;
+	//scene_opaque.find("obj_megaphone")->second.canBeHold = true;
+	scene_opaque.find("obj_megaphone")->second->canBeHold = true;
 
 	// TEAPOT
-	position = glm::vec3(2.0f, 2.0f, 2.0f);
+	position = glm::vec3(2.0f, 25.0f, 2.0f);
 	scale = glm::vec3(0.1f, 0.1f, 0.1f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_teapot", "teapot_tri_vnt.obj", "Glass.png", false, position, scale, rotation);
-	scene_transparent.find("obj_teapot")->second.canBeHold = true;
+	//scene_transparent.find("obj_teapot")->second.canBeHold = true;
+	scene_transparent.find("obj_teapot")->second->canBeHold = true;
 
 	position = glm::vec3(-1.0f, 1.0f, 1.0f);
 	//scale = glm::vec3(0.005f, 0.005f, 0.005f);
@@ -73,9 +80,12 @@ void App::InitAssets()
 	//CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	CreateModel("obj_gun", "Beretta_M9.obj", "Grey.png", false, position, scale, rotation);
 	// right init rotation
-	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
+	/*scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
 	scene_transparent.find("obj_gun")->second.canBeHold = true;
-	scene_transparent.find("obj_gun")->second.isItemHeld = true;
+	scene_transparent.find("obj_gun")->second.isItemHeld = true;*/
+	scene_transparent.find("obj_gun")->second->rotation = glm::vec4(0.0f, 0.0f, 1.0f, -90);
+	scene_transparent.find("obj_gun")->second->canBeHold = true;
+	scene_transparent.find("obj_gun")->second->isItemHeld = true;
 
 	holdItem = true;
 	lastStateOfholdItem = holdItem;
@@ -89,11 +99,24 @@ void App::InitAssets()
 	//std::filesystem::path heightspath("./assets/textures/heightmap2.jpeg");
 	std::filesystem::path heightspath("./assets/textures/heightmap3.png");
 	std::filesystem::path texturepath("./assets/textures/tex_256.png");
-	auto model = Model(heightspath, texturepath, true);
-	model.position = glm::vec3(1.0f, 1.0f, 1.0f);
+	/*auto model = Model(heightspath, texturepath, true);
+	model.position = glm::vec3(-60.0f, 0.0f, -60.0f);
 	model.scale = glm::vec3(0.1f, 0.1f, 0.1f);
 	model.rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	scene_opaque.insert({ "hightmap", model });
+	scene_opaque.insert({ "hightmap", model });*/
+
+
+	position = glm::vec3(-HEIGHTMAP_SHIFT, 0.0f, -HEIGHTMAP_SHIFT);
+	scale = glm::vec3(0.1f, 0.1f, 0.1f);
+	//float scale2 = HEGHTMAP_SCALE;
+	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	auto obj_heightmap = new Model("heightmap", heightspath, texturepath, position, scale, rotation, true, false);
+	scene_opaque.insert({ "obj_heightmap", obj_heightmap });
+
+	//std::cout << "Drop item!\n";
+
+	_heights = &obj_heightmap->_heights;
+	//_heights = &model._heights;
 
 	// == for TRANSPARENT OBJECTS sorting ==	
 	for (auto i = scene_transparent.begin(); i != scene_transparent.end(); i++) {
@@ -152,7 +175,8 @@ void App::UpdateModels()
 	glm::vec4 rotation{};
 
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 45 * glfwGetTime());
-	scene_transparent.find("obj_teapot")->second.rotation = rotation;
+	//scene_transparent.find("obj_teapot")->second.rotation = rotation;
+	scene_transparent.find("obj_teapot")->second->rotation = rotation;
 
 	// Nastavení nové pozice pro zbraò
 	//scene_transparent.find("obj_gun")->second.position = updateGunPositionToMiddleOfScreen(camera);
@@ -168,7 +192,7 @@ void App::UpdateModels()
 	// Upravení smìrového vektoru kamery
 	glm::vec3 adjustedCameraFront = camera.getFront();
 	adjustedCameraFront.y *= -1.0f; // Otoèení osy Y (zmìna znaménka) pro obrácenou rotaci zbranì
-	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(adjustedCameraFront, -90.0f);
+	scene_transparent.find("obj_gun")->second->rotation = glm::vec4(adjustedCameraFront, -90.0f);
 
 	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(cameraFront.x, cameraFront.y, cameraFront.z, -90.0f + camera.getYaw());
 	//scene_transparent.find("obj_gun")->second.rotation = glm::vec4(camera.getYaw(), camera.getPitch(), 1.0f, -90.0f);
@@ -238,11 +262,11 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 
 	// Projít všechny modely v mapì scene_opaque
 	for (auto& pair : scene_opaque) {
-		if (pair.second.canBeHold) {
-			float distance = glm::length(pair.second.position - cameraPosition);
+		if (pair.second->canBeHold) {
+			float distance = glm::length(pair.second->position - cameraPosition);
 			if (distance < shortestDistance) {
 				shortestDistance = distance;
-				closestModel = &(pair.second);
+				closestModel = pair.second;
 				//std::cout << "Item founded!\n";
 			}
 		}
@@ -250,11 +274,11 @@ Model* App::findClosestModel(glm::vec3& cameraPosition) {
 
 	// Projít všechny modely v mapì scene_transparent
 	for (auto& pair : scene_transparent) {
-		if (pair.second.canBeHold) {
-			float distance = glm::length(pair.second.position - cameraPosition);
+		if (pair.second->canBeHold) {
+			float distance = glm::length(pair.second->position - cameraPosition);
 			if (distance < shortestDistance) {
 				shortestDistance = distance;
-				closestModel = &(pair.second);
+				closestModel = pair.second;
 				//std::cout << "Item founded!\n";
 			}
 		}
@@ -274,21 +298,21 @@ Model* App::findClosestModelInItemPickUpRange(glm::vec3& cameraPosition) {
 
 
 	for (auto& pair : scene_opaque) {
-		if (pair.second.canBeHold) {
-			distance = glm::length(pair.second.position - cameraPosition);
+		if (pair.second->canBeHold) {
+			distance = glm::length(pair.second->position - cameraPosition);
 			if (distance < shortestDistance && (distance - itemPickUpRange) < myEpsilon) {
 				shortestDistance = distance;
-				closestModel = &(pair.second);
+				closestModel = pair.second;
 			}
 		}
 	}
 
 	for (auto& pair : scene_transparent) {
-		if (pair.second.canBeHold) {
-			distance = glm::length(pair.second.position - cameraPosition);
+		if (pair.second->canBeHold) {
+			distance = glm::length(pair.second->position - cameraPosition);
 			if (distance < shortestDistance && (distance - itemPickUpRange) < myEpsilon) {
 				shortestDistance = distance;
-				closestModel = &(pair.second);
+				closestModel = pair.second;
 			}
 		}
 	}
@@ -302,13 +326,13 @@ Model* App::findClosestModelInItemPickUpRange(glm::vec3& cameraPosition) {
 
 Model* App::findHeldItem() {
 	for (auto& pair : scene_opaque) {
-		if (pair.second.isItemHeld) {
-			return &pair.second;
+		if (pair.second->isItemHeld) {
+			return pair.second;
 		}
 	}
 	for (auto& pair : scene_transparent) {
-		if (pair.second.isItemHeld) {
-			return &pair.second;
+		if (pair.second->isItemHeld) {
+			return pair.second;
 		}
 	}
 	return nullptr;

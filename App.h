@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 
 #include <opencv2/opencv.hpp>
 
@@ -10,7 +10,12 @@
 #include "Window.h"
 #include "Projectile.h"
 
-//bool App::holdItem = false; // Inicializace statické promìnné
+//bool App::holdItem = false;
+
+#define PLAYER_HEIGHT 1.0f      // Camera above ground
+#define HEIGHTMAP_SHIFT 60.0f   // Heightmap is shifted by this value on x and z coordinates
+#define N_PROJECTILES 10        // How many projectiles are there in the pool
+#define HEGHTMAP_SCALE 0.1f
 
 class App {
 public:
@@ -19,7 +24,10 @@ public:
     bool Init();
     void InitAssets();
     int Run();
-    void CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
+    //void CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
+    //Model* CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
+    Model* CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
+
     void UpdateModels();
     void RemoveModel(std::string name);
 
@@ -32,10 +40,13 @@ public:
     ~App();
 private:
 
-    std::map<std::string, Model> scene_opaque;
-    std::map<std::string, Model> scene_transparent;
+    /*std::map<std::string, Model> scene_opaque;
+    std::map<std::string, Model> scene_transparent;*/
+    std::map<std::string, Model*> scene_opaque;
+    std::map<std::string, Model*> scene_transparent;
     // for sorting - from nearest to most far .. transparent obj
-    std::vector<std::pair<const std::string, Model>*> scene_transparent_pairs; 
+    //std::vector<std::pair<const std::string, Model>*> scene_transparent_pairs; 
+    std::vector<std::pair<const std::string, Model*>*> scene_transparent_pairs; 
 
     static Projectile projectile;
 
@@ -79,6 +90,9 @@ private:
 
     Shader shader;
 
+    // Heightmap
+    std::map<std::pair<float, float>, float>* _heights{};
+    float GetHeightmapY(float position_x, float position_z) const;
 
     // Maze
     ///*

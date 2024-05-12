@@ -48,7 +48,7 @@ int App::window_height = 600;
 int App::window_width_return_from_fullscreen{};
 int App::window_height_return_from_fullscreen{};
 
-Camera App::camera = Camera(glm::vec3(0, 0, 1000));
+Camera App::camera = Camera(glm::vec3(0, 0, 0));
 double App::last_cursor_xpos{};
 double App::last_cursor_ypos{};
 
@@ -58,6 +58,8 @@ float App::itemPickUpRange = 4.0f;
 bool App::holdItem = true;
 
 bool App::isFlashlightOn = false;
+
+glm::vec3 cameraPosition = glm::vec3(0, 25.0f, 0);
 
 App::App()
 {
@@ -194,7 +196,10 @@ int App::Run(void)
 
 		UpdateProjectionMatrix();
 		glViewport(0, 0, window_width, window_height);
-		camera.position = glm::vec3(0, 0, 0);
+
+		//camera.position = glm::vec3(0, 0, 0);
+		camera.position = cameraPosition;
+
 		double last_frame_time = glfwGetTime();
 		glm::vec3 camera_movement{};
 
@@ -203,15 +208,14 @@ int App::Run(void)
 		glm::vec4 rgba_white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		// Set camera position
-		camera.position.y = 2.0f;
-		camera.position.z = 5.0f;
+		//camera.position.y = 25.0f;
+		//camera.position.z = 0.0f;
 
 		bool isResettingCursor = false;
 		int width, height, centerX, centerY;
 
-		// Set light position
-		//glm::vec3 light_position(-100000, 0, 100000);
-		glm::vec3 light_position(500, 0, 100);
+		float falling_speed = 0;
+
 
 		while (!glfwWindowShouldClose(window)) {
 			// Time/FPS measure start
@@ -233,7 +237,7 @@ int App::Run(void)
 
 			POINT p;
 			if (GetCursorPos(&p)) {
-				// Získat rozmìry okna
+				// Získat rozměry okna
 				glfwGetWindowSize(window, &width, &height);
 				centerX = width / 2;
 				centerY = height / 2;
@@ -250,13 +254,44 @@ int App::Run(void)
 				last_cursor_xpos = p.x;
 				last_cursor_ypos = p.y;
 
-				// Pokud došlo ke zmìnì pozice, volat onMouseEvent s relativní zmìnou
+				// Pokud došlo ke změně pozice, volat onMouseEvent s relativní změnou
 				if ((deltaX != 0 || deltaY != 0) && isCursorOutOfCenter) {
 					camera.onMouseEvent(deltaX, deltaY, true);
 					isResettingCursor = true;
 					glfwSetCursorPos(window, centerX, centerY);
 				}
 			}
+
+			// 
+			// Heightmap collision – for our X and Z get Y coordinate for ground level
+			auto heightmap_y = GetHeightmapY(camera.position.x, camera.position.z);
+
+
+			// //Jetpack
+			//float min_hei = heightmap_y + PLAYER_HEIGHT;// Camera's smallest Y coordinate possible
+			//if (camera_movement.y > 0.0f) {             // If holding space
+			//	camera.position.y += delta_time * 2.0f; // Go up
+			//	falling_speed = 0;
+			//	if (camera.position.y < min_hei) {      // For going up steep hills, so we cannot go into the hill
+			//		camera.position.y = min_hei;
+			//	}
+			//	//is_grounded = false;
+			//}
+			//else {                                              // If not holding space
+			//	falling_speed += delta_time * 9.81f;            // Gravity
+			//	camera.position.y -= delta_time * falling_speed;// Fall
+			//	if (camera.position.y < min_hei) {              // Do not fall through ground
+			//		camera.position.y = min_hei;
+			//		falling_speed = 0;
+			//		//if (!is_grounded) {                         // Landing sound
+			//		//	audio.PlayWalk();
+			//		//}
+			//		//is_grounded = true;
+			//	}
+			//	//else if (is_grounded && camera.position.y - min_hei > 1.0f) {
+			//	//	is_grounded = false;                        // Do not make step sounds if transitioned from walking to falling w/o jetpack
+			//	//}
+			//}
 
 			// Set Model Matrix
 			UpdateModels();
@@ -268,32 +303,19 @@ int App::Run(void)
 			shader.setUniform("uMx_view", mx_view); // World space -> Camera space
 			shader.setUniform("uMx_projection", mx_projection); // Camera space -> Screen
 
-			// UBER
+			// Setup
 			shader.setUniform("u_ambient_alpha", 0.0f);
 			shader.setUniform("u_diffuse_alpha", 0.7f);
 			shader.setUniform("u_camera_position", camera.getPosition());
-
-			///*
-			//shader.setUniform("ambient_material", rgb_white);
-			//shader.setUniform("diffuse_material", rgb_white);
-			//shader.setUniform("specular_material", rgb_white);
-			//shader.setUniform("specular_shinines", 5.0f);
-			//shader.setUniform("light_position", light_position);
-			/**/
-
-			// - AMBIENT
+			// Material
 			shader.setUniform("u_material.ambient", glm::vec3(0.1f));
-
-			// - MATERIAL SPECULAR
 			shader.setUniform("u_material.specular", glm::vec3(1.0f));
 			shader.setUniform("u_material.shininess", 90.0f);
-
-			// - DIRECTION :: SUN O)))
+			// Directional light - Sun
 			shader.setUniform("u_directional_light.direction", glm::vec3(0.0f, -1.0f, -0.20f));
 			shader.setUniform("u_directional_light.diffuse", glm::vec3(1.0f));
 			shader.setUniform("u_directional_light.specular", glm::vec3(0.14f));
-			
-			// - SPOTLIGHT - Flashlight
+			// Spotlight - Flashlight
 			shader.setUniform("u_spotlight.diffuse", glm::vec3(0.7f));
 			shader.setUniform("u_spotlight.specular", glm::vec3(0.56f));
 			shader.setUniform("u_spotlight.position", camera.getPosition());
@@ -304,20 +326,6 @@ int App::Run(void)
 			shader.setUniform("u_spotlight.linear", 0.07f);
 			shader.setUniform("u_spotlight.exponent", 0.017f);
 			shader.setUniform("u_spotlight.on", isFlashlightOn);
-
-			// Flashlight
-			// Předání stavu baterky do shaderu
-			//bool flashlightOn = true; // Například true, pokud je baterka zapnutá
-			//glm::vec3 flashlightColor = glm::vec3(1.0f, 1.0f, 1.0f); // Barva baterky (například bílá)
-			//glm::vec3 flashlightPosition = camera.getPosition(); // Barva baterky (například bílá)
-			//float flashlightIntensity = 1.0f; // Intenzita baterky (například plná intenzita)
-
-			// Nastavení uniformních proměnných v shaderu
-			/*shader.setUniform("flashlightOn", flashlightOn);
-			shader.setUniform("flashlightColor", flashlightColor);
-			shader.setUniform("flashlightIntensity", flashlightIntensity);
-			shader.setUniform("flashlightPosition", flashlightPosition);*/
-
 
 			//´------------------------------------------------------------------------------------------
 			// Freetype Text
@@ -353,28 +361,23 @@ int App::Run(void)
 			// Draw the scene
 			// - Draw opaque objects
 			for (auto& [key, value] : scene_opaque) {
-				value.Draw(shader);
+				value->Draw(shader);
 			}
 			// - Draw transparent objects
 			glEnable(GL_BLEND);         // enable blending
 			glDisable(GL_CULL_FACE);    // no polygon removal
 			glDepthMask(GL_FALSE);      // set Z to read-only
-			//// TODO: sort by distance from camera, from far to near
-			//for (auto& [key, value] : scene_transparent) {
-			//	value.Draw(shader);
-			//}
-			// Calculate distace from camera for all transparent objects
+			// - - Calculate distace from camera for all transparent objects
 			for (auto& transparent_pair : scene_transparent_pairs) {
-				transparent_pair->second._distance_from_camera = glm::length(camera.position - transparent_pair->second.position);
+				transparent_pair->second->_distance_from_camera = glm::length(camera.position - transparent_pair->second->position);
 			}
-			// Sort all transparent objects in vector by their distance from camera
-			// near to far ... first draw nearest obj ofcourse <<
-			std::sort(scene_transparent_pairs.begin(), scene_transparent_pairs.end(), [](std::pair<const std::string, Model>*& a, std::pair<const std::string, Model>*& b) {
-				return a->second._distance_from_camera < b->second._distance_from_camera;
+			// - - Sort all transparent objects in vector by their distance from camera (far to near)
+			std::sort(scene_transparent_pairs.begin(), scene_transparent_pairs.end(), [](std::pair<const std::string, Model*>*& a, std::pair<const std::string, Model*>*& b) {
+				return a->second->_distance_from_camera > b->second->_distance_from_camera;
 				});
-			// Draw all transparent objects in sorted order
+			// - - Draw all transparent objects in sorted order
 			for (auto& transparent_pair : scene_transparent_pairs) {
-				transparent_pair->second.Draw(shader);
+				transparent_pair->second->Draw(shader);
 			}
 			glDisable(GL_BLEND);
 			glEnable(GL_CULL_FACE);

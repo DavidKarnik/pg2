@@ -1,15 +1,20 @@
 #pragma once
 
 #include <filesystem>
+#include <map>
 
 #include "Vertex.h"
 #include "Mesh.h"
 #include "Shader.h"
 
+#define HEGHTMAP_SCALE 0.1f
+
 class Model
 {
 public:
     Model(const std::filesystem::path& path_main, const std::filesystem::path& path_tex, bool is_height_map = false);
+    Model(std::string _name, const std::filesystem::path& path_main, const std::filesystem::path& path_tex, glm::vec3 _position, glm::vec3 _scale, glm::vec4 _rotation, bool is_height_map, bool use_aabb);
+
     void Draw(Shader& shader);
 
     glm::vec3 position{};
@@ -18,6 +23,8 @@ public:
     float _distance_from_camera;
     bool isItemHeld = false;
     bool canBeHold = false;
+
+    std::map<std::pair<float, float>, float> _heights; // for heightmap collision
 
 private:
     Mesh mesh;

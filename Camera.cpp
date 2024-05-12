@@ -6,8 +6,8 @@
 
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 position)
-	: position(position)
+Camera::Camera(glm::vec3 _position)
+	: position(_position)
 {
 	this->position = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->Front = glm::normalize(glm::vec3(0.0f) - this->position);
