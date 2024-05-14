@@ -78,8 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ExecutablePath>$(OPENCV_DIR)\x64\vc16\bin;C:\Users\David\source\repos\6semestr\PG2_CPP\downloadPG2\Cvičení 1\bin;$(ProjectDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
-    <IncludePath>$(OPENCV_DIR)\include;C:\Users\David\source\repos\6semestr\PG2_CPP\downloadPG2\Cvičení 1\include;$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(OPENCV_DIR)\x64\vc16\lib;$(OPENCV_DIR)\x64\vc16\bin;C:\Users\David\source\repos\6semestr\PG2_CPP\downloadPG2\Cvičení 1\lib;$(ProjectDir)lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>$(OPENCV_DIR)\include;C:\Users\David\source\repos\6semestr\PG2_CPP\downloadPG2\Cvičení 1\include;$(ProjectDir)include;$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(OPENCV_DIR)\x64\vc16\lib;$(OPENCV_DIR)\x64\vc16\bin;C:\Users\David\source\repos\6semestr\PG2_CPP\downloadPG2\Cvičení 1\lib;$(SolutionDir)\lib;$(ProjectDir)lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -141,7 +141,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3dll.lib;glfw3.lib;user32.lib;gdi32.lib;shell32.lib;$(CoreLibraryDependencies);opencv_world490.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3dll.lib;glfw3.lib;user32.lib;gdi32.lib;shell32.lib;$(CoreLibraryDependencies);opencv_world490.lib;freetype.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\David\source\repos\6semestr\PG2_CPP\libraries\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

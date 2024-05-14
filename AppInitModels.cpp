@@ -22,6 +22,7 @@ Model* App::CreateModel(std::string name, std::string obj, std::string tex, bool
 		scene_transparent.insert({ name, model });
 	}
 
+
 	return model;
 }
 
