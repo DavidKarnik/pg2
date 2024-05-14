@@ -9,6 +9,8 @@
 #include "Camera.h"
 #include "Window.h"
 #include "Projectile.h"
+#include <irrKlang.h>
+#include "Audio.h"
 
 //bool App::holdItem = false;
 
@@ -36,6 +38,12 @@ public:
     Model* findClosestModelInItemPickUpRange(glm::vec3& cameraPosition);
     Model* findHeldItem();
 
+    irrklang::ISoundEngine* soundEngine;
+
+    Audio audio;
+    Model* sound_model{};
+    glm::vec2 sound_to_player{};
+    glm::vec2 last_sound_to_player{};
 
     ~App();
 private:

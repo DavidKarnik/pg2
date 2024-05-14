@@ -150,6 +150,7 @@
     <ClCompile Include="AppCallback.cpp" />
     <ClCompile Include="AppInitModels.cpp" />
     <ClCompile Include="AppMaze.cpp" />
+    <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="Cvičení.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="Audio.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FrameCounter.h" />
     <ClInclude Include="gl_err_callback.h" />

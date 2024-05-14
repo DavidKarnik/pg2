@@ -34,6 +34,8 @@
 #include FT_FREETYPE_H
 #include "text_fonts_glyphs.h"
 //´------------------------------------------------------------------------------------------
+
+// 3D sounds
 #include <irrKlang.h>
 #include <windows.h>
 #include <conio.h>
@@ -183,12 +185,9 @@ int App::Run(void)
 			int keep_console_open;
 			std::cin >> keep_console_open;
 		}
-		ISoundEngine* engine = createIrrKlangDevice();
-		ISound* music = engine->play3D("./assets/sounds/teapot.wav", vec3df(0, 0, 0), true, false, true);
-		if (music)
-			music->setMinDistance(5.0f);
-		float posOnCircle = 0;
-		const float radius = 5;
+
+		audio.PlayMusic3D();
+		// 
 		//Text text_object2(free_type, window_width, window_height, "01234567890Get Rady.Timr:owns&ClBgfb"); // Declare a new text object, passing in your chosen alphabet.	
 		//text_object2.create_text_message("Get Ready... Timer: 000", 100, 50, "./assets/Text Fonts/arialbi.ttf", 130, false); // True indicates that the message will be modified.
 
@@ -229,18 +228,14 @@ int App::Run(void)
 
 		float falling_speed = 0;
 
+		sound_to_player.x = camera.position.x - sound_model->position.x;
+		sound_to_player.y = camera.position.z - sound_model->position.z;
+		sound_to_player = glm::normalize(sound_to_player);
+		last_sound_to_player = sound_to_player;
 
 		while (!glfwWindowShouldClose(window)) {
 			// Time/FPS measure start
 			auto fps_frame_start_timestamp = std::chrono::steady_clock::now();
-			posOnCircle += 0.04f;
-			vec3df pos3d(radius * cosf(posOnCircle),
-				0, radius * sinf(posOnCircle * 0.5f));
-			engine->setListenerPosition(vec3df(0, 0, 0),
-				vec3df(0, 0, 1));
-
-			if (music)
-				music->setPosition(pos3d);
 
 			// Clear OpenGL canvas, both color buffer and Z-buffer
 			glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
@@ -255,6 +250,14 @@ int App::Run(void)
 			camera.onKeyboardEvent(window, static_cast<float>(delta_time)); // process keys etc
 			camera.position += camera_movement;
 			glm::mat4 mx_view = camera.getViewMatrix();
+
+			sound_to_player.x = camera.position.x;
+			sound_to_player.y = camera.position.z;
+			sound_to_player = glm::normalize(sound_to_player);
+			// 3D Audio
+			audio.UpdateMusicPosition(sound_model->position);
+			audio.UpdateMusicVolume(glm::length(sound_to_player) / glm::length(last_sound_to_player));
+			last_sound_to_player = sound_to_player;
 
 			POINT p;
 			if (GetCursorPos(&p)) {
@@ -432,7 +435,6 @@ int App::Run(void)
 		std::cerr << "App failed : " << e.what() << "\n";
 		return EXIT_FAILURE;
 	}
-
 	GetInformation();
 	std::cout << "Finished OK...\n";
 	return EXIT_SUCCESS;
@@ -442,7 +444,6 @@ App::~App()
 {
 	// clean-up
 	shader.clear();
-
 	if (window) {
 		glfwDestroyWindow(window);
 	}

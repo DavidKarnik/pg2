@@ -22,7 +22,6 @@ Model* App::CreateModel(std::string name, std::string obj, std::string tex, bool
 		scene_transparent.insert({ name, model });
 	}
 
-
 	return model;
 }
 
@@ -60,7 +59,7 @@ void App::InitAssets()
 	position = glm::vec3(4.0f, 25.0f, 2.0f);
 	scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	CreateModel("obj_megaphone", "MegaPhone.obj", "MegaPhone_basecolor.png", true, position, scale, rotation);
+	sound_model = CreateModel("obj_megaphone", "MegaPhone.obj", "MegaPhone_basecolor.png", true, position, scale, rotation);
 	//CreateModel("obj_megaphone", "MegaPhone.obj", "Glass.png", true, position, scale, rotation);
 	//scene_opaque.find("obj_megaphone")->second.canBeHold = true;
 	scene_opaque.find("obj_megaphone")->second->canBeHold = true;

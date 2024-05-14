@@ -54,6 +54,7 @@ public:
 
 	void toggleSprint();
 
+
 private:
 	void updateCameraVectors();
 
