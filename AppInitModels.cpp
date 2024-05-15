@@ -64,6 +64,13 @@ void App::InitAssets()
 	//scene_opaque.find("obj_megaphone")->second.canBeHold = true;
 	scene_opaque.find("obj_megaphone")->second->canBeHold = true;
 
+	//SUB
+	position = glm::vec3(8.0f, 8.0f, 1.0f);
+	scale = glm::vec3(0.3f, 0.3f, 0.3f);
+	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	CreateModel("obj_sub", "sub.obj", "sub_texture.jpg", true, position, scale, rotation);
+	scene_opaque.find("obj_sub")->second->canBeHold = false;
+
 	// TEAPOT
 	position = glm::vec3(2.0f, 25.0f, 2.0f);
 	scale = glm::vec3(0.1f, 0.1f, 0.1f);
@@ -353,5 +360,6 @@ void App::holdNewItem() {
 		}*/
 		// je držen
 		closestModel->isItemHeld = true;
+		audio.PlayMusic3D("bell.wav", 5.0, false);
 	}
 }

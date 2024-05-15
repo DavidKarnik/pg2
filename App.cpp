@@ -186,7 +186,7 @@ int App::Run(void)
 			std::cin >> keep_console_open;
 		}
 
-		audio.PlayMusic3D();
+		audio.PlayMusic3D("teapot.wav", 0.5, true);
 		// 
 		//Text text_object2(free_type, window_width, window_height, "01234567890Get Rady.Timr:owns&ClBgfb"); // Declare a new text object, passing in your chosen alphabet.	
 		//text_object2.create_text_message("Get Ready... Timer: 000", 100, 50, "./assets/Text Fonts/arialbi.ttf", 130, false); // True indicates that the message will be modified.
@@ -232,17 +232,22 @@ int App::Run(void)
 		sound_to_player.y = camera.position.z - sound_model->position.z;
 		sound_to_player = glm::normalize(sound_to_player);
 		last_sound_to_player = sound_to_player;
+		glm::vec3 last_position;
+		double current_timestamp = glfwGetTime();
+		double walk_last_played_timestamp = current_timestamp;
+		const double walk_delay = 0.5;
+		const double sprint_delay = 0.3;
 
 		while (!glfwWindowShouldClose(window)) {
 			// Time/FPS measure start
 			auto fps_frame_start_timestamp = std::chrono::steady_clock::now();
+			current_timestamp = glfwGetTime();
 
 			// Clear OpenGL canvas, both color buffer and Z-buffer
 			glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// === After clearing the canvas ===
-
 			// React to user :: Create View Matrix according to camera settings
 			double delta_time = glfwGetTime() - last_frame_time;
 			last_frame_time = glfwGetTime();
@@ -256,8 +261,18 @@ int App::Run(void)
 			sound_to_player = glm::normalize(sound_to_player);
 			// 3D Audio
 			audio.UpdateMusicPosition(sound_model->position);
-			audio.UpdateMusicVolume(glm::length(sound_to_player) / glm::length(last_sound_to_player));
+			//audio.UpdateMusicVolume(glm::length(sound_to_player) / glm::length(last_sound_to_player));
 			last_sound_to_player = sound_to_player;
+
+			//steps
+			if (camera.getPosition() != last_position) {
+				if ((current_timestamp > walk_last_played_timestamp + walk_delay) || ((current_timestamp > walk_last_played_timestamp + sprint_delay) && camera.getSprint() ))
+				{
+					audio.Walk();
+					walk_last_played_timestamp = current_timestamp;
+				}
+			}
+			last_position = camera.getPosition();
 
 			POINT p;
 			if (GetCursorPos(&p)) {
@@ -380,7 +395,6 @@ int App::Run(void)
 			//text_object2.draw_alphabets();
 			//
 			//´------------------------------------------------------------------------------------------
-
 
 			// Draw the scene
 			// - Draw opaque objects

@@ -127,3 +127,7 @@ GLfloat Camera::getYaw() {
 GLfloat Camera::getPitch() {
 	return Pitch;
 }
+
+bool Camera::getSprint() {
+	return is_sprint;
+}

@@ -11,14 +11,6 @@ Audio::Audio()
 		std::cerr << "Sound Engine error\n";
 	}
 
-	// Init SFXs
-	irrklang::ISoundSource* snd_shoot = engine->addSoundSourceFromFile("resources/sfx/bow.ogg");
-	snd_shoot->setDefaultVolume(0.45f);
-	sounds.insert({ "snd_shoot", snd_shoot });
-
-	irrklang::ISoundSource* snd_hit = engine->addSoundSourceFromFile("resources/sfx/hit.mp3");
-	sounds.insert({ "snd_hit", snd_hit });
-
 }
 
 void Audio::UpdateListenerPosition(glm::vec3 position, glm::vec3 front, glm::vec3 world_up)
@@ -35,13 +27,15 @@ void Audio::UpdateListenerPosition(glm::vec3 position, glm::vec3 front, glm::vec
 	engine->setListenerPosition(_position, _look_direction, _vel_per_second, _up_vector);
 }
 
-void Audio::PlayMusic3D()
+void Audio::PlayMusic3D(const std::string& soundFile, float volume, bool repeat)
 {
-	music = engine->play3D("assets/sounds/teapot.wav", irrklang::vec3df(0, 0, 0), true, true);
+
+	std::string fullPath = "assets/sounds/" + soundFile;
+	music = engine->play3D(fullPath.c_str(), irrklang::vec3df(0, 0, 0), repeat, true);
 	if (music) {
 		music->setMinDistance(1.0f);
 		music->setIsPaused(false);
-		music->setVolume(VOLUME);
+		music->setVolume(volume);
 	}
 }
 
@@ -54,6 +48,12 @@ void Audio::UpdateMusicPosition(glm::vec3 position)
 void Audio::UpdateMusicVolume(float amount)
 {
 	music->setVolume(amount * VOLUME);
+}
+
+void Audio::Walk()
+{
+	engine->play2D(walkSwitch ? "./assets/sounds/step1.wav" : "./assets/sounds/step2.wav");
+	walkSwitch = !walkSwitch;
 }
 
 Audio::~Audio()
