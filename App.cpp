@@ -237,6 +237,8 @@ int App::Run(void)
 		double walk_last_played_timestamp = current_timestamp;
 		const double walk_delay = 0.5;
 		const double sprint_delay = 0.3;
+		float posOnCircle = 0;
+		float radius = 5;
 
 		while (!glfwWindowShouldClose(window)) {
 			// Time/FPS measure start
@@ -260,7 +262,8 @@ int App::Run(void)
 			sound_to_player.y = camera.position.z;
 			sound_to_player = glm::normalize(sound_to_player);
 			// 3D Audio
-			audio.UpdateMusicPosition(sound_model->position);
+			posOnCircle += 0.04f;
+			audio.UpdateMusicPosition(posOnCircle, radius);
 			//audio.UpdateMusicVolume(glm::length(sound_to_player) / glm::length(last_sound_to_player));
 			last_sound_to_player = sound_to_player;
 

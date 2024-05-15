@@ -39,10 +39,12 @@ void Audio::PlayMusic3D(const std::string& soundFile, float volume, bool repeat)
 	}
 }
 
-void Audio::UpdateMusicPosition(glm::vec3 position)
+void Audio::UpdateMusicPosition(float posOnCircle, float radius)
 {
-	irrklang::vec3df _position(position.x, position.y, position.z);
-	music->setPosition(_position);
+	irrklang::vec3df pos3d(radius * cosf(posOnCircle), 0, radius * sinf(posOnCircle * 0.5f));
+	engine->setListenerPosition(irrklang::vec3df(0, 0, 0), irrklang::vec3df(0, 0, 1));
+	if (music)
+		music->setPosition(pos3d);
 }
 
 void Audio::UpdateMusicVolume(float amount)
