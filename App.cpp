@@ -224,6 +224,7 @@ int App::Run(void)
 		//camera.position.z = 0.0f;
 
 		bool isResettingCursor = false;
+		bool centered = true;
 		int width, height, centerX, centerY;
 
 		float falling_speed = 0;
@@ -268,7 +269,7 @@ int App::Run(void)
 			last_sound_to_player = sound_to_player;
 
 			//steps
-			if (camera.getPosition() != last_position) {
+			if ((camera.getPosition() != last_position)  && camera.position.y <= (GetHeightmapY(camera.position.x, camera.position.z) + PLAYER_HEIGHT + 0.03f)) { //1.0f == tolerance
 				if ((current_timestamp > walk_last_played_timestamp + walk_delay) || ((current_timestamp > walk_last_played_timestamp + sprint_delay) && camera.getSprint() ))
 				{
 					audio.Walk();
@@ -442,6 +443,7 @@ int App::Run(void)
 				//std::cout << fps_counter_frames << " FPS\n";
 				std::stringstream ss;
 				ss << fps_counter_frames << " FPS";
+				std::cout << fps_counter_frames << " FPS" << "\n";
 				glfwSetWindowTitle(window, ss.str().c_str());
 				fps_counter_seconds = 0;
 				fps_counter_frames = 0;
