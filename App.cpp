@@ -224,8 +224,11 @@ int App::Run(void)
 		//camera.position.z = 0.0f;
 
 		bool isResettingCursor = false;
-		bool centered = true;
-		int width, height, centerX, centerY;
+		bool centered = false;
+		int width, height, centerX, centerY, window_xpos, window_ypos;
+
+		float deltaX, deltaY;
+		bool isCursorOutOfCenter = false;
 
 		float falling_speed = 0;
 
@@ -240,6 +243,8 @@ int App::Run(void)
 		const double sprint_delay = 0.3;
 		float posOnCircle = 0;
 		float radius = 5;
+
+
 
 		while (!glfwWindowShouldClose(window)) {
 			// Time/FPS measure start
@@ -269,7 +274,7 @@ int App::Run(void)
 			last_sound_to_player = sound_to_player;
 
 			//steps
-			if ((camera.getPosition() != last_position)  && camera.position.y <= (GetHeightmapY(camera.position.x, camera.position.z) + PLAYER_HEIGHT + 0.03f)) { //1.0f == tolerance
+			if ((camera.getPosition() != last_position)  && camera.position.y <= (GetHeightmapY(camera.position.x, camera.position.z) + PLAYER_HEIGHT + 0.03f)) { //0.03f == tolerance
 				if ((current_timestamp > walk_last_played_timestamp + walk_delay) || ((current_timestamp > walk_last_played_timestamp + sprint_delay) && camera.getSprint() ))
 				{
 					audio.Walk();
@@ -282,23 +287,30 @@ int App::Run(void)
 			if (GetCursorPos(&p)) {
 				// Získat rozměry okna
 				glfwGetWindowSize(window, &width, &height);
+				glfwGetWindowPos(window, &window_xpos, &window_ypos);
 				centerX = width / 2;
 				centerY = height / 2;
 				if (isResettingCursor) {
 					isResettingCursor = false;
 					last_cursor_xpos = centerX;
 					last_cursor_ypos = centerY;
+					centered = true;
 				}
-				float deltaX = static_cast<float>(p.x - last_cursor_xpos);
-				float deltaY = static_cast<float>(p.y - last_cursor_ypos);
-				bool isCursorOutOfCenter = p.x != 400 || p.y != 300;
+
+				deltaX = static_cast<float>(p.x - last_cursor_xpos - window_xpos);
+				deltaY = static_cast<float>(p.y - last_cursor_ypos - window_ypos);
+
+
+				//isCursorOutOfCenter = p.x != 400 || p.y != 300;
+				isCursorOutOfCenter = p.x != centerX || p.y != centerY;
 
 				// Aktualizovat pøedchozí pozici pro další iteraci
 				last_cursor_xpos = p.x;
 				last_cursor_ypos = p.y;
 
+
 				// Pokud došlo ke změně pozice, volat onMouseEvent s relativní změnou
-				if ((deltaX != 0 || deltaY != 0) && isCursorOutOfCenter) {
+				if (isCursorOutOfCenter) {
 					camera.onMouseEvent(deltaX, deltaY, true);
 					isResettingCursor = true;
 					glfwSetCursorPos(window, centerX, centerY);
