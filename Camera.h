@@ -4,6 +4,8 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
+#include "Window.h"
+
 enum Camera_Movement {
 	FORWARD,
 	BACKWARD,

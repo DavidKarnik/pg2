@@ -49,7 +49,7 @@ void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 {
 	//float cameraSpeed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? SprintFactor : 1) * MovementSpeed * deltaTime;
 	float cameraSpeed = (is_sprint) ? SprintFactor * MovementSpeed : MovementSpeed;
-
+	cameraSpeed = (deltaTime < 0.002) ? 0.017 * cameraSpeed : cameraSpeed;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		this->position += cameraSpeed * this->Front;

@@ -261,6 +261,7 @@ int App::Run(void)
 			last_frame_time = glfwGetTime();
 			//camera_movement = camera.ProcessInput(window, static_cast<float>(delta_time));
 			camera.onKeyboardEvent(window, static_cast<float>(delta_time)); // process keys etc
+			//std::cout << delta_time << "\n";
 			camera.position += camera_movement;
 			glm::mat4 mx_view = camera.getViewMatrix();
 

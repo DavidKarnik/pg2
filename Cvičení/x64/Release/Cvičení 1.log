@@ -1,18 +1,8 @@
-﻿  App.cpp
-C:\Users\tomch\source\repos\pg2final\App.cpp(328,37): warning C4244: +=: double se převádí na T; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2final\App.cpp(328,37): warning C4244:         with
-C:\Users\tomch\source\repos\pg2final\App.cpp(328,37): warning C4244:         [
-C:\Users\tomch\source\repos\pg2final\App.cpp(328,37): warning C4244:             T=float
-C:\Users\tomch\source\repos\pg2final\App.cpp(328,37): warning C4244:         ]
-C:\Users\tomch\source\repos\pg2final\App.cpp(336,33): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2final\App.cpp(337,37): warning C4244: -=: double se převádí na T; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2final\App.cpp(337,37): warning C4244:         with
-C:\Users\tomch\source\repos\pg2final\App.cpp(337,37): warning C4244:         [
-C:\Users\tomch\source\repos\pg2final\App.cpp(337,37): warning C4244:             T=float
-C:\Users\tomch\source\repos\pg2final\App.cpp(337,37): warning C4244:         ]
+﻿  Camera.cpp
+C:\Users\tomch\source\repos\pg2final\Camera.cpp(52,27): warning C4244: =: double se převádí na float; může dojít ke ztrátě dat.
   Vytváří se kód.
   1 of 1383 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    22 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Vytváření kódu se dokončilo.
   Cvičení 1.vcxproj -> C:\Users\tomch\source\repos\pg2final\x64\Release\Cvičení.exe
