@@ -15,10 +15,10 @@ Vytvoření 3D hry pomocí OpenGL
 **START = 100 points**
 
 ## ESSENTIALS:
-- [x] 3D GL Core profile + shaders at least 4.5, GL debug
-- [x] High performance => at least 60 FPS
+- ✅ 3D GL Core profile + shaders at least 4.5, GL debug
+- ⬜ High performance => at least 60 FPS
 - [x] Allow VSync control, fullscreen vs. windowed switching (restore window position & size)
-- [x] Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard
+- [ ] Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard
 - [x] Multiple different independently moving 3D models, at least two loaded from file
 - [x] At least three different textures (or subtextures from texture atlas etc.)
 - [x] Lighting model, at least 3 lights (1x ambient, 1x directional, 1x reflector: at least one is moving; + possible other lights)
