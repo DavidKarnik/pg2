@@ -15,7 +15,7 @@ Vytvoření 3D hry pomocí OpenGL
 **START = 100 points**
 
 ## ESSENTIALS:
-- [ ] 3D GL Core profile + shaders at least 4.5, GL debug
++ [ ] 3D GL Core profile + shaders at least 4.5, GL debug
 - [ ] High performance => at least 60 FPS
 - [ ] Allow VSync control, fullscreen vs. windowed switching (restore window position & size)
 - [ ] Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard
