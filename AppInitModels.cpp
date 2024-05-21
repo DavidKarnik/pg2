@@ -1,6 +1,73 @@
 #include "App.h"
+#include <random>
+#include <sstream>
 
 bool lastStateOfholdItem;
+
+// Struktura pro ukládání informací o kapkách vody
+struct WaterDrop {
+	glm::vec3 position;
+	glm::vec3 scale;
+	glm::vec4 rotation;
+	Model* model;
+};
+
+// Vytvoøení vektoru pro uložení kapek vody
+std::vector<WaterDrop> waterDrops;
+
+glm::vec3 cloudPosition = glm::vec3(0);
+
+// Funkce pro vytvoøení kapek vody
+void App::CreateWaterDrops(glm::vec3 _cloudPosition) {
+	std::random_device rd;  // Pro generování náhodného semínka
+	std::mt19937 gen(rd()); // Standardní mersenne_twister_engine se používá k vytvoøení pseudo-náhodných èísel
+	std::uniform_real_distribution<float> dis(-1.0f, 1.0f); // Rozsah pro náhodná èísla
+	std::uniform_real_distribution<float> disY(0.0f, 5.0f); // Range for initial Y offset
+
+	for (int i = 0; i < 10; ++i) {
+		glm::vec3 position = _cloudPosition;
+
+		// Pøidejte náhodný offset k pozici X a Z
+		position.x += dis(gen);
+		position.z += dis(gen);
+		position.y += disY(gen); // Initial Y offset
+
+		glm::vec3 scale = glm::vec3(0.005f, 0.005f, 0.005f);
+		glm::vec4 rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+
+		std::stringstream ss;
+		ss << "obj_iceCube_" << i + 1; // Unikátní název pro každý model
+		std::string modelName = ss.str();
+
+		Model* model = CreateModel(modelName, "IceCube.obj", "IceCube.png", true, position, scale, rotation);
+		scene_opaque.find(modelName)->second->canBeHold = true;
+
+		WaterDrop drop = { position, scale, rotation, model };
+		waterDrops.push_back(drop);
+	}
+}
+
+void App::UpdateWaterDrops(glm::vec3 _cloudPosition) {
+	std::random_device rd;  // Pro generování náhodného semínka
+	std::mt19937 gen(rd()); // Standardní mersenne_twister_engine se používá k vytvoøení pseudo-náhodných èísel
+	std::uniform_real_distribution<float> dis(-1.0f, 1.0f); // Rozsah pro náhodná èísla
+	std::uniform_real_distribution<float> disY(0.0f, 5.0f); // Range for initial Y offset
+
+	for (auto& drop : waterDrops) {
+		drop.position.y -= 0.05f; // Rychlost pádu kapky vody
+
+		if (drop.position.y <= 0.0f) {
+			drop.position = _cloudPosition;
+			// Pøidejte náhodný offset k pozici X a Z
+			drop.position.x += dis(gen);
+			drop.position.z += dis(gen);
+			drop.position.y += disY(gen); // Initial Y offset
+		}
+
+		// Aktualizujte pozici modelu
+		drop.model->position = drop.position;
+	}
+}
 
 Model* App::CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation)
 {
@@ -55,6 +122,37 @@ void App::InitAssets()
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	CreateModel("obj_bunny", "bunny_tri_vnt.obj", "TextureDouble_A.png", true, position, scale, rotation);*/
 
+	// Cloud
+	position = glm::vec3(8.0f, 30.0f, 1.0f);
+	cloudPosition = position;
+	scale = glm::vec3(0.015f, 0.015f, 0.015f);
+	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	CreateModel("obj_cloud", "cloud.obj", "white.png", true, position, scale, rotation);
+	scene_opaque.find("obj_cloud")->second->canBeHold = true;
+
+	// IceCube
+	/*position = glm::vec3(6.0f, 20.0f, 2.0f);
+	scale = glm::vec3(0.005f, 0.005f, 0.005f);
+	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	sound_model = CreateModel("obj_iceCube", "IceCube.obj", "IceCube.png", true, position, scale, rotation);
+	scene_opaque.find("obj_iceCube")->second->canBeHold = true;*/
+	CreateWaterDrops(cloudPosition);
+
+	// Table
+	position = glm::vec3(8.0f, 12.0f, -15.0f);
+	scale = glm::vec3(0.01f, 0.01f, 0.01f);
+	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	CreateModel("obj_table", "table.obj", "table.png", true, position, scale, rotation);
+
+	// Lamp
+	position = glm::vec3(8.0f, 13.2f, -15.0f);
+	scale = glm::vec3(0.08f, 0.08f, 0.08f);
+	rotation = glm::vec4(1.0f, 0.0f, 0.0f, -90.0f);
+	//rotation += glm::vec4(0.0f, 1.0f, 0.0f, -50.0f);
+	//rotation += glm::vec4(0.0f, 0.0f, 1.0f, 90.0f);
+	CreateModel("obj_lamp", "lamp.obj", "lamp.png", true, position, scale, rotation);
+	//scene_opaque.find("obj_lamp")->second->canBeHold = true;
+
 	// Megaphone
 	position = glm::vec3(4.0f, 25.0f, 2.0f);
 	scale = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -64,7 +162,7 @@ void App::InitAssets()
 	//scene_opaque.find("obj_megaphone")->second.canBeHold = true;
 	scene_opaque.find("obj_megaphone")->second->canBeHold = true;
 
-	//SUB
+	//SUBmarine
 	position = glm::vec3(8.0f, 8.0f, 1.0f);
 	scale = glm::vec3(0.3f, 0.3f, 0.3f);
 	rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -98,8 +196,8 @@ void App::InitAssets()
 	lastStateOfholdItem = holdItem;
 
 	// Generate MAZE from boxes 
-	/*cv::Mat maze = cv::Mat(10, 25, CV_8U);
-	MazeGenerate(maze);*/
+	cv::Mat maze = cv::Mat(20, 20, CV_8U);
+	MazeGenerate(maze);
 
 	// HEIGHTMAP
 	//std::filesystem::path heightspath("./assets/textures/heights.png");
@@ -209,6 +307,8 @@ void App::UpdateModels()
 	scene_transparent.find("obj_gun")->second.rotation = glm::vec4(0.0f, 0.0f, 1.0f, angle);*/
 
 	//RemoveModel("obj_teapot");
+
+	UpdateWaterDrops(scene_opaque.find("obj_cloud")->second->position);
 
 	// button "e" pressed ... later needs repair this pick up item logic :(
 			// changed

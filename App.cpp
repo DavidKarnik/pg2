@@ -67,6 +67,7 @@ float App::itemPickUpRange = 4.0f;
 bool App::holdItem = true;
 
 bool App::isFlashlightOn = false;
+bool App::isLampOn = false;
 
 glm::vec3 cameraPosition = glm::vec3(0, 25.0f, 0);
 
@@ -186,7 +187,7 @@ int App::Run(void)
 			std::cin >> keep_console_open;
 		}
 
-		audio.PlayMusic3D("teapot.wav", 0.5, true);
+		audio.PlayMusic3D("teapot.wav", 1, true);
 		// 
 		//Text text_object2(free_type, window_width, window_height, "01234567890Get Rady.Timr:owns&ClBgfb"); // Declare a new text object, passing in your chosen alphabet.	
 		//text_object2.create_text_message("Get Ready... Timer: 000", 100, 50, "./assets/Text Fonts/arialbi.ttf", 130, false); // True indicates that the message will be modified.
@@ -348,6 +349,12 @@ int App::Run(void)
 				//	is_grounded = false;                        // Do not make step sounds if transitioned from walking to falling w/o jetpack
 				//}
 			}
+			// Update objects
+			glm::vec2 jukebox_to_player;
+			// glm::vec3(8.0f, 13.2f, -15.0f)
+			jukebox_to_player.x = camera.position.x - 8.0f;
+			jukebox_to_player.y = camera.position.z - ( - 15.0f);
+			glm::vec2 jukebox_to_player_n = glm::normalize(jukebox_to_player);
 
 			// Set Model Matrix
 			UpdateModels();
@@ -382,7 +389,19 @@ int App::Run(void)
 			shader.setUniform("u_spotlight.linear", 0.07f);
 			shader.setUniform("u_spotlight.exponent", 0.017f);
 			shader.setUniform("u_spotlight.on", isFlashlightOn);
-
+			// - POINT LIGHT :: JUKEBOX
+			shader.setUniform("u_point_lights[0].diffuse", glm::vec3(0.0f, 1.0f, 1.0f));
+			shader.setUniform("u_point_lights[0].specular", glm::vec3(0.07f));
+			shader.setUniform("u_point_lights[0].on", isLampOn);
+			//glm::vec3 point_light_pos = glm::vec3(8.0f, 30.0f, 1.0f);
+			glm::vec3 point_light_pos = glm::vec3(8.0f, 13.2f, -15.0f);
+			/*point_light_pos.y += 1.0f;
+			point_light_pos.x += 0.7f * jukebox_to_player_n.x;
+			point_light_pos.z += 0.7f * jukebox_to_player_n.y;*/
+			shader.setUniform("u_point_lights[0].position", point_light_pos);
+			shader.setUniform("u_point_lights[0].constant", 1.0f);
+			shader.setUniform("u_point_lights[0].linear", 1.0f);
+			shader.setUniform("u_point_lights[0].exponent", 0.5f);
 			//´------------------------------------------------------------------------------------------
 			// Freetype Text
 			//
@@ -513,6 +532,7 @@ void App::GetInformation()
 		std::cout << "[!] Pending GL error while obtaining profile: " << errorCode << "\n";
 		//return;
 	}
+	// Musíme používat CORE Profile, ne Compatibility Profice
 	if (profile & GL_CONTEXT_CORE_PROFILE_BIT) {
 		std::cout << "Core profile" << "\n";
 	}

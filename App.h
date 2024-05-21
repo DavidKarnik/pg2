@@ -65,6 +65,7 @@ private:
     static bool holdItem;
 
     static bool isFlashlightOn;
+    static bool isLampOn;
 
     static GLFWmonitor* monitor;
     static const GLFWvidmode* mode;
@@ -97,6 +98,9 @@ private:
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
     Shader shader;
+
+    void CreateWaterDrops(glm::vec3 _cloudPosition);
+    void UpdateWaterDrops(glm::vec3 _cloudPosition);
 
     // Heightmap
     std::map<std::pair<float, float>, float>* _heights{};

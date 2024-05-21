@@ -41,6 +41,10 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
             std::cout << "G clicked!\n";
             isFlashlightOn = !isFlashlightOn;
             break;
+        case GLFW_KEY_L:
+            std::cout << "L clicked!\n";
+            isLampOn = !isLampOn;
+            break;
         }
     }
 

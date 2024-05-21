@@ -387,7 +387,7 @@ glm::vec2 Model::HeightMap_GetSubtexByHeight(float height)
     if (height > 0.9) return HeightMap_GetSubtexST(2, 4); //snow
     else if (height > 0.8) return HeightMap_GetSubtexST(3, 4); //ice
     else if (height > 0.5) return HeightMap_GetSubtexST(5, 0); //rock
-    else if (height > 0.3) return HeightMap_GetSubtexST(2, 0); //soil
-    else return HeightMap_GetSubtexST(0, 0); //grass
+    else if (height > 0.3) return HeightMap_GetSubtexST(0, 0); //soil
+    else return HeightMap_GetSubtexST(2, 0); //grass
 }
 

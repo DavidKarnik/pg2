@@ -44,6 +44,32 @@ vec4 calcDirectionalLightColor(DirectionalLight directional_light, vec3 normal, 
 }
 
 
+// === Point lights ===
+#define MAX_POINT_LIGHTS 1
+struct PointLight
+{
+	vec3 position;
+	vec3 diffuse;
+	vec3 specular;
+	int on;
+
+	float constant;
+	float linear;
+	float exponent;
+};
+uniform PointLight u_point_lights[MAX_POINT_LIGHTS];
+vec4 calcPointLightColor(PointLight point_light, vec3 normal, vec3 fragment_position, vec3 frag2camera)
+{
+	vec3 frag2light = normalize(point_light.position - fragment_position);
+    vec4 diffuse = vec4(point_light.diffuse * max(dot(normal, frag2light), 0.0f), u_diffuse_alpha) * texture(u_material.textura, o_texture_coordinate);
+	vec3 specular = point_light.specular * u_material.specular * pow(max(dot(normal, normalize(frag2light + frag2camera)), 0.0f), u_material.shininess);
+	float d = length(point_light.position - fragment_position);
+	float attenuation = 1.0f / (point_light.constant + point_light.linear * d + point_light.exponent * (d * d));
+	diffuse *= attenuation;
+	specular *= attenuation;
+	return (diffuse + vec4(specular, 0.0f));
+}
+
 // === Spotlight - Flashlight ===
 struct Spotlight
 {
@@ -90,6 +116,10 @@ void main()
 	// Directional light
 	out_color += calcDirectionalLightColor(u_directional_light, normal, frag2camera);
  
+	// Point lights
+	for (int i = 0; i < MAX_POINT_LIGHTS; i++) if (u_point_lights[i].on == 1) out_color += calcPointLightColor(u_point_lights[i], normal, o_fragment_position, frag2camera);  
+
+
 	// Spotlight
 	if (u_spotlight.on) out_color += calcSpotLightColor(u_spotlight, normal, o_fragment_position, frag2camera);
 
