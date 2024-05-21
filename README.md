@@ -27,8 +27,8 @@ Vytvoření 3D hry pomocí OpenGL
 ## EXTRAS:
 ✅ Height map textured by height & proper player height coords<br>
 ✅ Working collisions<br>
-- [ ] Particles
-- [ ] Scripting (useful)
+⬜ Particles<br>
+⬜ Scripting (useful)<br>
 ✅ Audio (better than just background)<br>
 ✅ Some other nice complicated effect...<br>
 
