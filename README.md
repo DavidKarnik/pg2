@@ -15,25 +15,25 @@ Vytvoření 3D hry pomocí OpenGL
 **START = 100 points**
 
 ## ESSENTIALS:
-+ [ ] 3D GL Core profile + shaders at least 4.5, GL debug
-- [ ] High performance => at least 60 FPS
-- [ ] Allow VSync control, fullscreen vs. windowed switching (restore window position & size)
-- [ ] Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard
-- [ ] Multiple different independently moving 3D models, at least two loaded from file
-- [ ] At least three different textures (or subtextures from texture atlas etc.)
-- [ ] Lighting model, at least 3 lights (1x ambient, 1x directional, 1x reflector: at least one is moving; + possible other lights)
-- [ ] Correct full scale transparency (at least one transparent object; NOT if(alpha<0.1) {discard;})
+- [x] 3D GL Core profile + shaders at least 4.5, GL debug
+- [x] High performance => at least 60 FPS
+- [x] Allow VSync control, fullscreen vs. windowed switching (restore window position & size)
+- [x] Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard
+- [x] Multiple different independently moving 3D models, at least two loaded from file
+- [x] At least three different textures (or subtextures from texture atlas etc.)
+- [x] Lighting model, at least 3 lights (1x ambient, 1x directional, 1x reflector: at least one is moving; + possible other lights)
+- [x] Correct full scale transparency (at least one transparent object; NOT if(alpha<0.1) {discard;})
 
 ## EXTRAS:
-- [ ] Height map textured by height & proper player height coords
-- [ ] Working collisions
+- [x] Height map textured by height & proper player height coords
+- [x] Working collisions
 - [ ] Particles
 - [ ] Scripting (useful)
-- [ ] Audio (better than just background)
-- [ ] Some other nice complicated effect...
+- [x] Audio (better than just background)
+- [x] Some other nice complicated effect...
 
 ## INSTAFAIL:
-- [ ] Using GLUT, GL compatible profile
+- Using GLUT, GL compatible profile
 
 *Note: Hardware limitation might apply (e.g., no mouse wheel on notebook), in that case subtask can be ignored.*
 
