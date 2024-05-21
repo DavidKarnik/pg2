@@ -10,7 +10,7 @@ Wir haben die ganze verdammte Spiel-Engine erstellt
 
 Vytvoření 3D hry pomocí OpenGL
 
---
+---
 
 # 3D Graphics Project
 
