@@ -18,19 +18,19 @@ Vytvoření 3D hry pomocí OpenGL
 ✅ 3D GL Core profile + shaders at least 4.5, GL debug<br>
 ✅ High performance => at least 60 FPS<br>
 ✅ Allow VSync control, fullscreen vs. windowed switching (restore window position & size)<br>
-✅ Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard
-✅ Multiple different independently moving 3D models, at least two loaded from file
-✅ At least three different textures (or subtextures from texture atlas etc.)
-✅ Lighting model, at least 3 lights (1x ambient, 1x directional, 1x reflector: at least one is moving; + possible other lights)
-✅ Correct full scale transparency (at least one transparent object; NOT if(alpha<0.1) {discard;})
+✅ Event processing (camera, object, app behavior...): mouse (both axes, wheel), keyboard<br>
+✅ Multiple different independently moving 3D models, at least two loaded from file<br>
+✅ At least three different textures (or subtextures from texture atlas etc.)<br>
+✅ Lighting model, at least 3 lights (1x ambient, 1x directional, 1x reflector: at least one is moving; + possible other lights)<br>
+✅ Correct full scale transparency (at least one transparent object; NOT if(alpha<0.1) {discard;})<br>
 
 ## EXTRAS:
-✅ Height map textured by height & proper player height coords
-✅ Working collisions
+✅ Height map textured by height & proper player height coords<br>
+✅ Working collisions<br>
 - [ ] Particles
 - [ ] Scripting (useful)
-✅ Audio (better than just background)
-✅ Some other nice complicated effect...
+✅ Audio (better than just background)<br>
+✅ Some other nice complicated effect...<br>
 
 ## INSTAFAIL:
 - Using GLUT, GL compatible profile
