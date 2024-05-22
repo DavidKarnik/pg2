@@ -74,7 +74,7 @@ void Camera::onKeyboardEvent(GLFWwindow* window, GLfloat deltaTime)
 
 void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch)
 {
-	// Redukce citlivosti pro pomalejší pohyb, mùžete upravit hodnoty 0.01f na jinou hodnotu pro úpravu citlivosti
+	// Redukce citlivosti pro pomalejší pohyb
 	xoffset *= this->MouseSensitivity * 0.3f; // Snížení citlivosti x osy
 	yoffset *= this->MouseSensitivity * 0.3f; // Snížení citlivosti y osy
 
@@ -83,6 +83,7 @@ void Camera::onMouseEvent(GLfloat xoffset, GLfloat yoffset, GLboolean constraint
 
 	this->Yaw += xoffset;
 	this->Pitch -= yoffset; // Odeèítáme yoffset, aby se kamera pohybovala správnì nahoru a dolù
+	// invertování pohybu myši ?
 
 	if (constraintPitch)
 	{

@@ -370,7 +370,7 @@ int App::Run(void)
 			shader.setUniform("u_ambient_alpha", 0.0f);
 			shader.setUniform("u_diffuse_alpha", 0.7f);
 			shader.setUniform("u_camera_position", camera.getPosition());
-			// Material
+			// Materials
 			shader.setUniform("u_material.ambient", glm::vec3(0.1f));
 			shader.setUniform("u_material.specular", glm::vec3(1.0f));
 			shader.setUniform("u_material.shininess", 90.0f);
@@ -389,15 +389,11 @@ int App::Run(void)
 			shader.setUniform("u_spotlight.linear", 0.07f);
 			shader.setUniform("u_spotlight.exponent", 0.017f);
 			shader.setUniform("u_spotlight.on", isFlashlightOn);
-			// - POINT LIGHT :: JUKEBOX
+			// Point light - Lamp on Table
 			shader.setUniform("u_point_lights[0].diffuse", glm::vec3(0.0f, 1.0f, 1.0f));
 			shader.setUniform("u_point_lights[0].specular", glm::vec3(0.07f));
 			shader.setUniform("u_point_lights[0].on", isLampOn);
-			//glm::vec3 point_light_pos = glm::vec3(8.0f, 30.0f, 1.0f);
 			glm::vec3 point_light_pos = glm::vec3(8.0f, 13.2f, -15.0f);
-			/*point_light_pos.y += 1.0f;
-			point_light_pos.x += 0.7f * jukebox_to_player_n.x;
-			point_light_pos.z += 0.7f * jukebox_to_player_n.y;*/
 			shader.setUniform("u_point_lights[0].position", point_light_pos);
 			shader.setUniform("u_point_lights[0].constant", 1.0f);
 			shader.setUniform("u_point_lights[0].linear", 1.0f);
@@ -512,7 +508,7 @@ void App::UpdateProjectionMatrix(void)
 
 	mx_projection = glm::perspective(
 		glm::radians(FOV),   // The vertical Field of View
-		ratio,               // Aspect Ratio. Depends on the size of your window.
+		ratio,               // Aspect Ratio. Depends on the size of window.
 		0.1f,                // Near clipping plane. Keep as big as possible, or you'll get precision issues.
 		20000.0f             // Far clipping plane. Keep as little as possible.
 	);

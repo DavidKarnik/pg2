@@ -1,9 +1,5 @@
 #include "App.h"
 
-//
-// https://textbooks.cs.ksu.edu/cis580/15-heightmap-terrain/05-interpolating-heights/index.html
-//
-
 float App::GetHeightmapY(float position_x, float position_z) const
 {
     float X = position_x + HEIGHTMAP_SHIFT;

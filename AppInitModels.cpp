@@ -12,12 +12,12 @@ struct WaterDrop {
 	Model* model;
 };
 
-// Vytvoøení vektoru pro uložení kapek vody
+//  vektor pro uložení kapek vody
 std::vector<WaterDrop> waterDrops;
 
 glm::vec3 cloudPosition = glm::vec3(0);
 
-// Funkce pro vytvoøení kapek vody
+// vytvoøení kapek vody
 void App::CreateWaterDrops(glm::vec3 _cloudPosition) {
 	std::random_device rd;  // Pro generování náhodného semínka
 	std::mt19937 gen(rd()); // Standardní mersenne_twister_engine se používá k vytvoøení pseudo-náhodných èísel
@@ -27,7 +27,7 @@ void App::CreateWaterDrops(glm::vec3 _cloudPosition) {
 	for (int i = 0; i < 10; ++i) {
 		glm::vec3 position = _cloudPosition;
 
-		// Pøidejte náhodný offset k pozici X a Z
+		// náhodný offset k pozici
 		position.x += dis(gen);
 		position.z += dis(gen);
 		position.y += disY(gen); // Initial Y offset
@@ -48,20 +48,21 @@ void App::CreateWaterDrops(glm::vec3 _cloudPosition) {
 }
 
 void App::UpdateWaterDrops(glm::vec3 _cloudPosition) {
-	std::random_device rd;  // Pro generování náhodného semínka
-	std::mt19937 gen(rd()); // Standardní mersenne_twister_engine se používá k vytvoøení pseudo-náhodných èísel
-	std::uniform_real_distribution<float> dis(-1.0f, 1.0f); // Rozsah pro náhodná èísla
-	std::uniform_real_distribution<float> disY(0.0f, 5.0f); // Range for initial Y offset
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dis(-1.0f, 1.0f);
+	std::uniform_real_distribution<float> disY(0.0f, 5.0f);
 
 	for (auto& drop : waterDrops) {
 		drop.position.y -= 0.05f; // Rychlost pádu kapky vody
+		// lepší by bylo dle deltaTime .. èasovì øízeno
 
 		if (drop.position.y <= 0.0f) {
 			drop.position = _cloudPosition;
-			// Pøidejte náhodný offset k pozici X a Z
+			// náhodný offset k pozici X a Z, Y
 			drop.position.x += dis(gen);
 			drop.position.z += dis(gen);
-			drop.position.y += disY(gen); // Initial Y offset
+			drop.position.y += disY(gen);
 		}
 
 		// Aktualizujte pozici modelu
@@ -223,7 +224,7 @@ void App::InitAssets()
 	_heights = &obj_heightmap->_heights;
 	//_heights = &model._heights;
 
-	// == for TRANSPARENT OBJECTS sorting ==	
+	// for TRANSPARENT OBJECTS sorting
 	for (auto i = scene_transparent.begin(); i != scene_transparent.end(); i++) {
 		scene_transparent_pairs.push_back(&*i);
 	}
@@ -262,12 +263,10 @@ glm::vec3 updateGunPosition2(Camera& camera)
 
 glm::vec4 updateGunRotation2(Camera& camera)
 {
-	// Vytvoøení rotace zbranì na základì rotace kamery
-	// Mùžete experimentovat s úhlem rotace, aby zbraò vypadala, že je držena ve správné pozici
+	// rotace zbranì na základì rotace kamery
 	//glm::vec4 gunRotation = glm::vec4(0.0f, 0.0f, 1.0f, -90.0f);
 	glm::vec4 gunRotation = glm::vec4(camera.getFront(), glm::radians(-90.0f));
 
-	// Aktualizace rotace zbranì
 	return gunRotation;
 }
 
@@ -426,9 +425,6 @@ Model* App::findClosestModelInItemPickUpRange(glm::vec3& cameraPosition) {
 
 	return closestModel;
 }
-
-
-
 
 
 Model* App::findHeldItem() {

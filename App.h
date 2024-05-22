@@ -16,7 +16,6 @@
 
 #define PLAYER_HEIGHT 1.0f      // Camera above ground
 #define HEIGHTMAP_SHIFT 60.0f   // Heightmap is shifted by this value on x and z coordinates
-#define N_PROJECTILES 10        // How many projectiles are there in the pool
 #define HEGHTMAP_SCALE 0.1f
 
 class App {
