@@ -54,3 +54,20 @@ Vytvoření 3D hry pomocí OpenGL
 **---------------------------------------------------------------------------------------------------------**<br>
 **Send full project and installation procedures in advance (use gitlab.tul.cz, github, gitlab, etc.)**<br>
 **---------------------------------------------------------------------------------------------------------**
+
+##
+
+## Ovládání:
+
+pohyb: W A S D
+rozhlížení: pohyb myší
+změna FOV: kolečko myši
+sprint: Levý shift (zmáčknutí)
+skok: mezerník
+vzít/pustit předmět: E
+baterka: G
+světlo u stolu: L
+
+fullscreen: F
+Vsync: V
+ukončení: ESC
