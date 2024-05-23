@@ -59,17 +59,17 @@ Vytvoření 3D hry pomocí OpenGL
 
 ## Ovládání:
 
-- **W** - pohyb vpřed
-- **A** - pohyb doleva
-- **S** - pohyb dozadu
-- **D** - pohyb doprava
+- **W**   - pohyb vpřed
+- **A**   - pohyb doleva
+- **S**   - pohyb dozadu
+- **D**   - pohyb doprava
 - **Myš** - rozhlížení
-- **Kolečko myši** změna FOV
-- **Levý shift** sprint (toggle)
-- **Mezerník** skok
-- **E** vzít/pustit předmět
-- **G** baterka (toggle)
-- **L** světlo u stolu (toggle)
-- **F** fullscreen (toggle)
-- **V** Vsync (toggle)
-- **ESC** ukončení
+- **Kolečko myši** - změna FOV
+- **Levý shift**   - sprint (toggle)
+- **Mezerník**     - skok
+- **E**   - vzít/pustit předmět
+- **G**   - baterka (toggle)
+- **L**   - světlo u stolu (toggle)
+- **F**   - fullscreen (toggle)
+- **V**   - Vsync (toggle)
+- **ESC** - ukončení
