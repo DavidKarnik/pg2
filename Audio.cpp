@@ -54,8 +54,8 @@ void Audio::UpdateMusicVolume(float amount)
 
 void Audio::Walk()
 {
-	engine->play2D(walkSwitch ? "./assets/sounds/step1.wav" : "./assets/sounds/step2.wav");
-	walkSwitch = !walkSwitch;
+	engine->play2D(walk_sound ? "./assets/sounds/step1.wav" : "./assets/sounds/step2.wav");
+	walk_sound = !walk_sound;
 }
 
 Audio::~Audio()

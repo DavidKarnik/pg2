@@ -47,14 +47,14 @@ void App::CreateWaterDrops(glm::vec3 _cloudPosition) {
 	}
 }
 
-void App::UpdateWaterDrops(glm::vec3 _cloudPosition) {
+void App::UpdateWaterDrops(glm::vec3 _cloudPosition, GLfloat deltaTime) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> dis(-1.0f, 1.0f);
 	std::uniform_real_distribution<float> disY(0.0f, 5.0f);
 
 	for (auto& drop : waterDrops) {
-		drop.position.y -= 0.05f; // Rychlost pádu kapky vody
+		drop.position.y -= (deltaTime < 0.004) ? 0.0025 : 0.07; // Rychlost pádu kapky vody
 		// lepší by bylo dle deltaTime .. èasovì øízeno
 
 		if (drop.position.y <= 0.0f) {
@@ -272,7 +272,7 @@ glm::vec4 updateGunRotation2(Camera& camera)
 
 
 
-void App::UpdateModels()
+void App::UpdateModels(GLfloat deltaTime)
 {
 	glm::vec3 position{};
 	glm::vec3 scale{};
@@ -307,7 +307,7 @@ void App::UpdateModels()
 
 	//RemoveModel("obj_teapot");
 
-	UpdateWaterDrops(scene_opaque.find("obj_cloud")->second->position);
+	UpdateWaterDrops(scene_opaque.find("obj_cloud")->second->position, deltaTime);
 
 	// button "e" pressed ... later needs repair this pick up item logic :(
 			// changed

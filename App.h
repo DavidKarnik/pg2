@@ -29,7 +29,7 @@ public:
     //Model* CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
     Model* CreateModel(std::string name, std::string obj, std::string tex, bool is_opaque, glm::vec3 position, glm::vec3 scale, glm::vec4 rotation);
 
-    void UpdateModels();
+    void UpdateModels(GLfloat);
     void RemoveModel(std::string name);
 
     void holdNewItem();
@@ -99,7 +99,7 @@ private:
     Shader shader;
 
     void CreateWaterDrops(glm::vec3 _cloudPosition);
-    void UpdateWaterDrops(glm::vec3 _cloudPosition);
+    void UpdateWaterDrops(glm::vec3 _cloudPosition, GLfloat);
 
     // Heightmap
     std::map<std::pair<float, float>, float>* _heights{};

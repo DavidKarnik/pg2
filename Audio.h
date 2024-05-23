@@ -24,5 +24,5 @@ private:
 
 	irrklang::ISound* music = nullptr;
 
-	bool walkSwitch = false;
+	bool walk_sound = false;
 };

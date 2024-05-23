@@ -75,7 +75,7 @@ App::App()
 {
 	// default constructor
 	// nothing to do here (for now...)
-	std::cout << "App Constructed...\n--------------\n";
+	std::cout << "App Constructed done\n\n";
 }
 
 // App initialization, if returns true then run run()
@@ -167,7 +167,7 @@ bool App::Init()
 		//throw;
 		exit(-1);
 	}
-	std::cout << "--------------\nInitialized...\n";
+	std::cout << "\nApp Initialized\n";
 	return true;
 }
 
@@ -178,14 +178,14 @@ int App::Run(void)
 		//´------------------------------------------------------------------------------------------
 		// Freetype Text
 		//
-		FT_Library free_type;
+		/*FT_Library free_type;
 		FT_Error error_code = FT_Init_FreeType(&free_type);
 		if (error_code)
 		{
 			std::cout << "\n   Error code: " << error_code << " --- " << "An error occurred during initialising the FT_Library";
 			int keep_console_open;
 			std::cin >> keep_console_open;
-		}
+		}*/
 
 		audio.PlayMusic3D("teapot.wav", 1, true);
 		// 
@@ -350,14 +350,14 @@ int App::Run(void)
 				//}
 			}
 			// Update objects
-			glm::vec2 jukebox_to_player;
+			glm::vec2 object_to_player;
 			// glm::vec3(8.0f, 13.2f, -15.0f)
-			jukebox_to_player.x = camera.position.x - 8.0f;
-			jukebox_to_player.y = camera.position.z - ( - 15.0f);
-			glm::vec2 jukebox_to_player_n = glm::normalize(jukebox_to_player);
+			object_to_player.x = camera.position.x - 8.0f;
+			object_to_player.y = camera.position.z - ( - 15.0f);
+			glm::vec2 object_to_player_n = glm::normalize(object_to_player);
 
 			// Set Model Matrix
-			UpdateModels();
+			UpdateModels(static_cast<float>(delta_time));
 
 			// Activate shader, set uniform vars
 			shader.activate();
@@ -479,11 +479,11 @@ int App::Run(void)
 		}
 	}
 	catch (std::exception const& e) {
-		std::cerr << "App failed : " << e.what() << "\n";
+		std::cerr << "App failed: " << e.what() << "\n";
 		return EXIT_FAILURE;
 	}
 	GetInformation();
-	std::cout << "Finished OK...\n";
+	std::cout << "App Finished\n";
 	return EXIT_SUCCESS;
 }
 
@@ -497,7 +497,7 @@ App::~App()
 	glfwTerminate();
 
 	exit(EXIT_SUCCESS);
-	std::cout << "Bye...\n";
+	std::cout << "Bye User\n";
 }
 
 void App::UpdateProjectionMatrix(void)
@@ -516,24 +516,22 @@ void App::UpdateProjectionMatrix(void)
 
 void App::GetInformation()
 {
-	std::cout << "\n=================== :: GL Info :: ===================\n";
-	std::cout << "GL Vendor:\t" << glGetString(GL_VENDOR) << "\n";
-	std::cout << "GL Renderer:\t" << glGetString(GL_RENDERER) << "\n";
+	std::cout << "\nGL on this PC info:\n";
 	std::cout << "GL Version:\t" << glGetString(GL_VERSION) << "\n";
+	std::cout << "GL Renderer:\t" << glGetString(GL_RENDERER) << "\n";
+	std::cout << "GL Vendor:\t" << glGetString(GL_VENDOR) << "\n";
 	std::cout << "GL Shading ver:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n\n";
 
 	GLint profile;
 	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
 	if (const auto errorCode = glGetError()) {
 		std::cout << "[!] Pending GL error while obtaining profile: " << errorCode << "\n";
-		//return;
 	}
-	// Musíme používat CORE Profile, ne Compatibility Profice
+
 	if (profile & GL_CONTEXT_CORE_PROFILE_BIT) {
 		std::cout << "Core profile" << "\n";
 	}
 	else {
 		std::cout << "Compatibility profile" << "\n";
 	}
-	std::cout << "=====================================================\n\n";
 }

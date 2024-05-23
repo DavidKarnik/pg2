@@ -1,17 +1,25 @@
 ﻿  App.cpp
-C:\Users\tomch\source\repos\pg2final\App.cpp(284,37): warning C4244: +=: double se převádí na T; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2final\App.cpp(284,37): warning C4244:         with
-C:\Users\tomch\source\repos\pg2final\App.cpp(284,37): warning C4244:         [
-C:\Users\tomch\source\repos\pg2final\App.cpp(284,37): warning C4244:             T=float
-C:\Users\tomch\source\repos\pg2final\App.cpp(284,37): warning C4244:         ]
-C:\Users\tomch\source\repos\pg2final\App.cpp(292,33): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2final\App.cpp(293,37): warning C4244: -=: double se převádí na T; může dojít ke ztrátě dat.
-C:\Users\tomch\source\repos\pg2final\App.cpp(293,37): warning C4244:         with
-C:\Users\tomch\source\repos\pg2final\App.cpp(293,37): warning C4244:         [
-C:\Users\tomch\source\repos\pg2final\App.cpp(293,37): warning C4244:             T=float
-C:\Users\tomch\source\repos\pg2final\App.cpp(293,37): warning C4244:         ]
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(330,37): warning C4244: +=: double se převádí na T; může dojít ke ztrátě dat.
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(330,37): warning C4244:         with
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(330,37): warning C4244:         [
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(330,37): warning C4244:             T=float
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(330,37): warning C4244:         ]
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(338,33): warning C4244: +=: double se převádí na float; může dojít ke ztrátě dat.
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(339,37): warning C4244: -=: double se převádí na T; může dojít ke ztrátě dat.
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(339,37): warning C4244:         with
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(339,37): warning C4244:         [
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(339,37): warning C4244:             T=float
+C:\Users\tomch\Source\Repos\pg2itsfintime\App.cpp(339,37): warning C4244:         ]
   AppCallback.cpp
   AppInitModels.cpp
+C:\Users\tomch\Source\Repos\pg2itsfintime\AppInitModels.cpp(57,33): warning C4244: -=: double se převádí na T; může dojít ke ztrátě dat.
+C:\Users\tomch\Source\Repos\pg2itsfintime\AppInitModels.cpp(57,33): warning C4244:         with
+C:\Users\tomch\Source\Repos\pg2itsfintime\AppInitModels.cpp(57,33): warning C4244:         [
+C:\Users\tomch\Source\Repos\pg2itsfintime\AppInitModels.cpp(57,33): warning C4244:             T=float
+C:\Users\tomch\Source\Repos\pg2itsfintime\AppInitModels.cpp(57,33): warning C4244:         ]
+  AppMaze.cpp
+  Audio.cpp
+  Collisions.cpp
+  Cvičení.cpp
   Generování kódu...
-App.obj : error LNK2019: Nerozpoznaný externí symbol FT_Init_FreeType odkazovaný ve funkci "public: int __cdecl App::Run(void)" (?Run@App@@QEAAHXZ)
-C:\Users\tomch\source\repos\pg2final\x64\Debug\Cvičení.exe : fatal error LNK1120: Počet nerozpoznaných externích typů: 1
+  Cvičení 1.vcxproj -> C:\Users\tomch\source\repos\pg2itsfintime\x64\Debug\Cvičení.exe
