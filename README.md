@@ -74,6 +74,8 @@ Vytvoření 3D hry pomocí OpenGL
 - **V** Vsync (toggle)
 - **ESC** ukončení
 
+##
+
 - **W**          pohyb vpřed
 - **A**          pohyb doleva
 - **S**          pohyb dozadu
