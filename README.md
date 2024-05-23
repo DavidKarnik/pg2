@@ -66,7 +66,7 @@ Vytvoření 3D hry pomocí OpenGL
 - **Myš** - rozhlížení
 - **Kolečko myši** - změna FOV
 - **Levý shift** --- sprint (toggle)
-- **Mezerník** ----- skok
+- **Mezerník** --- skok
 - **E** --- vzít/pustit předmět
 - **G** --- baterka (toggle)
 - **L** --- světlo u stolu (toggle)
