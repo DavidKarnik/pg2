@@ -73,3 +73,7 @@ Vytvoření 3D hry pomocí OpenGL
 - **F** --- fullscreen (toggle)
 - **V** --- Vsync (toggle)
 - **ESC** - ukončení
+
+## Screenshots
+
+![Snímek obrazovky 2024-06-20 112227](https://github.com/DavidKarnik/pg2/assets/91788719/01f8aa6f-2531-4802-97a2-c4c2865bb0fd)
