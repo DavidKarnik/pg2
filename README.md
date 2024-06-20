@@ -55,9 +55,9 @@ Vytvoření 3D hry pomocí OpenGL
 **Send full project and installation procedures in advance (use gitlab.tul.cz, github, gitlab, etc.)**<br>
 **---------------------------------------------------------------------------------------------------------**
 
-##
-
 ### Final Mark : A
+
+##
 
 ## Ovládání:
 
