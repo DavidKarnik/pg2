@@ -57,6 +57,8 @@ Vytvoření 3D hry pomocí OpenGL
 
 ##
 
+### Final Mark : A
+
 ## Ovládání:
 
 - **W** --- pohyb vpřed
