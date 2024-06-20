@@ -77,3 +77,9 @@ Vytvoření 3D hry pomocí OpenGL
 ## Screenshots
 
 ![Snímek obrazovky 2024-06-20 112227](https://github.com/DavidKarnik/pg2/assets/91788719/de10b4e4-0039-4e02-90fe-a13222c1c361)
+![Snímek obrazovky 2024-06-20 112252](https://github.com/DavidKarnik/pg2/assets/91788719/46f5b87c-c7e3-4871-afdf-b771086f30c9)
+![Snímek obrazovky 2024-06-20 112302](https://github.com/DavidKarnik/pg2/assets/91788719/40b43f34-b5a1-4f71-8103-206c6bab9eb0)
+![Snímek obrazovky 2024-06-20 112345](https://github.com/DavidKarnik/pg2/assets/91788719/af730f6a-874e-46ce-a3cd-2931d6eb368a)
+![Snímek obrazovky 2024-06-20 112403](https://github.com/DavidKarnik/pg2/assets/91788719/469a4bf4-4fed-4184-879e-dc3b8c209fc3)
+![Snímek obrazovky 2024-06-20 112430](https://github.com/DavidKarnik/pg2/assets/91788719/5979efa7-f763-4c19-b1c5-5bbe00ff1c85)
+![Snímek obrazovky 2024-06-20 112454](https://github.com/DavidKarnik/pg2/assets/91788719/6a5df2ea-b183-43d9-a920-7e8ce1203c4c)
